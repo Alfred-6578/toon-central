@@ -1,0 +1,3001 @@
+{
+ "home": {
+  "carousel": [
+   {
+    "id": 60,
+    "uuid": "9e20eecf-14ee-4312-bf68-ea3e9f348c0f",
+    "title": "AFRI DIVAZ",
+    "description": "Four teenage girls with big fashion dreams land the opportunity of a lifetime: a 7-day elite fashion showcase hosted by legendary mogul Tara Obeng. But behind the glamour, runway lights, and designer dreams lies fierce rivalry, sabotage, secrets, and the harsh truth about the fashion industry. Can Afridivaz survive the competition without losing themselves.....or each other?",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 1084,
+    "views_count": 1084,
+    "likes_count": 12,
+    "last_episode_at": "2026-08-04 02:54:05",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920680/comics/nneyq3dcp5qhr4f0ebp7.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920681/comics/n3lmdrzuzmxtr7bmg9x0.jpg",
+    "created_at": "2026-07-01T15:44:42.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 22,
+       "name": "Teen",
+       "slug": "teen"
+      }
+     },
+     {
+      "genre": {
+       "id": 24,
+       "name": "Coming of Age",
+       "slug": "coming-of-age"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 57,
+    "uuid": "cf7234fa-926d-4d63-a1e7-568bf5b77be0",
+    "title": "CITY HERO",
+    "description": "Soma is a ten-year-old Nigerian boy — asthmatic, bullied, and easy to overlook — until a mysterious device called the Activian, hidden inside a birthday gift, bonds with him and unlocks powers that make him a target for forces far darker than any school yard bully. In a world where extraordinary power hides inside ordinary things, this is the story of a boy who was told he was nothing — and a device that disagreed.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 6583,
+    "views_count": 6583,
+    "likes_count": 83,
+    "last_episode_at": "2026-05-04 16:21:03",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779064061/comics/lauqqu5gdvjmiaw0yxxp.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779063289/comics/bedyd2wy3ugcgmuljl9q.png",
+    "created_at": "2026-04-08T11:36:01.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     },
+     {
+      "genre": {
+       "id": 16,
+       "name": "Superhero",
+       "slug": "Superhero"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 37,
+    "uuid": "660c3bf6-f839-4f15-8d09-85199977a007",
+    "title": "Celestial Eyes",
+    "description": "Follow Onwanuju, an occult detective with a full blue moon in her eyes, and Odi Maria, her adventurous best friend as they investigate the mysterious cases that plague their city.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 4408,
+    "views_count": 4408,
+    "likes_count": 68,
+    "last_episode_at": "2026-04-06 14:27:53",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439323/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/cover-image/nzdaqommjath4a8ntbfv.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439321/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/background-image/okqhvacpytgvci9df2th.png",
+    "created_at": "2026-01-26T19:55:21.000000Z",
+    "user": {
+     "id": 276,
+     "username": "THEMACHINE",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769447598/-/Reader/themachinecb%40gmail.com/profile/images/mjomgvdiu9ve6sarku8b.jpg"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 7,
+       "name": "Horror",
+       "slug": "Horror"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     },
+     {
+      "genre": {
+       "id": 13,
+       "name": "Thriller",
+       "slug": "Thriller"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 3,
+    "uuid": "eaa71b8f-8691-4844-a0f4-6b7fa9dac77a",
+    "title": "Primordials",
+    "description": "in Primordial Red Sun Rising, Governor T’Awub Ka’Andar and his entourage journey to the warrior city of Sizini to seek King Dhinga II's counsel on a mysterious threat. Tensions rise as the king’s shaman reveals ominous visions of darkness, fire, and an approaching danger tethered to a distant star.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 834,
+    "views_count": 834,
+    "likes_count": 20,
+    "last_episode_at": "2025-08-02 23:25:00",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732310061/-/Reader/tooncentralhub%40gmail.com/comics/Primordials/cover-image/llfhphhjmfwiykvex8vg.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732310060/-/Reader/tooncentralhub%40gmail.com/comics/Primordials/background-image/tbiqbxgqrh1elnsy9phg.png",
+    "created_at": "2024-11-23T02:14:20.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 6,
+    "uuid": "9cf7a4f0-2929-41f0-8b92-810e57b3fc7b",
+    "title": "Soul Air",
+    "description": "A group of tattooed individuals known as soul heirs",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 448,
+    "views_count": 448,
+    "likes_count": 7,
+    "last_episode_at": "2024-11-24 00:38:22",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732315915/-/Reader/tooncentralhub%40gmail.com/comics/Soul%20Air/cover-image/rcaqxy6zj2hzpfou8aly.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732315914/-/Reader/tooncentralhub%40gmail.com/comics/Soul%20Air/background-image/msonzjco047u5cbbepbz.png",
+    "created_at": "2024-11-23T03:51:53.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 34,
+    "uuid": "75612338-9987-4aef-ad11-d9a680c02767",
+    "title": "OMIMI",
+    "description": "A story of an igbo girl looking to change her world",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 2815,
+    "views_count": 2815,
+    "likes_count": 28,
+    "last_episode_at": "2025-12-12 20:21:38",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551139/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/cover-image/ckea6dtwkezghbj3b2gd.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551137/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/background-image/xpuk63y7c4pgnj6uivu2.png",
+    "created_at": "2025-12-12T19:52:16.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 27,
+    "uuid": "4e23fe61-2063-4f2d-82ff-1df93875c926",
+    "title": "WIDOW'S GUILT",
+    "description": "Kim was a wife and a soon to be mother until life took the heart she called home away from her.",
+    "status": "ONGOING",
+    "update_days": "Sunday",
+    "view_count": 483,
+    "views_count": 483,
+    "likes_count": 9,
+    "last_episode_at": "2025-03-18 18:39:41",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742299908/-/Reader/tooncentralhub%40gmail.com/comics/WIDOW%27S%20GUILT/cover-image/c1kee3ubhasaceks97qx.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742299907/-/Reader/tooncentralhub%40gmail.com/comics/WIDOW%27S%20GUILT/background-image/decuc3qrfxg3oe2pvuxf.png",
+    "created_at": "2025-03-18T16:11:47.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 8,
+       "name": "Mystery",
+       "slug": "Mystery"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 18,
+       "name": "Crime",
+       "slug": "Crime"
+      }
+     },
+     {
+      "genre": {
+       "id": 26,
+       "name": "Tragedy",
+       "slug": "tragedy"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 26,
+    "uuid": "a23b62b1-89f5-4987-9d65-2788e40cb252",
+    "title": "No Lifers Game",
+    "description": "A game of life and death, only the strong will make it out alive",
+    "status": "ONGOING",
+    "update_days": "Monday",
+    "view_count": 435,
+    "views_count": 435,
+    "likes_count": 7,
+    "last_episode_at": "2025-09-30 18:56:30",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739997088/-/Reader/tooncentralhub%40gmail.com/comics/No%20Lifers%20Game/cover-image/srzsf6qvlwvvp06qtk1l.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739997087/-/Reader/tooncentralhub%40gmail.com/comics/No%20Lifers%20Game/background-image/axmw1isupbifsmyqsnld.jpg",
+    "created_at": "2025-02-20T01:31:26.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     },
+     {
+      "genre": {
+       "id": 19,
+       "name": "Martial Arts",
+       "slug": "Martial Arts"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 25,
+    "uuid": "2ff0ef31-f20d-4f9e-a444-456bc057737d",
+    "title": "4 The Tribe",
+    "description": "In a world ruled by spirit power and the five noble tribes that control it, the very fabric of society threatens to come undone, when a hidden power, once thought to be long lost is revived by a sect of dangerous dissidents. Will Maru manage to unite his friends into a powerful new tribe in time to battle the chaos, or will calamity reign on the African continent?",
+    "status": "ONGOING",
+    "update_days": "Monday",
+    "view_count": 582,
+    "views_count": 582,
+    "likes_count": 12,
+    "last_episode_at": "2025-02-10 20:22:07",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739187415/-/Reader/tooncentralhub%40gmail.com/comics/4%20The%20Tribe/cover-image/w6osti5ckcjkqcgje1xn.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739187414/-/Reader/tooncentralhub%40gmail.com/comics/4%20The%20Tribe/background-image/rgbzlhze0rwhkdn8fjfm.jpg",
+    "created_at": "2025-02-10T16:36:53.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 29,
+    "uuid": "15103f02-8fd6-4268-8c15-5a0e9f7829df",
+    "title": "BLACK STAR",
+    "description": "A small mercenary crew led by a hard-edged Captain infiltrates warlord Salim’s outpost to steal an obscure black box for the Rabb; the raid succeeds at first but unearths a military-grade chip that sparks a violent counterattack — ending with the wounded young operative Shaibu washed out by an explosion and carried away by a monstrous gorilla, leaving the mission — and his fate — in doubt.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 1173,
+    "views_count": 1173,
+    "likes_count": 17,
+    "last_episode_at": "2026-06-27 00:37:20",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/cover-image/bsd94r3vb6czdmqiqmyc.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/background-image/w42dxomhb6iupogs6pki.jpg",
+    "created_at": "2025-10-05T22:43:37.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     },
+     {
+      "genre": {
+       "id": 27,
+       "name": "Military",
+       "slug": "military"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   }
+  ],
+  "popular_by_toon_central": [
+   {
+    "id": 57,
+    "uuid": "cf7234fa-926d-4d63-a1e7-568bf5b77be0",
+    "title": "CITY HERO",
+    "description": "Soma is a ten-year-old Nigerian boy — asthmatic, bullied, and easy to overlook — until a mysterious device called the Activian, hidden inside a birthday gift, bonds with him and unlocks powers that make him a target for forces far darker than any school yard bully. In a world where extraordinary power hides inside ordinary things, this is the story of a boy who was told he was nothing — and a device that disagreed.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 6583,
+    "views_count": 6583,
+    "likes_count": 83,
+    "last_episode_at": "2026-05-04 16:21:03",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779064061/comics/lauqqu5gdvjmiaw0yxxp.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779063289/comics/bedyd2wy3ugcgmuljl9q.png",
+    "created_at": "2026-04-08T11:36:01.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     },
+     {
+      "genre": {
+       "id": 16,
+       "name": "Superhero",
+       "slug": "Superhero"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 37,
+    "uuid": "660c3bf6-f839-4f15-8d09-85199977a007",
+    "title": "Celestial Eyes",
+    "description": "Follow Onwanuju, an occult detective with a full blue moon in her eyes, and Odi Maria, her adventurous best friend as they investigate the mysterious cases that plague their city.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 4408,
+    "views_count": 4408,
+    "likes_count": 68,
+    "last_episode_at": "2026-04-06 14:27:53",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439323/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/cover-image/nzdaqommjath4a8ntbfv.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439321/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/background-image/okqhvacpytgvci9df2th.png",
+    "created_at": "2026-01-26T19:55:21.000000Z",
+    "user": {
+     "id": 276,
+     "username": "THEMACHINE",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769447598/-/Reader/themachinecb%40gmail.com/profile/images/mjomgvdiu9ve6sarku8b.jpg"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 7,
+       "name": "Horror",
+       "slug": "Horror"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     },
+     {
+      "genre": {
+       "id": 13,
+       "name": "Thriller",
+       "slug": "Thriller"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 34,
+    "uuid": "75612338-9987-4aef-ad11-d9a680c02767",
+    "title": "OMIMI",
+    "description": "A story of an igbo girl looking to change her world",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 2815,
+    "views_count": 2815,
+    "likes_count": 28,
+    "last_episode_at": "2025-12-12 20:21:38",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551139/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/cover-image/ckea6dtwkezghbj3b2gd.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551137/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/background-image/xpuk63y7c4pgnj6uivu2.png",
+    "created_at": "2025-12-12T19:52:16.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 29,
+    "uuid": "15103f02-8fd6-4268-8c15-5a0e9f7829df",
+    "title": "BLACK STAR",
+    "description": "A small mercenary crew led by a hard-edged Captain infiltrates warlord Salim’s outpost to steal an obscure black box for the Rabb; the raid succeeds at first but unearths a military-grade chip that sparks a violent counterattack — ending with the wounded young operative Shaibu washed out by an explosion and carried away by a monstrous gorilla, leaving the mission — and his fate — in doubt.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 1173,
+    "views_count": 1173,
+    "likes_count": 17,
+    "last_episode_at": "2026-06-27 00:37:20",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/cover-image/bsd94r3vb6czdmqiqmyc.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/background-image/w42dxomhb6iupogs6pki.jpg",
+    "created_at": "2025-10-05T22:43:37.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     },
+     {
+      "genre": {
+       "id": 27,
+       "name": "Military",
+       "slug": "military"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 35,
+    "uuid": "d5952369-1d85-43c2-a8ff-1fdefca0ac85",
+    "title": "Cross Frequency",
+    "description": "In Blacktower City—the city that never wakes up—Jeikku’s just drifting. Hoverboard under his feet, conspiracy theories on his mind, and dodging anything that smells like responsibility.\r\nBut when a sudden Sonic Boom attack rocks the city and his sister Nirukka disappears, the game changes.\r\nSearching for answers, Jeikku dives into the Fringes—where the city’s outcasts flip scrap tech and underground beats into weapons of rebellion. Here he discovers Nightbreaking: rebel crews pushing back against the Thousandth, a shadow figure twisting the city’s people through mind-warping sound frequencies.\r\nNow, with danger around every corner and betrayal lurking in the noise, Jeikku has to decide—will he keep drifting through the chaos, or rise up and become the spark that could set the city free?\r\nCross Frequency is a manga about rebellion, rhythm, and raw humanity—a high-voltage story where freedom is always one beat away from being silenced.",
+    "status": "ONGOING",
+    "update_days": "Monday",
+    "view_count": 1168,
+    "views_count": 1168,
+    "likes_count": 18,
+    "last_episode_at": "2025-12-18 08:15:38",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1766027413/-/Reader/johel-rca%40hotmail.com/comics/Cross%20Frequency/cover-image/blve2apnaizbilo4psga.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1766027410/-/Reader/johel-rca%40hotmail.com/comics/Cross%20Frequency/background-image/vo80jufwmiyz08qlkjip.jpg",
+    "created_at": "2025-12-18T08:10:09.000000Z",
+    "user": {
+     "id": 257,
+     "username": "user1775230750797257",
+     "photo": "https://www.gravatar.com/avatar/71f1e37b6fdbbfa6cac92c2d49066403?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 60,
+    "uuid": "9e20eecf-14ee-4312-bf68-ea3e9f348c0f",
+    "title": "AFRI DIVAZ",
+    "description": "Four teenage girls with big fashion dreams land the opportunity of a lifetime: a 7-day elite fashion showcase hosted by legendary mogul Tara Obeng. But behind the glamour, runway lights, and designer dreams lies fierce rivalry, sabotage, secrets, and the harsh truth about the fashion industry. Can Afridivaz survive the competition without losing themselves.....or each other?",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 1084,
+    "views_count": 1084,
+    "likes_count": 12,
+    "last_episode_at": "2026-08-04 02:54:05",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920680/comics/nneyq3dcp5qhr4f0ebp7.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920681/comics/n3lmdrzuzmxtr7bmg9x0.jpg",
+    "created_at": "2026-07-01T15:44:42.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 22,
+       "name": "Teen",
+       "slug": "teen"
+      }
+     },
+     {
+      "genre": {
+       "id": 24,
+       "name": "Coming of Age",
+       "slug": "coming-of-age"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 2,
+    "uuid": "e3f5816a-3bcc-4edd-b9eb-500fd38b39c0",
+    "title": "Head over heels",
+    "description": "Head Over Heels is a romantic comedy about two opposites who unexpectedly fall in love. Amidst a whirlwind of clumsy encounters, heartfelt moments, and comedic misunderstandings, they discover that love isn’t about perfection but embracing each other's quirks and differences.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 887,
+    "views_count": 887,
+    "likes_count": 25,
+    "last_episode_at": "2025-02-22 23:59:34",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782921231/comics/twyfttu7viho7jkdpcgv.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732304881/-/Reader/tooncentralhub%40gmail.com/comics/Head%20over%20heels/background-image/rr5rq7iywpekrcscfsxe.jpg",
+    "created_at": "2024-11-23T00:48:01.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 3,
+    "uuid": "eaa71b8f-8691-4844-a0f4-6b7fa9dac77a",
+    "title": "Primordials",
+    "description": "in Primordial Red Sun Rising, Governor T’Awub Ka’Andar and his entourage journey to the warrior city of Sizini to seek King Dhinga II's counsel on a mysterious threat. Tensions rise as the king’s shaman reveals ominous visions of darkness, fire, and an approaching danger tethered to a distant star.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 834,
+    "views_count": 834,
+    "likes_count": 20,
+    "last_episode_at": "2025-08-02 23:25:00",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732310061/-/Reader/tooncentralhub%40gmail.com/comics/Primordials/cover-image/llfhphhjmfwiykvex8vg.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732310060/-/Reader/tooncentralhub%40gmail.com/comics/Primordials/background-image/tbiqbxgqrh1elnsy9phg.png",
+    "created_at": "2024-11-23T02:14:20.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 31,
+    "uuid": "c9509b27-1711-4146-b138-b4ff0f329eaf",
+    "title": "SENATOR",
+    "description": "In an elite Nigerian school, Kosachi Dinta, a top secret agent known as “Senator,” loses his memories during a covert mission and becomes a weak, bullied student unaware of his true identity. Taken in by his manager Temi and befriended by Nemdi and her martial-artist friends, he slowly regains fragments of his deadly past while growing stronger. As The Syndicate closes in, Dinta must uncover who he truly is and protect those he’s come to care for before his forgotten world consumes him.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 750,
+    "views_count": 750,
+    "likes_count": 11,
+    "last_episode_at": "2026-02-05 14:49:34",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1762943528/-/Reader/tooncentralhub%40gmail.com/comics/SENATOR/cover-image/ooexqzomz3g9mb1kiytg.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1762943527/-/Reader/tooncentralhub%40gmail.com/comics/SENATOR/background-image/yecwkaabyqhq262prygc.png",
+    "created_at": "2025-11-12T15:32:06.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 3,
+       "name": "Comedy",
+       "slug": "Comedy"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 25,
+    "uuid": "2ff0ef31-f20d-4f9e-a444-456bc057737d",
+    "title": "4 The Tribe",
+    "description": "In a world ruled by spirit power and the five noble tribes that control it, the very fabric of society threatens to come undone, when a hidden power, once thought to be long lost is revived by a sect of dangerous dissidents. Will Maru manage to unite his friends into a powerful new tribe in time to battle the chaos, or will calamity reign on the African continent?",
+    "status": "ONGOING",
+    "update_days": "Monday",
+    "view_count": 582,
+    "views_count": 582,
+    "likes_count": 12,
+    "last_episode_at": "2025-02-10 20:22:07",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739187415/-/Reader/tooncentralhub%40gmail.com/comics/4%20The%20Tribe/cover-image/w6osti5ckcjkqcgje1xn.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739187414/-/Reader/tooncentralhub%40gmail.com/comics/4%20The%20Tribe/background-image/rgbzlhze0rwhkdn8fjfm.jpg",
+    "created_at": "2025-02-10T16:36:53.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   }
+  ],
+  "trending": [
+   {
+    "id": 9,
+    "uuid": "82f4ab38-3f26-41d0-a0f9-e14efc91cc5d",
+    "title": "Hunter",
+    "description": "When the sun sets and all that is light and good fade into darkness, evil arises, the evil forest field with demons is before none other than the hunter, who fears nothing as he is equipped with the power of the gods themselves.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 9762,
+    "views_count": 9762,
+    "likes_count": 105,
+    "last_episode_at": "2024-11-23 15:08:26",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732356353/-/Reader/emmadaviscypher%40gmail.com/comics/Hunter/cover-image/ywdaql5zudmysj0h1bwv.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732356352/-/Reader/emmadaviscypher%40gmail.com/comics/Hunter/background-image/n7yuxynsaxytufves10g.jpg",
+    "created_at": "2024-11-23T15:05:51.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 57,
+    "uuid": "cf7234fa-926d-4d63-a1e7-568bf5b77be0",
+    "title": "CITY HERO",
+    "description": "Soma is a ten-year-old Nigerian boy — asthmatic, bullied, and easy to overlook — until a mysterious device called the Activian, hidden inside a birthday gift, bonds with him and unlocks powers that make him a target for forces far darker than any school yard bully. In a world where extraordinary power hides inside ordinary things, this is the story of a boy who was told he was nothing — and a device that disagreed.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 6583,
+    "views_count": 6583,
+    "likes_count": 83,
+    "last_episode_at": "2026-05-04 16:21:03",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779064061/comics/lauqqu5gdvjmiaw0yxxp.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779063289/comics/bedyd2wy3ugcgmuljl9q.png",
+    "created_at": "2026-04-08T11:36:01.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     },
+     {
+      "genre": {
+       "id": 16,
+       "name": "Superhero",
+       "slug": "Superhero"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 41,
+    "uuid": "4c06eec3-c5a8-4c4c-b2e0-2aaad1478f01",
+    "title": "ODOGWU",
+    "description": "\"The jolly giant\" is faced by unprecedented power for which he is praised, feared and sought for. He now deals with all these reactions with the acceptance of his new-found \"power\"",
+    "status": "ONGOING",
+    "update_days": "Friday",
+    "view_count": 5785,
+    "views_count": 5785,
+    "likes_count": 50,
+    "last_episode_at": "2026-02-17 15:46:41",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1770757007/comics/wqdwpsw3slkahpwr7zkm.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1770757007/comics/npkniyku8pyaas5hpqof.jpg",
+    "created_at": "2026-02-10T20:56:49.000000Z",
+    "user": {
+     "id": 290,
+     "username": "47STUDIOS",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1771343969/-/Reader/Studio.fourseven%40gmail.com/profile/images/xaqvzgm7jss9jnsxbqbr.jpg"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 5,
+    "uuid": "f38c8468-c021-4cb9-bb91-95d0e475ec9a",
+    "title": "Konkoh",
+    "description": "chaos has been unleashed on the world, and only one frog is brave and bold enough to stop them.",
+    "status": "ONGOING",
+    "update_days": "Friday",
+    "view_count": 5754,
+    "views_count": 5754,
+    "likes_count": 60,
+    "last_episode_at": "2024-11-23 03:12:22",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732313331/-/Reader/emmadaviscypher%40gmail.com/comics/Konkoh/cover-image/neemxgwx9gswtdrbf8cz.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732313329/-/Reader/emmadaviscypher%40gmail.com/comics/Konkoh/background-image/p4bkp0wpfnsxdjwio3ox.png",
+    "created_at": "2024-11-23T03:08:49.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 37,
+    "uuid": "660c3bf6-f839-4f15-8d09-85199977a007",
+    "title": "Celestial Eyes",
+    "description": "Follow Onwanuju, an occult detective with a full blue moon in her eyes, and Odi Maria, her adventurous best friend as they investigate the mysterious cases that plague their city.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 4408,
+    "views_count": 4408,
+    "likes_count": 68,
+    "last_episode_at": "2026-04-06 14:27:53",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439323/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/cover-image/nzdaqommjath4a8ntbfv.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439321/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/background-image/okqhvacpytgvci9df2th.png",
+    "created_at": "2026-01-26T19:55:21.000000Z",
+    "user": {
+     "id": 276,
+     "username": "THEMACHINE",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769447598/-/Reader/themachinecb%40gmail.com/profile/images/mjomgvdiu9ve6sarku8b.jpg"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 7,
+       "name": "Horror",
+       "slug": "Horror"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     },
+     {
+      "genre": {
+       "id": 13,
+       "name": "Thriller",
+       "slug": "Thriller"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 34,
+    "uuid": "75612338-9987-4aef-ad11-d9a680c02767",
+    "title": "OMIMI",
+    "description": "A story of an igbo girl looking to change her world",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 2815,
+    "views_count": 2815,
+    "likes_count": 28,
+    "last_episode_at": "2025-12-12 20:21:38",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551139/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/cover-image/ckea6dtwkezghbj3b2gd.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551137/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/background-image/xpuk63y7c4pgnj6uivu2.png",
+    "created_at": "2025-12-12T19:52:16.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 11,
+    "uuid": "a19fce7d-31e1-4d19-87a1-e62562d8f690",
+    "title": "Djinn of pride",
+    "description": "Pride one of the seven deadly sins, and a great demon from the bowls of hell has made its way into the temple of a young vessel. An exorcist was called to change his fate but he is still as well full of mystery as well.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 1448,
+    "views_count": 1448,
+    "likes_count": 16,
+    "last_episode_at": "2024-11-24 10:37:17",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732391632/-/Reader/emmadaviscypher%40gmail.com/comics/Djinn%20of%20pride/cover-image/mchqllcyo2xlb4tmxd4p.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732391631/-/Reader/emmadaviscypher%40gmail.com/comics/Djinn%20of%20pride/background-image/kgqllpgwqgoftv9wzgdh.jpg",
+    "created_at": "2024-11-24T00:53:51.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 29,
+    "uuid": "15103f02-8fd6-4268-8c15-5a0e9f7829df",
+    "title": "BLACK STAR",
+    "description": "A small mercenary crew led by a hard-edged Captain infiltrates warlord Salim’s outpost to steal an obscure black box for the Rabb; the raid succeeds at first but unearths a military-grade chip that sparks a violent counterattack — ending with the wounded young operative Shaibu washed out by an explosion and carried away by a monstrous gorilla, leaving the mission — and his fate — in doubt.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 1173,
+    "views_count": 1173,
+    "likes_count": 17,
+    "last_episode_at": "2026-06-27 00:37:20",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/cover-image/bsd94r3vb6czdmqiqmyc.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/background-image/w42dxomhb6iupogs6pki.jpg",
+    "created_at": "2025-10-05T22:43:37.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     },
+     {
+      "genre": {
+       "id": 27,
+       "name": "Military",
+       "slug": "military"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 35,
+    "uuid": "d5952369-1d85-43c2-a8ff-1fdefca0ac85",
+    "title": "Cross Frequency",
+    "description": "In Blacktower City—the city that never wakes up—Jeikku’s just drifting. Hoverboard under his feet, conspiracy theories on his mind, and dodging anything that smells like responsibility.\r\nBut when a sudden Sonic Boom attack rocks the city and his sister Nirukka disappears, the game changes.\r\nSearching for answers, Jeikku dives into the Fringes—where the city’s outcasts flip scrap tech and underground beats into weapons of rebellion. Here he discovers Nightbreaking: rebel crews pushing back against the Thousandth, a shadow figure twisting the city’s people through mind-warping sound frequencies.\r\nNow, with danger around every corner and betrayal lurking in the noise, Jeikku has to decide—will he keep drifting through the chaos, or rise up and become the spark that could set the city free?\r\nCross Frequency is a manga about rebellion, rhythm, and raw humanity—a high-voltage story where freedom is always one beat away from being silenced.",
+    "status": "ONGOING",
+    "update_days": "Monday",
+    "view_count": 1168,
+    "views_count": 1168,
+    "likes_count": 18,
+    "last_episode_at": "2025-12-18 08:15:38",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1766027413/-/Reader/johel-rca%40hotmail.com/comics/Cross%20Frequency/cover-image/blve2apnaizbilo4psga.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1766027410/-/Reader/johel-rca%40hotmail.com/comics/Cross%20Frequency/background-image/vo80jufwmiyz08qlkjip.jpg",
+    "created_at": "2025-12-18T08:10:09.000000Z",
+    "user": {
+     "id": 257,
+     "username": "user1775230750797257",
+     "photo": "https://www.gravatar.com/avatar/71f1e37b6fdbbfa6cac92c2d49066403?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 60,
+    "uuid": "9e20eecf-14ee-4312-bf68-ea3e9f348c0f",
+    "title": "AFRI DIVAZ",
+    "description": "Four teenage girls with big fashion dreams land the opportunity of a lifetime: a 7-day elite fashion showcase hosted by legendary mogul Tara Obeng. But behind the glamour, runway lights, and designer dreams lies fierce rivalry, sabotage, secrets, and the harsh truth about the fashion industry. Can Afridivaz survive the competition without losing themselves.....or each other?",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 1084,
+    "views_count": 1084,
+    "likes_count": 12,
+    "last_episode_at": "2026-08-04 02:54:05",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 1,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920680/comics/nneyq3dcp5qhr4f0ebp7.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920681/comics/n3lmdrzuzmxtr7bmg9x0.jpg",
+    "created_at": "2026-07-01T15:44:42.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 22,
+       "name": "Teen",
+       "slug": "teen"
+      }
+     },
+     {
+      "genre": {
+       "id": 24,
+       "name": "Coming of Age",
+       "slug": "coming-of-age"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   }
+  ],
+  "recent_uploads": [],
+  "indie_comics": [
+   {
+    "id": 9,
+    "uuid": "82f4ab38-3f26-41d0-a0f9-e14efc91cc5d",
+    "title": "Hunter",
+    "description": "When the sun sets and all that is light and good fade into darkness, evil arises, the evil forest field with demons is before none other than the hunter, who fears nothing as he is equipped with the power of the gods themselves.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 9762,
+    "views_count": 9762,
+    "likes_count": 105,
+    "last_episode_at": "2024-11-23 15:08:26",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732356353/-/Reader/emmadaviscypher%40gmail.com/comics/Hunter/cover-image/ywdaql5zudmysj0h1bwv.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732356352/-/Reader/emmadaviscypher%40gmail.com/comics/Hunter/background-image/n7yuxynsaxytufves10g.jpg",
+    "created_at": "2024-11-23T15:05:51.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 1
+   },
+   {
+    "id": 41,
+    "uuid": "4c06eec3-c5a8-4c4c-b2e0-2aaad1478f01",
+    "title": "ODOGWU",
+    "description": "\"The jolly giant\" is faced by unprecedented power for which he is praised, feared and sought for. He now deals with all these reactions with the acceptance of his new-found \"power\"",
+    "status": "ONGOING",
+    "update_days": "Friday",
+    "view_count": 5785,
+    "views_count": 5785,
+    "likes_count": 50,
+    "last_episode_at": "2026-02-17 15:46:41",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1770757007/comics/wqdwpsw3slkahpwr7zkm.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1770757007/comics/npkniyku8pyaas5hpqof.jpg",
+    "created_at": "2026-02-10T20:56:49.000000Z",
+    "user": {
+     "id": 290,
+     "username": "47STUDIOS",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1771343969/-/Reader/Studio.fourseven%40gmail.com/profile/images/xaqvzgm7jss9jnsxbqbr.jpg"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 7
+   },
+   {
+    "id": 5,
+    "uuid": "f38c8468-c021-4cb9-bb91-95d0e475ec9a",
+    "title": "Konkoh",
+    "description": "chaos has been unleashed on the world, and only one frog is brave and bold enough to stop them.",
+    "status": "ONGOING",
+    "update_days": "Friday",
+    "view_count": 5754,
+    "views_count": 5754,
+    "likes_count": 60,
+    "last_episode_at": "2024-11-23 03:12:22",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732313331/-/Reader/emmadaviscypher%40gmail.com/comics/Konkoh/cover-image/neemxgwx9gswtdrbf8cz.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732313329/-/Reader/emmadaviscypher%40gmail.com/comics/Konkoh/background-image/p4bkp0wpfnsxdjwio3ox.png",
+    "created_at": "2024-11-23T03:08:49.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 1
+   },
+   {
+    "id": 11,
+    "uuid": "a19fce7d-31e1-4d19-87a1-e62562d8f690",
+    "title": "Djinn of pride",
+    "description": "Pride one of the seven deadly sins, and a great demon from the bowls of hell has made its way into the temple of a young vessel. An exorcist was called to change his fate but he is still as well full of mystery as well.",
+    "status": "COMPLETED",
+    "update_days": "Monday",
+    "view_count": 1448,
+    "views_count": 1448,
+    "likes_count": 16,
+    "last_episode_at": "2024-11-24 10:37:17",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732391632/-/Reader/emmadaviscypher%40gmail.com/comics/Djinn%20of%20pride/cover-image/mchqllcyo2xlb4tmxd4p.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732391631/-/Reader/emmadaviscypher%40gmail.com/comics/Djinn%20of%20pride/background-image/kgqllpgwqgoftv9wzgdh.jpg",
+    "created_at": "2024-11-24T00:53:51.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 1
+   },
+   {
+    "id": 4,
+    "uuid": "c2eb7740-31bd-426f-bafb-5f757a2f9397",
+    "title": "Orisha imbues",
+    "description": "Orisha Imbues follows the journey of ordinary individuals chosen by the Orishas, powerful deities of Yoruba mythology, to inherit their divine gifts. As they navigate their new powers and responsibilities, they face personal trials, uncover hidden truths, and battle malevolent forces threatening to upset the balance between the mortal and divine realms.",
+    "status": "ONGOING",
+    "update_days": "Sunday",
+    "view_count": 777,
+    "views_count": 777,
+    "likes_count": 11,
+    "last_episode_at": "2024-11-23 02:56:08",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732312267/-/Reader/emmadaviscypher%40gmail.com/comics/Orisha%20imbues/cover-image/wo4lrvt9gnz0b79w2oyj.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732312266/-/Reader/emmadaviscypher%40gmail.com/comics/Orisha%20imbues/background-image/hzzmxisnswwsxf6xsitq.jpg",
+    "created_at": "2024-11-23T02:51:05.000000Z",
+    "user": {
+     "id": 5,
+     "username": "silversnow_nikkitapimwrld",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1732311542/-/Reader/emmadaviscypher%40gmail.com/profile/images/oyo9du9apjbnnkdmf3sh.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 1
+   },
+   {
+    "id": 54,
+    "uuid": "a10bf4cf-75c2-45bb-94a8-8a467959f7e1",
+    "title": "AZANIA",
+    "description": "Azania is an Afro-futuristic settlement with a landmass spanning from the Pacific Ocean up to the borders of the West African's Niger River. 5 Children; chosen by the Elemental Beads to protect the UNIVERSE against the tyranny of the Anunaki Miners, lead its story.",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 752,
+    "views_count": 752,
+    "likes_count": 2,
+    "last_episode_at": "2026-03-15 11:02:32",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1773571066/comics/vtkf5pjjc25o7qkiwj8m.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1773571068/comics/j6cddbcf6tclquijaiw7.jpg",
+    "created_at": "2026-03-15T10:37:49.000000Z",
+    "user": {
+     "id": 302,
+     "username": "Sanmi crown",
+     "photo": "https://www.gravatar.com/avatar/dbeda186c8ac668a6af512d66e8b19e8?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 16,
+       "name": "Superhero",
+       "slug": "Superhero"
+      }
+     },
+     {
+      "genre": {
+       "id": 22,
+       "name": "Teen",
+       "slug": "teen"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 5
+   },
+   {
+    "id": 56,
+    "uuid": "ae3946a5-4d80-4399-b147-e0ffb247a42c",
+    "title": "EYA THE TRIBE: ORIGINS",
+    "description": "The Origins series is the first in the EYA THE TRIBE series. Eons ago, man and deity coexists as equals. One entity disapproves Olodumare's plan, so fueled by greed, he covets the power to rule over all of humans and deity alike. His actions led to the first realm war, further ending the human-deity alliance",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 701,
+    "views_count": 701,
+    "likes_count": 4,
+    "last_episode_at": "2026-03-16 21:29:08",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1773579314/comics/pdp3gdkyl6b98brqrp15.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1773579315/comics/fswnlwaup7ar315wfpga.jpg",
+    "created_at": "2026-03-15T12:55:16.000000Z",
+    "user": {
+     "id": 302,
+     "username": "Sanmi crown",
+     "photo": "https://www.gravatar.com/avatar/dbeda186c8ac668a6af512d66e8b19e8?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 6,
+       "name": "Historical",
+       "slug": "Historical"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 17,
+       "name": "Anthology",
+       "slug": "Anthology"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 3
+   },
+   {
+    "id": 53,
+    "uuid": "0de4b7d4-a539-4a76-ab8a-573f008b98e9",
+    "title": "TEAM STORM",
+    "description": "Hundreds of years ago, there was a war that raged between humanity, and demons; strange creatures from another world. At the crux of the conflict, the Shibatsu clan was tasked with guarding a very destructive power, one that could either save or doom the world. And in this day and age, that task falls to Domino Shibatsu, as he navigates through highschool and this twisted world, preparing to face the incoming storm.",
+    "status": "ONGOING",
+    "update_days": "Friday",
+    "view_count": 666,
+    "views_count": 666,
+    "likes_count": 2,
+    "last_episode_at": "2026-02-23 13:12:44",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1771847438/comics/wwf9jl8mgz7buoz3ecqy.png",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1771847439/comics/xwqi9ksoyrcn5q9dpptp.jpg",
+    "created_at": "2026-02-23T11:50:40.000000Z",
+    "user": {
+     "id": 296,
+     "username": "G.millenniumcomics",
+     "photo": "https://www.gravatar.com/avatar/f618f1ad4bdf97d3b08a5f0547e806e1?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 3
+   },
+   {
+    "id": 58,
+    "uuid": "98f18784-5c6e-4ace-a38c-68e341e94698",
+    "title": "Odogwu nè Díke: The Broken Pot",
+    "description": "An Igbo Tale of friendship, respect, humility, and a timeless wisdom",
+    "status": "COMPLETED",
+    "update_days": "Saturday",
+    "view_count": 657,
+    "views_count": 657,
+    "likes_count": 2,
+    "last_episode_at": "2026-04-08 12:21:13",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1775650290/comics/laix8xsim7rbbbam1b1x.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1775650054/comics/soeclikrzn3tr8h5bgyc.jpg",
+    "created_at": "2026-04-08T12:07:35.000000Z",
+    "user": {
+     "id": 324,
+     "username": "Chijioke",
+     "photo": "https://www.gravatar.com/avatar/5c51fa868d01669c341548f4c50a42fb?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 20,
+       "name": "Educational",
+       "slug": "Educational"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 1
+   },
+   {
+    "id": 59,
+    "uuid": "cd30caa0-ec65-44e9-b019-f05aa1efd76a",
+    "title": "SUPA EAGLEZ",
+    "description": "Supa Eaglez is a popular Nigerian comic book series created by digital artist and illustrator Chinonso Wilfred (known as @artsbynonso). Inspired by the nostalgic feeling of classic comics like Supa Strikas, it features a thrilling football storyline based on the Nigerian national team, the Super Eagles",
+    "status": "ONGOING",
+    "update_days": "Saturday",
+    "view_count": 657,
+    "views_count": 657,
+    "likes_count": 3,
+    "last_episode_at": "2026-06-24 18:20:50",
+    "is_new": false,
+    "has_new_episode": false,
+    "published_by_toon_central": 0,
+    "cover_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782322725/comics/ynsii0n4gaolm3izosnr.jpg",
+    "background_image": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782322726/comics/tgznxjtkikvz3krxzoup.png",
+    "created_at": "2026-06-24T17:38:48.000000Z",
+    "user": {
+     "id": 277,
+     "username": "ARTBYNONSO",
+     "photo": "https://www.gravatar.com/avatar/37d6c12656ab07b52ce578dfe0a41315?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 14,
+       "name": "Sports",
+       "slug": "Sports"
+      }
+     },
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    },
+    "episodes_count": 1
+   }
+  ]
+ },
+ "topCarousel": {
+  "comics": [
+   {
+    "id": 60,
+    "uuid": "9e20eecf-14ee-4312-bf68-ea3e9f348c0f",
+    "title": "AFRI DIVAZ",
+    "description": "Four teenage girls with big fashion dreams land the opportunity of a lifetime: a 7-day elite fashion showcase hosted by legendary mogul Tara Obeng. But behind the glamour, runway lights, and designer dreams lies fierce rivalry, sabotage, secrets, and the harsh truth about the fashion industry. Can Afridivaz survive the competition without losing themselves.....or each other?",
+    "status": "ONGOING",
+    "updateDays": "Saturday",
+    "viewCount": 1084,
+    "viewsCount": 1084,
+    "likesCount": 12,
+    "lastEpisodeAt": "2026-08-04 02:54:05",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920680/comics/nneyq3dcp5qhr4f0ebp7.jpg",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920681/comics/n3lmdrzuzmxtr7bmg9x0.jpg",
+    "createdAt": "2026-07-01T15:44:42.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 22,
+       "name": "Teen",
+       "slug": "teen"
+      }
+     },
+     {
+      "genre": {
+       "id": 24,
+       "name": "Coming of Age",
+       "slug": "coming-of-age"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 57,
+    "uuid": "cf7234fa-926d-4d63-a1e7-568bf5b77be0",
+    "title": "CITY HERO",
+    "description": "Soma is a ten-year-old Nigerian boy — asthmatic, bullied, and easy to overlook — until a mysterious device called the Activian, hidden inside a birthday gift, bonds with him and unlocks powers that make him a target for forces far darker than any school yard bully. In a world where extraordinary power hides inside ordinary things, this is the story of a boy who was told he was nothing — and a device that disagreed.",
+    "status": "ONGOING",
+    "updateDays": "Saturday",
+    "viewCount": 6583,
+    "viewsCount": 6583,
+    "likesCount": 83,
+    "lastEpisodeAt": "2026-05-04 16:21:03",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779064061/comics/lauqqu5gdvjmiaw0yxxp.png",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1779063289/comics/bedyd2wy3ugcgmuljl9q.png",
+    "createdAt": "2026-04-08T11:36:01.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     },
+     {
+      "genre": {
+       "id": 16,
+       "name": "Superhero",
+       "slug": "Superhero"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 37,
+    "uuid": "660c3bf6-f839-4f15-8d09-85199977a007",
+    "title": "Celestial Eyes",
+    "description": "Follow Onwanuju, an occult detective with a full blue moon in her eyes, and Odi Maria, her adventurous best friend as they investigate the mysterious cases that plague their city.",
+    "status": "ONGOING",
+    "updateDays": "Saturday",
+    "viewCount": 4408,
+    "viewsCount": 4408,
+    "likesCount": 68,
+    "lastEpisodeAt": "2026-04-06 14:27:53",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439323/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/cover-image/nzdaqommjath4a8ntbfv.jpg",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769439321/-/Reader/themachinecb%40gmail.com/comics/Celestial%20Eyes/background-image/okqhvacpytgvci9df2th.png",
+    "createdAt": "2026-01-26T19:55:21.000000Z",
+    "user": {
+     "id": 276,
+     "username": "THEMACHINE",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1769447598/-/Reader/themachinecb%40gmail.com/profile/images/mjomgvdiu9ve6sarku8b.jpg"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 7,
+       "name": "Horror",
+       "slug": "Horror"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     },
+     {
+      "genre": {
+       "id": 13,
+       "name": "Thriller",
+       "slug": "Thriller"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 35,
+    "uuid": "d5952369-1d85-43c2-a8ff-1fdefca0ac85",
+    "title": "Cross Frequency",
+    "description": "In Blacktower City—the city that never wakes up—Jeikku’s just drifting. Hoverboard under his feet, conspiracy theories on his mind, and dodging anything that smells like responsibility.\r\nBut when a sudden Sonic Boom attack rocks the city and his sister Nirukka disappears, the game changes.\r\nSearching for answers, Jeikku dives into the Fringes—where the city’s outcasts flip scrap tech and underground beats into weapons of rebellion. Here he discovers Nightbreaking: rebel crews pushing back against the Thousandth, a shadow figure twisting the city’s people through mind-warping sound frequencies.\r\nNow, with danger around every corner and betrayal lurking in the noise, Jeikku has to decide—will he keep drifting through the chaos, or rise up and become the spark that could set the city free?\r\nCross Frequency is a manga about rebellion, rhythm, and raw humanity—a high-voltage story where freedom is always one beat away from being silenced.",
+    "status": "ONGOING",
+    "updateDays": "Monday",
+    "viewCount": 1168,
+    "viewsCount": 1168,
+    "likesCount": 18,
+    "lastEpisodeAt": "2025-12-18 08:15:38",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1766027413/-/Reader/johel-rca%40hotmail.com/comics/Cross%20Frequency/cover-image/blve2apnaizbilo4psga.jpg",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1766027410/-/Reader/johel-rca%40hotmail.com/comics/Cross%20Frequency/background-image/vo80jufwmiyz08qlkjip.jpg",
+    "createdAt": "2025-12-18T08:10:09.000000Z",
+    "user": {
+     "id": 257,
+     "username": "user1775230750797257",
+     "photo": "https://www.gravatar.com/avatar/71f1e37b6fdbbfa6cac92c2d49066403?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 34,
+    "uuid": "75612338-9987-4aef-ad11-d9a680c02767",
+    "title": "OMIMI",
+    "description": "A story of an igbo girl looking to change her world",
+    "status": "ONGOING",
+    "updateDays": "Saturday",
+    "viewCount": 2815,
+    "viewsCount": 2815,
+    "likesCount": 28,
+    "lastEpisodeAt": "2025-12-12 20:21:38",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551139/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/cover-image/ckea6dtwkezghbj3b2gd.png",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1765551137/-/Reader/tooncentralhub%40gmail.com/comics/OMIMI/background-image/xpuk63y7c4pgnj6uivu2.png",
+    "createdAt": "2025-12-12T19:52:16.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 12,
+       "name": "Supernatural",
+       "slug": "Supernatural"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 31,
+    "uuid": "c9509b27-1711-4146-b138-b4ff0f329eaf",
+    "title": "SENATOR",
+    "description": "In an elite Nigerian school, Kosachi Dinta, a top secret agent known as “Senator,” loses his memories during a covert mission and becomes a weak, bullied student unaware of his true identity. Taken in by his manager Temi and befriended by Nemdi and her martial-artist friends, he slowly regains fragments of his deadly past while growing stronger. As The Syndicate closes in, Dinta must uncover who he truly is and protect those he’s come to care for before his forgotten world consumes him.",
+    "status": "ONGOING",
+    "updateDays": "Saturday",
+    "viewCount": 750,
+    "viewsCount": 750,
+    "likesCount": 11,
+    "lastEpisodeAt": "2026-02-05 14:49:34",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1762943528/-/Reader/tooncentralhub%40gmail.com/comics/SENATOR/cover-image/ooexqzomz3g9mb1kiytg.png",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1762943527/-/Reader/tooncentralhub%40gmail.com/comics/SENATOR/background-image/yecwkaabyqhq262prygc.png",
+    "createdAt": "2025-11-12T15:32:06.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 3,
+       "name": "Comedy",
+       "slug": "Comedy"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 29,
+    "uuid": "15103f02-8fd6-4268-8c15-5a0e9f7829df",
+    "title": "BLACK STAR",
+    "description": "A small mercenary crew led by a hard-edged Captain infiltrates warlord Salim’s outpost to steal an obscure black box for the Rabb; the raid succeeds at first but unearths a military-grade chip that sparks a violent counterattack — ending with the wounded young operative Shaibu washed out by an explosion and carried away by a monstrous gorilla, leaving the mission — and his fate — in doubt.",
+    "status": "COMPLETED",
+    "updateDays": "Monday",
+    "viewCount": 1173,
+    "viewsCount": 1173,
+    "likesCount": 17,
+    "lastEpisodeAt": "2026-06-27 00:37:20",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/cover-image/bsd94r3vb6czdmqiqmyc.png",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1759689818/-/Reader/tooncentralhub%40gmail.com/comics/BLACK%20STAR/background-image/w42dxomhb6iupogs6pki.jpg",
+    "createdAt": "2025-10-05T22:43:37.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     },
+     {
+      "genre": {
+       "id": 27,
+       "name": "Military",
+       "slug": "military"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 27,
+    "uuid": "4e23fe61-2063-4f2d-82ff-1df93875c926",
+    "title": "WIDOW'S GUILT",
+    "description": "Kim was a wife and a soon to be mother until life took the heart she called home away from her.",
+    "status": "ONGOING",
+    "updateDays": "Sunday",
+    "viewCount": 483,
+    "viewsCount": 483,
+    "likesCount": 9,
+    "lastEpisodeAt": "2025-03-18 18:39:41",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742299908/-/Reader/tooncentralhub%40gmail.com/comics/WIDOW%27S%20GUILT/cover-image/c1kee3ubhasaceks97qx.png",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742299907/-/Reader/tooncentralhub%40gmail.com/comics/WIDOW%27S%20GUILT/background-image/decuc3qrfxg3oe2pvuxf.png",
+    "createdAt": "2025-03-18T16:11:47.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 8,
+       "name": "Mystery",
+       "slug": "Mystery"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 18,
+       "name": "Crime",
+       "slug": "Crime"
+      }
+     },
+     {
+      "genre": {
+       "id": 26,
+       "name": "Tragedy",
+       "slug": "tragedy"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 26,
+    "uuid": "a23b62b1-89f5-4987-9d65-2788e40cb252",
+    "title": "No Lifers Game",
+    "description": "A game of life and death, only the strong will make it out alive",
+    "status": "ONGOING",
+    "updateDays": "Monday",
+    "viewCount": 435,
+    "viewsCount": 435,
+    "likesCount": 7,
+    "lastEpisodeAt": "2025-09-30 18:56:30",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739997088/-/Reader/tooncentralhub%40gmail.com/comics/No%20Lifers%20Game/cover-image/srzsf6qvlwvvp06qtk1l.png",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739997087/-/Reader/tooncentralhub%40gmail.com/comics/No%20Lifers%20Game/background-image/axmw1isupbifsmyqsnld.jpg",
+    "createdAt": "2025-02-20T01:31:26.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 10,
+       "name": "Sci-Fi",
+       "slug": "Sci-Fi"
+      }
+     },
+     {
+      "genre": {
+       "id": 19,
+       "name": "Martial Arts",
+       "slug": "Martial Arts"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   },
+   {
+    "id": 25,
+    "uuid": "2ff0ef31-f20d-4f9e-a444-456bc057737d",
+    "title": "4 The Tribe",
+    "description": "In a world ruled by spirit power and the five noble tribes that control it, the very fabric of society threatens to come undone, when a hidden power, once thought to be long lost is revived by a sect of dangerous dissidents. Will Maru manage to unite his friends into a powerful new tribe in time to battle the chaos, or will calamity reign on the African continent?",
+    "status": "ONGOING",
+    "updateDays": "Monday",
+    "viewCount": 582,
+    "viewsCount": 582,
+    "likesCount": 12,
+    "lastEpisodeAt": "2025-02-10 20:22:07",
+    "isNew": false,
+    "hasNewEpisode": false,
+    "publishedByToonCentral": 1,
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739187415/-/Reader/tooncentralhub%40gmail.com/comics/4%20The%20Tribe/cover-image/w6osti5ckcjkqcgje1xn.jpg",
+    "backgroundImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1739187414/-/Reader/tooncentralhub%40gmail.com/comics/4%20The%20Tribe/background-image/rgbzlhze0rwhkdn8fjfm.jpg",
+    "createdAt": "2025-02-10T16:36:53.000000Z",
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 5,
+       "name": "Fantasy",
+       "slug": "Fantasy"
+      }
+     },
+     {
+      "genre": {
+       "id": 1,
+       "name": "Action",
+       "slug": "Action"
+      }
+     },
+     {
+      "genre": {
+       "id": 2,
+       "name": "Adventure",
+       "slug": "Adventure"
+      }
+     }
+    ],
+    "country": {
+     "name": "Nigeria",
+     "alias": "NG"
+    }
+   }
+  ]
+ },
+ "shortsCarousel": {
+  "shorts": [
+   {
+    "id": 99,
+    "uuid": "dc3111bb-58fb-443b-a4a0-1036495f41a8",
+    "title": "AfriDivaz: 4 Girls, 1 Golden Ticket, Zero Chill",
+    "description": "Zuri, Ama, Sade & Nia just got picked for the AfriDivaz Fashion Showcase their shot to meet Nigeria's top designers Cue the screaming, group chat chaos, and the panic when they almost miss the deadline, Fashion, friendship, and fierce rivalries collide.",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1783030486/comics/zydldfjfgwmzlzrh7n7z.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1783030581/comics/beorfrhniapoadmkswnm.png",
+    "viewCount": 837,
+    "viewsCount": 837,
+    "likesCount": 6,
+    "createdAt": "2026-07-02T22:18:55.000000Z",
+    "comicId": 60,
+    "user": {
+     "id": 3,
+     "username": "Tooncentralofficial",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1742151115/-/Reader/tooncentralhub%40gmail.com/profile/images/dxbtoruovua1yofzx1vb.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 21,
+       "name": "School Life",
+       "slug": "school-life"
+      }
+     },
+     {
+      "genre": {
+       "id": 24,
+       "name": "Coming of Age",
+       "slug": "coming-of-age"
+      }
+     }
+    ]
+   },
+   {
+    "id": 98,
+    "uuid": "2cf1d348-a76b-4a32-9ca3-651449f18086",
+    "title": "KEBLE INVESTMENT",
+    "description": "Keble platform allows users to invest in handpicked, vetted real estate across Nigeria, the UK, the US, and Dubai starting at low entry points (such as ₦5,000 or $10)",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1781553541/comics/lvzoxiyv3po643kfl3ug.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1781553620/comics/gg0egxwcpjwyckdzqpk4.png",
+    "viewCount": 989,
+    "viewsCount": 989,
+    "likesCount": 1,
+    "createdAt": "2026-06-15T20:00:27.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 1197,
+     "username": "ADS ACCOUNT",
+     "photo": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1781553441/-/Reader/silversnow5145%40gmail.com/profile/images/d9d8e5tij8krawkjru3e.png"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 20,
+       "name": "Educational",
+       "slug": "Educational"
+      }
+     }
+    ]
+   },
+   {
+    "id": 97,
+    "uuid": "969ae3ed-7a01-4a56-983a-8c386af2f598",
+    "title": "Belle Full",
+    "description": "Heart break is terrible",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1775213011/comics/b9zs28py8kajd0zxrjsb.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1775213118/comics/w5w2resljbx6cway0l1t.png",
+    "viewCount": 1544,
+    "viewsCount": 1544,
+    "likesCount": 11,
+    "createdAt": "2026-04-03T10:45:26.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     }
+    ]
+   },
+   {
+    "id": 96,
+    "uuid": "c1aee3ff-be0c-43e7-99d0-59a95071a734",
+    "title": "NANCY (2-3)",
+    "description": "What secret is worth ruining the wedding for is she pregnant for him naaaaa... See you tomorrow for the final piece of the puzzle.",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772127915/comics/yoeep5e7ulmwpymctndc.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772128043/comics/hh3xstkkcqrmg4gtabnd.png",
+    "viewCount": 1475,
+    "viewsCount": 1475,
+    "likesCount": 5,
+    "createdAt": "2026-02-26T17:47:28.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 18,
+       "name": "Crime",
+       "slug": "Crime"
+      }
+     }
+    ]
+   },
+   {
+    "id": 95,
+    "uuid": "7ae321cc-dac6-4293-b3b5-88a8319cc818",
+    "title": "ESE'S CHILD",
+    "description": "How many people are in situations like this ?",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772127754/comics/oq91r8pwsyrinyxpjraz.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772127790/comics/mcfuma9mwsbe26ib39ui.png",
+    "viewCount": 1358,
+    "viewsCount": 1358,
+    "likesCount": 5,
+    "createdAt": "2026-02-26T17:44:52.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 8,
+       "name": "Mystery",
+       "slug": "Mystery"
+      }
+     },
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     }
+    ]
+   },
+   {
+    "id": 94,
+    "uuid": "17c37830-bd67-49a7-bb11-6fa444a77a57",
+    "title": "Engagement Issues",
+    "description": "Do you have people in relationships like this ?",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772127574/comics/iakppbansj5fzcjhnbff.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772127718/comics/fzygzxbkleakowcwrbpa.png",
+    "viewCount": 1062,
+    "viewsCount": 1062,
+    "likesCount": 1,
+    "createdAt": "2026-02-26T17:42:05.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     },
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     }
+    ]
+   },
+   {
+    "id": 93,
+    "uuid": "c05571ad-81b4-43b8-b660-c8c1bcbfd408",
+    "title": "Take care of our women",
+    "description": "WHAT A MAN CAN DO, A WOMAN CAN DO BETTER. based on data from sources like UNICEF and UNFPA An estimated 650 million girls and women alive today were married before their 18th birthday.",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772127414/comics/fzd8rot6qmucbvzwkcig.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772127524/comics/y9vmpvaoq7dt8pfqqugo.png",
+    "viewCount": 1073,
+    "viewsCount": 1073,
+    "likesCount": 1,
+    "createdAt": "2026-02-26T17:38:50.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 7,
+       "name": "Horror",
+       "slug": "Horror"
+      }
+     },
+     {
+      "genre": {
+       "id": 18,
+       "name": "Crime",
+       "slug": "Crime"
+      }
+     },
+     {
+      "genre": {
+       "id": 20,
+       "name": "Educational",
+       "slug": "Educational"
+      }
+     },
+     {
+      "genre": {
+       "id": 26,
+       "name": "Tragedy",
+       "slug": "tragedy"
+      }
+     }
+    ]
+   },
+   {
+    "id": 92,
+    "uuid": "638939d9-edd4-4424-b84f-0f82b664b1bc",
+    "title": "Surgery Issue",
+    "description": "Do you think she should go to prison ?",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772127298/comics/vg9klwnnjwcgnqg0jofh.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772127322/comics/zekoj0dlsgrqdmggxmne.png",
+    "viewCount": 1127,
+    "viewsCount": 1127,
+    "likesCount": 0,
+    "createdAt": "2026-02-26T17:36:14.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 18,
+       "name": "Crime",
+       "slug": "Crime"
+      }
+     },
+     {
+      "genre": {
+       "id": 26,
+       "name": "Tragedy",
+       "slug": "tragedy"
+      }
+     }
+    ]
+   },
+   {
+    "id": 91,
+    "uuid": "991a7be7-965f-44d0-add1-0da9e5ed5ab4",
+    "title": "Vivian x Richard",
+    "description": "What do you think about this ?",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772126919/comics/vnhbkf2jeetfjckajs72.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772127080/comics/y08kqoxcpnddlmwbnrzb.png",
+    "viewCount": 1000,
+    "viewsCount": 1000,
+    "likesCount": 1,
+    "createdAt": "2026-02-26T17:34:29.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 26,
+       "name": "Tragedy",
+       "slug": "tragedy"
+      }
+     }
+    ]
+   },
+   {
+    "id": 90,
+    "uuid": "88abb04e-5b77-4cf8-a77d-22fc9d0f209f",
+    "title": "Till death do us part",
+    "description": "How many people are in marriages like this ?",
+    "upload": "https://res.cloudinary.com/da0ivgw2v/video/upload/v1772126788/comics/fyctkoicajiu2chkx5ya.mp4",
+    "coverImage": "https://res.cloudinary.com/da0ivgw2v/image/upload/v1772126861/comics/yz2sobe7ntqyixgjfx7j.png",
+    "viewCount": 1043,
+    "viewsCount": 1043,
+    "likesCount": 0,
+    "createdAt": "2026-02-26T17:27:48.000000Z",
+    "comicId": null,
+    "user": {
+     "id": 285,
+     "username": "ononuro kevwe",
+     "photo": "https://www.gravatar.com/avatar/a712d70f1b1f9e28f19aaa3d1f9ab16f?d=identicon&r=pg&s=100"
+    },
+    "genres": [
+     {
+      "genre": {
+       "id": 4,
+       "name": "Drama",
+       "slug": "Drama"
+      }
+     },
+     {
+      "genre": {
+       "id": 11,
+       "name": "Slice of Life",
+       "slug": "Slice of Life"
+      }
+     },
+     {
+      "genre": {
+       "id": 24,
+       "name": "Coming of Age",
+       "slug": "coming-of-age"
+      }
+     },
+     {
+      "genre": {
+       "id": 9,
+       "name": "Romance",
+       "slug": "Romance"
+      }
+     }
+    ]
+   }
+  ]
+ },
+ "genres": [
+  {
+   "id": 0,
+   "name": "All",
+   "slug": "all"
+  },
+  {
+   "id": 1,
+   "name": "Action",
+   "slug": "Action"
+  },
+  {
+   "id": 2,
+   "name": "Adventure",
+   "slug": "Adventure"
+  },
+  {
+   "id": 3,
+   "name": "Comedy",
+   "slug": "Comedy"
+  },
+  {
+   "id": 4,
+   "name": "Drama",
+   "slug": "Drama"
+  },
+  {
+   "id": 5,
+   "name": "Fantasy",
+   "slug": "Fantasy"
+  },
+  {
+   "id": 6,
+   "name": "Historical",
+   "slug": "Historical"
+  },
+  {
+   "id": 7,
+   "name": "Horror",
+   "slug": "Horror"
+  },
+  {
+   "id": 8,
+   "name": "Mystery",
+   "slug": "Mystery"
+  },
+  {
+   "id": 9,
+   "name": "Romance",
+   "slug": "Romance"
+  },
+  {
+   "id": 10,
+   "name": "Sci-Fi",
+   "slug": "Sci-Fi"
+  },
+  {
+   "id": 11,
+   "name": "Slice of Life",
+   "slug": "Slice of Life"
+  },
+  {
+   "id": 12,
+   "name": "Supernatural",
+   "slug": "Supernatural"
+  },
+  {
+   "id": 13,
+   "name": "Thriller",
+   "slug": "Thriller"
+  },
+  {
+   "id": 14,
+   "name": "Sports",
+   "slug": "Sports"
+  },
+  {
+   "id": 15,
+   "name": "Fantasy Romance",
+   "slug": "Fantasy Romance"
+  },
+  {
+   "id": 16,
+   "name": "Superhero",
+   "slug": "Superhero"
+  },
+  {
+   "id": 17,
+   "name": "Anthology",
+   "slug": "Anthology"
+  },
+  {
+   "id": 18,
+   "name": "Crime",
+   "slug": "Crime"
+  },
+  {
+   "id": 19,
+   "name": "Martial Arts",
+   "slug": "Martial Arts"
+  },
+  {
+   "id": 20,
+   "name": "Educational",
+   "slug": "Educational"
+  },
+  {
+   "id": 21,
+   "name": "School Life",
+   "slug": "school-life"
+  },
+  {
+   "id": 22,
+   "name": "Teen",
+   "slug": "teen"
+  },
+  {
+   "id": 23,
+   "name": "Heartwarming",
+   "slug": "heartwarming"
+  },
+  {
+   "id": 24,
+   "name": "Coming of Age",
+   "slug": "coming-of-age"
+  },
+  {
+   "id": 25,
+   "name": "Psychological",
+   "slug": "psychological"
+  },
+  {
+   "id": 26,
+   "name": "Tragedy",
+   "slug": "tragedy"
+  },
+  {
+   "id": 27,
+   "name": "Military",
+   "slug": "military"
+  },
+  {
+   "id": 28,
+   "name": "Urban Fantasy",
+   "slug": "urban-fantasy"
+  },
+  {
+   "id": 29,
+   "name": "Epic Fantasy",
+   "slug": "epic-fantasy"
+  },
+  {
+   "id": 30,
+   "name": "Isekai/Ojemba",
+   "slug": "isekai-ojemba"
+  },
+  {
+   "id": 31,
+   "name": "Gaming",
+   "slug": "gaming"
+  },
+  {
+   "id": 32,
+   "name": "Otaku Connect",
+   "slug": "otaku-connect"
+  },
+  {
+   "id": 33,
+   "name": "Action Comedy",
+   "slug": "action-comedy"
+  }
+ ]
+}

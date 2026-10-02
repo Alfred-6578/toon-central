@@ -1,15 +1,17 @@
 @import "tailwindcss";
 
-:root {
-  --background: #070b14;
-  --foreground: #f5f7ff;
-  --muted: #9aa7ba;
-  --panel: #0f172a;
-  --panel-alt: #111827;
-  --card: #121b2d;
-  --border: rgba(255, 255, 255, 0.08);
-  --accent: #3effa2;
-  --accent-strong: #00d98b;
+@theme inline {
+  --font-sans: var(--font-archivo), system-ui, sans-serif;
+  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+
+  --color-ink: #070b14;
+  --color-panel: #0f1622;
+  --color-line: #223047;
+  --color-mint: #3effa2;
+  --color-mint-deep: #05834b;
+  --color-sun: #f2bb30;
+  --color-paper: #f4efe2;
+
   --breakpoint-vsm: 550px;
   --breakpoint-tny: 450px;
   --breakpoint-xsm: 385px;
@@ -19,13 +21,32 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Anchored sections clear the fixed header */
+section[id] {
+  scroll-margin-top: 5.5rem;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-inter), system-ui, -apple-system, "Segoe UI",
-    Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans",
-    sans-serif;
-  letter-spacing: -0.02em;
+  background-color: var(--color-ink);
+  /* Paper grain: faint fractal noise so the dark ground reads as printed stock */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.07'/%3E%3C/svg%3E");
+  background-attachment: fixed;
+  color: #f5f7ff;
+  font-family: var(--font-sans);
+}
+
+/* Halftone dots that fade out downward, like the corner of a printed page */
+.halftone-fade {
+  background-image: radial-gradient(circle, var(--dot, rgba(255, 255, 255, 0.09)) 1.2px, transparent 1.6px);
+  background-size: 9px 9px;
+  mask-image: linear-gradient(to bottom, #000 0%, rgba(0, 0, 0, 0.5) 45%, transparent 100%);
+}
+
+/* Full-bleed cream band used to break the dark rhythm (Originals) */
+.paper-band {
+  --dot: rgba(7, 11, 20, 0.07);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
 }
 
 * {
@@ -37,15 +58,65 @@ img {
   max-width: 100%;
 }
 
-button,
-a {
-  transition: all 0.2s ease;
-}
+@layer components {
+  /* Printed, hard-edged buttons: solid fill, ink outline, offset block shadow */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: 2px solid transparent;
+    border-radius: 3px;
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1;
+    transition: transform 0.12s ease, box-shadow 0.12s ease, background-color 0.12s ease;
+  }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #070b14;
-    --foreground: #ededed;
+  .btn-primary {
+    background: var(--color-mint);
+    color: var(--color-ink);
+    border-color: #000;
+    box-shadow: 4px 4px 0 var(--color-mint-deep);
+  }
+
+  .btn-primary:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 5px 5px 0 var(--color-mint-deep);
+  }
+
+  .btn-primary:active {
+    transform: translate(3px, 3px);
+    box-shadow: 1px 1px 0 var(--color-mint-deep);
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.7);
+  }
+
+  .btn-ghost:hover {
+    background: #fff;
+    color: var(--color-ink);
+  }
+
+  /* Stamp-style label: flat fill, square corners, poster type */
+  .tag {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    padding: 0.2rem 0.45rem 0.15rem;
+    border-radius: 2px;
+    font-family: var(--font-display);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--color-ink);
   }
 }
 
@@ -62,31 +133,7 @@ a {
 @keyframes heroReveal {
   0% {
     opacity: 0;
-    transform: translateY(18px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes heroImageFade {
-  0% {
-    opacity: 0.25;
-    transform: scale(1.08);
-    filter: blur(8px) saturate(0.9);
-  }
-  100% {
-    opacity: 0.9;
-    transform: scale(1.18);
-    filter: blur(0) saturate(1.1);
-  }
-}
-
-@keyframes heroContentIn {
-  0% {
-    opacity: 0;
-    transform: translateY(26px);
+    transform: translateY(14px);
   }
   100% {
     opacity: 1;
@@ -96,16 +143,98 @@ a {
 
 .hero-reveal {
   opacity: 0;
-  animation: heroReveal 0.72s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: heroReveal 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.hero-image {
-  opacity: 0.9;
-  transform: scale(1.18);
-  animation: heroImageFade 1.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+@keyframes sheetIn {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
 }
 
-.hero-content {
-  opacity: 0;
-  animation: heroContentIn 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.12s forwards;
+.sheet-in {
+  animation: sheetIn 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Ink halftone screen laid over hero art, so text baked into banners reads as texture */
+.halftone-overlay {
+  background-image: radial-gradient(circle, rgba(7, 11, 20, 0.6) 1.1px, transparent 1.5px);
+  background-size: 5px 5px;
+}
+
+/* Autoplay timer for the hero cover strip; pausing pauses the animation itself */
+@keyframes heroProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-progress {
+  transform-origin: left;
+  animation: heroProgress var(--hero-duration, 7s) linear forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-reveal {
+    animation: none;
+    opacity: 1;
+  }
+
+  .sheet-in {
+    animation: none;
+  }
+}
+
+/* Chart rank numerals: outlined for the list, solid with an ink offset for #1 */
+.rank-outline {
+  color: transparent;
+  -webkit-text-stroke: var(--rank-width, 2px) var(--rank-color, #3b4a63);
+}
+
+.rank-top {
+  --rank-color: var(--color-sun);
+}
+
+.rank-solid {
+  color: var(--color-sun);
+  -webkit-text-stroke: 3px #000;
+  text-shadow: 6px 6px 0 #000;
+}
+
+/* Shorts "film strip": black band with a row of sprocket holes along the top and bottom edges */
+.filmstrip {
+  position: relative;
+  background-color: #000;
+}
+
+.filmstrip::before,
+.filmstrip::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Crect x='6' y='4' width='12' height='10' rx='2' fill='%23f4efe2' fill-opacity='0.85'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  pointer-events: none;
+}
+
+.filmstrip::before {
+  top: 8px;
+}
+
+.filmstrip::after {
+  bottom: 8px;
+}
+
+/* Halftone dot field in a chosen colour (set --dot-color), fading out toward the top */
+.dot-field {
+  background-image: radial-gradient(circle, var(--dot-color, var(--color-mint)) 1.4px, transparent 1.8px);
+  background-size: 8px 8px;
+  mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
 }

@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 394 178" fill="currentColor" role="img" aria-label="Toon Central">
+<defs><mask id="tc-central"><rect x="8" y="132" width="366" height="43" fill="#fff"/><path d="M41 148.6A7.6 8.6 0 1 0 41 158.4 M92 147H83V160H92M83 153.5H90.5 M135 162V145L145 162V145 M184 147H200M192 147V162 M239 162V147H245.5A3.25 3.25 0 0 1 245.5 153.5H239M244.5 153.5L249.5 162 M290 162L297.5 146.5L305 162M293 157H302 M346 145V160H355" fill="none" stroke="#000" stroke-width="4" stroke-miterlimit="1"/></mask></defs>
+<path d="M1 10H75V26H1Z"/>
+<path d="M26 25H44L32 112H17Z"/>
+<path fill-rule="evenodd" transform="rotate(6 123.5 46.5)" d="M75.5 46.5a48 45.5 0 1 0 96 0a48 45.5 0 1 0 -96 0ZM95.0 45.0a31 28.5 0 1 0 62 0a31 28.5 0 1 0 -62 0Z"/>
+<path fill-rule="evenodd" transform="rotate(6 230.5 46.5)" d="M182.5 46.5a48 45.5 0 1 0 96 0a48 45.5 0 1 0 -96 0ZM202.0 45.0a31 28.5 0 1 0 62 0a31 28.5 0 1 0 -62 0Z"/>
+<path d="M90 99H157V113H90ZM194 99H261V113H194Z"/>
+<path d="M306 27H324L304 113H286Z"/>
+<path d="M306 27L322 27L392 88L377 98Z"/>
+<path d="M374 18H389L392 98H376Z"/>
+<rect x="8" y="132" width="366" height="43" mask="url(#tc-central)"/>
+</svg>
