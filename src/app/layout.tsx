@@ -17,7 +17,7 @@ const archivo = Archivo({
 
 export const metadata: Metadata = {
   title: "Toon Central - Giving Africa a voice",
-  description: "African comics, webtoons and animated shorts from Toon Central originals and indie creators.",
+  description: "Read Mafiki and watch animated shorts from Toon Central originals and independent African creators.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

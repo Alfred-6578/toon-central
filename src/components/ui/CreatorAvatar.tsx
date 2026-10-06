@@ -1,4 +1,5 @@
 import type { Creator } from "@/lib/api/types";
+import { cloudinaryAvatar } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
 
 // "Sanmi crown" → "SC", "silversnow_nikkitapimwrld" → "SN", "47STUDIOS" → "47".
@@ -14,7 +15,7 @@ const isPlaceholder = (photo: string) => photo.includes("gravatar.com");
 // Real profile photo when there is one; otherwise an initials block in the creator's main genre colour.
 export function CreatorAvatar({ creator, genre, className = "h-12 w-12 text-lg" }: { creator: Creator; genre?: string; className?: string }) {
   if (creator.photo && !isPlaceholder(creator.photo)) {
-    return <img src={creator.photo} alt="" className={`shrink-0 border-2 border-black object-cover ${className}`} />;
+    return <img src={cloudinaryAvatar(creator.photo, 128)} alt="" loading="lazy" className={`shrink-0 border-2 border-black object-cover ${className}`} />;
   }
   return (
     <span

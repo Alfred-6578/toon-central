@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, useSyncExternalStore, type FocusEvent, type PointerEvent } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore, type FocusEvent, type PointerEvent } from "react";
 
 export const SLIDE_MS = 7000;
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
@@ -19,8 +19,9 @@ function subscribeVisibility(onChange: () => void) {
 // Slide state shared by every hero layout: autoplay, pausing, swiping and image preloading.
 export function useHeroCarousel(count: number) {
   const [index, setIndex] = useState(0);
-  // Only slides that have been shown (plus the next one) get their images in the DOM.
-  const [loaded, setLoaded] = useState(() => new Set([0, 1]));
+  // Only slides that have been shown (plus the next one) get their images in the DOM. The next one is
+  // added once the current slide's art has loaded, so it never competes with the first paint.
+  const [loaded, setLoaded] = useState(() => new Set([0]));
   const [userPaused, setUserPaused] = useState(false);
   const [hovered, setHovered] = useState(false);
   const [keyboardFocus, setKeyboardFocus] = useState(false);
@@ -41,6 +42,18 @@ export function useHeroCarousel(count: number) {
     },
     [count]
   );
+
+  const preloadNext = useCallback(() => {
+    if (count < 2) return;
+    const next = (index + 1) % count;
+    setLoaded((prev) => (prev.has(next) ? prev : new Set([...prev, next])));
+  }, [count, index]);
+
+  // Fallback for when the current image finished loading before hydration, so its onLoad never fired.
+  useEffect(() => {
+    const timer = setTimeout(preloadNext, 2500);
+    return () => clearTimeout(timer);
+  }, [preloadNext]);
 
   // Pause while the mouse is over the hero or keyboard focus is inside it.
   const rootHandlers = {
@@ -78,6 +91,7 @@ export function useHeroCarousel(count: number) {
     running,
     userPaused,
     togglePaused: () => setUserPaused((paused) => !paused),
+    preloadNext,
     goTo,
     rootHandlers,
     swipeHandlers,

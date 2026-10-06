@@ -1,6 +1,7 @@
 "use client";
 
 import { useSyncExternalStore } from "react";
+import { SESSION_COOKIE } from "./session";
 
 // Stand-in for real auth: "Sign in" / "Join now" flip this on, "Sign out" flips it off.
 // Persisted in localStorage so a refresh keeps the state. Swap for the real session later.
@@ -42,6 +43,11 @@ function read() {
   }
 }
 
+// Mirrored into a cookie so server-rendered pages (the reader) can see the mock session.
+export function writeSessionCookie(signedIn: boolean) {
+  document.cookie = `${SESSION_COOKIE}=${signedIn ? "1" : "0"}; path=/; max-age=31536000; samesite=lax`;
+}
+
 function write(signedIn: boolean) {
   memoryValue = signedIn;
   try {
@@ -49,6 +55,7 @@ function write(signedIn: boolean) {
   } catch {
     // Storage unavailable (private mode): the in-memory value still works for this tab.
   }
+  writeSessionCookie(signedIn);
   listeners.forEach((listener) => listener());
 }
 

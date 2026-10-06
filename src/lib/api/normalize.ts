@@ -50,6 +50,7 @@ export function toComic(raw: Raw): Comic {
     isOriginal: num(raw.publishedByToonCentral) === 1,
     genres: toGenreNames(raw.genres),
     creator: toCreator(raw.user),
+    socialHandle: str(raw.socialMediaHandle) || null,
   };
 }
 

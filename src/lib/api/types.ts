@@ -22,6 +22,8 @@ export type Comic = {
   isOriginal: boolean;
   genres: string[];
   creator: Creator;
+  // Public promo handle the creator supplied for this series, e.g. "4_7studios@instagram".
+  socialHandle: string | null;
 };
 
 export type Short = {
@@ -55,4 +57,34 @@ export type HomeFeed = {
   trending: Comic[];
   recentUploads: Comic[];
   indieComics: Comic[];
+};
+
+export type Episode = {
+  number: number;
+  title: string;
+  publishedAt: string | null;
+  locked: boolean;
+};
+
+export type ComicPageData = {
+  comic: Comic;
+  episodes: Episode[];
+  // "live" when episodes came from the API; "placeholder" when generated from the chapter count;
+  // "unknown" when we have no chapter count to build from.
+  episodesSource: "live" | "placeholder" | "unknown";
+  moreFromCreator: Comic[];
+  similar: Comic[];
+  shorts: Short[];
+};
+
+export type SocialLink = { handle: string; platform: string | null; url: string | null };
+
+export type CreatorPageData = {
+  creator: Creator;
+  isOfficial: boolean;
+  comics: Comic[];
+  shorts: Short[];
+  genres: string[];
+  socials: SocialLink[];
+  stats: { series: number; reads: number; likes: number; chapters: number | null; shortViews: number; lastActive: string | null };
 };

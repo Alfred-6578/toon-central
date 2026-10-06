@@ -1,10 +1,11 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { mockNotifications, useMockSession } from "@/lib/mockSession";
 import { Header, navItems, type DesktopMenu } from "./Header";
 import { MobileNav, type MobileSheet } from "./MobileNav";
-import { AccountMenu, PublishMenu, Sheet } from "./nav/Menus";
+import { AccountMenu, Sheet } from "./nav/Menus";
 import { SearchPanel } from "./nav/SearchPanel";
 
 const SPY_SECTIONS = navItems.map((item) => item.id).filter((id) => id !== "home");
@@ -16,7 +17,10 @@ export function Navigation() {
   const [sheet, setSheet] = useState<MobileSheet>(null);
   const [searchOpen, setSearchOpen] = useState(false);
   const [scrolledAway, setScrolledAway] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
+  const pathname = usePathname();
+  const [homeSection, setActiveSection] = useState("home");
+  // The homepage follows the scroll position; other pages highlight the area they belong to.
+  const activeSection = pathname === "/" ? homeSection : pathname.startsWith("/genres") ? "genres" : "";
   const [unreadIds, setUnreadIds] = useState(() => new Set(mockNotifications.map((n) => n.id)));
 
   const closeMenu = useCallback(() => setOpenMenu(null), []);
@@ -118,13 +122,10 @@ export function Navigation() {
         onOpenSheet={(next) => setSheet((current) => (current === next ? null : next))}
       />
 
-      <Sheet open={sheet === "publish"} title="Publish" onClose={closeSheet}>
-        <PublishMenu onNavigate={closeSheet} />
-      </Sheet>
 
       <Sheet open={sheet === "account"} title={user ? "Your account" : "Join Toon Central"} onClose={closeSheet}>
         {user ? (
-          <AccountMenu user={user} onSignOut={handleSignOut} onNavigate={closeSheet} />
+          <AccountMenu user={user} onSignOut={handleSignOut} onNavigate={closeSheet} showCreatorLinks={false} />
         ) : (
           <div className="px-4 pb-4 pt-2">
             <p className="text-sm leading-6 text-slate-300">

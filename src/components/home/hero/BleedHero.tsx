@@ -31,6 +31,7 @@ export function BleedHero({ slides }: { slides: Comic[] }) {
                   src={cloudinary(item.coverImage, 900)}
                   alt=""
                   fetchPriority={i === 0 ? "high" : "auto"}
+                  onLoad={i === index ? hero.preloadNext : undefined}
                   className={`absolute inset-0 h-full w-full object-cover object-top transition-opacity duration-700 lg:object-center ${
                     i === index ? "opacity-100" : "opacity-0"
                   }`}

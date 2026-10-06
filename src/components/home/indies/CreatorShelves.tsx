@@ -1,10 +1,10 @@
+import { IoLaptopOutline } from "react-icons/io5";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import type { Comic, Creator } from "@/lib/api/types";
-import { cloudinary, comicHref, formatCount } from "@/lib/format";
+import { cloudinary, comicHref, creatorHref, formatCount } from "@/lib/format";
 
 type CreatorGroup = { creator: Creator; comics: Comic[]; reads: number; latest: string; inTopTen: boolean };
 
-const creatorHref = (username: string) => `/creators/${encodeURIComponent(username)}`;
 
 // One shelf per creator. Creators the reader hasn't just seen in the Top 10 lead, freshest first.
 function groupByCreator(comics: Comic[], topTenIds: Set<string>): CreatorGroup[] {
@@ -83,18 +83,22 @@ function SingleSeries({ comic }: { comic: Comic }) {
 }
 
 // Closes the indie section with the creator pitch the live site has: an empty panel waiting for a story.
-function PublishCard() {
+export function PublishCard({ className = "md:col-span-2 lg:col-span-3" }: { className?: string }) {
   return (
-    <div className="relative flex flex-col items-start justify-between gap-5 overflow-hidden border-2 border-dashed border-mint bg-ink p-6 sm:flex-row sm:items-center md:col-span-2 lg:col-span-3">
+    <div className={`relative flex flex-col items-start justify-between gap-5 overflow-hidden border-2 border-dashed border-mint bg-ink p-6 sm:flex-row sm:items-center ${className}`}>
       <div className="halftone-fade pointer-events-none absolute inset-0" />
       <div className="relative">
-        <p className="font-display text-3xl uppercase leading-none text-white sm:text-4xl">Your story could be here</p>
+        <p className="font-display text-3xl uppercase leading-none text-white sm:text-4xl">Yours could be here too</p>
         <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
           Publish your comic or animated short on Toon Central and reach readers across Africa.
         </p>
       </div>
       <div className="relative flex flex-wrap gap-3">
-        <a href="/creator/new" className="btn btn-primary px-5 py-3">Start publishing</a>
+        {/* Publishing is desktop-only (same lg breakpoint as the header's Publish menu) */}
+        <a href="/creator/new" className="btn btn-primary hidden px-5 py-3 lg:inline-flex">Start publishing</a>
+        <span className="flex items-center gap-2 border-2 border-line px-4 py-2.5 text-sm font-semibold text-slate-200 lg:hidden">
+          <IoLaptopOutline className="text-lg text-mint" /> Publish from a computer
+        </span>
         <a href="/creator101" className="btn btn-ghost px-5 py-3">Creator101 guide</a>
       </div>
     </div>

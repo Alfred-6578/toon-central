@@ -30,6 +30,7 @@ export function PanelHero({ slides }: { slides: Comic[] }) {
                 src={cloudinary(item.backgroundImage, 1400)}
                 alt=""
                 fetchPriority={i === 0 ? "high" : "auto"}
+                onLoad={i === index ? hero.preloadNext : undefined}
                 className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-700 ${
                   i === index ? "opacity-45" : "opacity-0"
                 }`}
@@ -62,6 +63,7 @@ export function PanelHero({ slides }: { slides: Comic[] }) {
                     src={cloudinary(item.coverImage, 700)}
                     alt=""
                     fetchPriority={i === 0 ? "high" : "auto"}
+                    onLoad={i === index ? hero.preloadNext : undefined}
                     className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-500 ${
                       i === index ? "opacity-100" : "opacity-0"
                     }`}

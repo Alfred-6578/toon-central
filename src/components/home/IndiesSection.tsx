@@ -19,7 +19,7 @@ export function IndiesSection({ comics, topTenIds, variant = "creators" }: Indie
   return (
     <section id="indies" className="mt-14">
       <RevealOnScroll className="block">
-        <SectionHeader title="Popular by Indies" action="Browse creators">
+        <SectionHeader title="Popular by Indies" action="Browse creators" href="/creators">
           <span className="pb-0.5 text-sm text-slate-400">{creatorCount} independent creators</span>
         </SectionHeader>
         {variant === "creators" ? <CreatorShelves comics={ordered} topTenIds={topTenIds} /> : <ComicGrid comics={ordered} />}

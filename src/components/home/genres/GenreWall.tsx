@@ -1,9 +1,9 @@
 import type { CSSProperties } from "react";
 import type { Comic, Genre } from "@/lib/api/types";
-import { cloudinary } from "@/lib/format";
+import { cloudinary, genreHref as genreHrefByName } from "@/lib/format";
 import { genreTag, genreTone } from "@/lib/tagStyles";
 
-export const genreHref = (genre: Genre) => `/genres/${genre.slug}`;
+export const genreHref = (genre: Genre) => genreHrefByName(genre.name);
 
 export type Featured = { genre: Genre; count: number; covers: Comic[] };
 

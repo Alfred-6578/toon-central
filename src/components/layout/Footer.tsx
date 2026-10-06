@@ -15,6 +15,7 @@ const columns = [
   },
   {
     title: "Create",
+    desktopOnly: true, // publishing is desktop-only
     links: [
       { label: "Upload a comic", href: "/creator/new" },
       { label: "Upload a short", href: "/shorts/upload" },
@@ -59,7 +60,7 @@ export function Footer({ stats }: { stats: FooterStats }) {
           <Logo className="h-14 w-auto text-mint" />
           <p className="mt-3 font-display text-2xl uppercase leading-none text-white">Giving Africa a voice</p>
           <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
-            Comics, webtoons and animated shorts from African creators, from Toon Central originals to the indies.
+            Mafiki and animated shorts from African creators, from Toon Central originals to the indies.
           </p>
           <dl className="mt-6 grid grid-cols-4 border-t-2 border-line pt-4">
             {credits.map((item) => (
@@ -72,9 +73,9 @@ export function Footer({ stats }: { stats: FooterStats }) {
           </dl>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 sm:grid-cols-3">
+        <div className="grid grid-cols-2 gap-8 lg:grid-cols-3">
           {columns.map((column) => (
-            <div key={column.title}>
+            <div key={column.title} className={"desktopOnly" in column ? "hidden lg:block" : undefined}>
               <p className="font-display text-base uppercase tracking-wide text-white">{column.title}</p>
               <ul className="mt-4 space-y-3 text-sm text-slate-300">
                 {column.links.map((link) => (
@@ -84,7 +85,7 @@ export function Footer({ stats }: { stats: FooterStats }) {
             </div>
           ))}
 
-          <div className="col-span-2 flex flex-wrap items-end justify-between gap-6 border-t-2 border-line pt-6 sm:col-span-3">
+          <div className="col-span-2 flex flex-wrap items-end justify-between gap-6 border-t-2 border-line pt-6 lg:col-span-3">
             <div>
               <p className="font-display text-base uppercase tracking-wide text-white">Follow</p>
               <div className="mt-3 flex gap-2">

@@ -1,10 +1,10 @@
 "use client";
 
 import { FaRegEye } from "react-icons/fa6";
-import { IoAdd, IoCheckmark, IoHeartOutline } from "react-icons/io5";
+import { IoHeartOutline } from "react-icons/io5";
 import type { Comic } from "@/lib/api/types";
-import { comicHref, formatCount, scheduleLabel } from "@/lib/format";
-import { useMockLibrary, useMockSession } from "@/lib/mockSession";
+import { cloudinaryAvatar, comicHref, formatCount, scheduleLabel } from "@/lib/format";
+import { LibraryCTA } from "@/components/ui/LibraryCTA";
 import { genreTag } from "@/lib/tagStyles";
 
 function slideLabel(comic: Comic) {
@@ -21,15 +21,6 @@ const titleSizes = {
 
 // Label, title, genres, blurb, actions and creator line for one slide. Key it by slide so the reveal replays.
 export function SlideDetails({ slide, size = "panel" }: { slide: Comic; size?: keyof typeof titleSizes }) {
-  const { user, signIn } = useMockSession();
-  const library = useMockLibrary();
-  const saved = library.has(slide.uuid);
-
-  const toggleLibrary = () => {
-    if (!user) signIn();
-    library.toggle(slide.uuid);
-  };
-
   return (
     <>
       <span className="hero-reveal tag -rotate-2 bg-sun text-sm">{slideLabel(slide)}</span>
@@ -57,16 +48,7 @@ export function SlideDetails({ slide, size = "panel" }: { slide: Comic; size?: k
 
       <div className="hero-reveal mt-6 flex flex-wrap items-center gap-3" style={{ animationDelay: "250ms" }}>
         <a href={comicHref(slide.uuid)} className="btn btn-primary px-6 py-3 text-base">Read now</a>
-        <button
-          type="button"
-          onClick={toggleLibrary}
-          aria-pressed={saved}
-          title={user ? undefined : "Signs you in and saves this series"}
-          className="btn btn-ghost px-5 py-3 text-base"
-        >
-          {saved ? <IoCheckmark className="text-lg" /> : <IoAdd className="text-lg" />}
-          {saved ? "In library" : "Library"}
-        </button>
+        <LibraryCTA uuid={slide.uuid} />
       </div>
 
       <div
@@ -75,7 +57,7 @@ export function SlideDetails({ slide, size = "panel" }: { slide: Comic; size?: k
       >
         <span className="flex items-center gap-2">
           {slide.creator.photo && (
-            <img src={slide.creator.photo} alt="" className="h-7 w-7 border-2 border-line object-cover" />
+            <img src={cloudinaryAvatar(slide.creator.photo, 64)} alt="" className="h-7 w-7 border-2 border-line object-cover" />
           )}
           by <span className="font-semibold text-white">{slide.creator.username}</span>
         </span>

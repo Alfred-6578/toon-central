@@ -1,11 +1,12 @@
 "use client";
 
-import { IoAddCircleOutline, IoHomeOutline, IoPersonOutline, IoPlayCircleOutline, IoSearch } from "react-icons/io5";
+import { IoCompassOutline, IoHomeOutline, IoPersonOutline, IoPlayCircleOutline, IoSearch } from "react-icons/io5";
 import Link from "next/link";
 import type { MockUser } from "@/lib/mockSession";
 import { Avatar } from "./nav/Menus";
 
-export type MobileSheet = "publish" | "account" | null;
+// Publishing is desktop-only, so the phone tab bar has no Publish tab.
+export type MobileSheet = "account" | null;
 
 type MobileNavProps = {
   user: MockUser | null;
@@ -26,18 +27,18 @@ export function MobileNav({ user, activeSection, sheet, onOpenSearch, onOpenShee
           <IoHomeOutline className="text-2xl" />
           Home
         </Link>
-        <a href="#shorts" className={`${tab} ${tabState(activeSection === "shorts" && !sheet)}`}>
+        <Link href="/#shorts" className={`${tab} ${tabState(activeSection === "shorts" && !sheet)}`}>
           <IoPlayCircleOutline className="text-2xl" />
           Shorts
-        </a>
+        </Link>
         <button type="button" onClick={onOpenSearch} className={`${tab} ${tabState(false)}`}>
           <IoSearch className="text-2xl" />
           Search
         </button>
-        <button type="button" onClick={() => onOpenSheet("publish")} className={`${tab} ${tabState(sheet === "publish")}`}>
-          <IoAddCircleOutline className="text-2xl" />
-          Publish
-        </button>
+        <Link href="/genres" className={`${tab} ${tabState(activeSection === "genres" && !sheet)}`}>
+          <IoCompassOutline className="text-2xl" />
+          Discover
+        </Link>
         <button type="button" onClick={() => onOpenSheet("account")} className={`${tab} ${tabState(sheet === "account")}`}>
           {user ? <Avatar user={user} className="h-6 w-6 text-[10px]" /> : <IoPersonOutline className="text-2xl" />}
           {user ? "You" : "Profile"}

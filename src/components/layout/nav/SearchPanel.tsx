@@ -58,7 +58,7 @@ export function SearchPanel({ open, onClose }: { open: boolean; onClose: () => v
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search comics, creators, genres"
+              placeholder="Search Mafiki, creators, genres"
               className="h-full w-full bg-transparent text-base text-white placeholder:text-slate-500 outline-none"
             />
           </label>

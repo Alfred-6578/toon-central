@@ -70,7 +70,7 @@ const publishItems = [
 export function PublishMenu({ onNavigate }: { onNavigate?: () => void }) {
   return (
     <div className="py-1">
-      <p className="px-4 pb-1 pt-2 text-xs text-slate-400">Tell your story on Toon Central</p>
+      <p className="px-4 pb-1 pt-2 text-xs text-slate-400">Publish your Mafiki on Toon Central</p>
       {publishItems.map((item) => (
         <MenuItem key={item.href} {...item} onClick={onNavigate} />
       ))}
@@ -82,10 +82,13 @@ export function AccountMenu({
   user,
   onSignOut,
   onNavigate,
+  showCreatorLinks = true,
 }: {
   user: MockUser;
   onSignOut: () => void;
   onNavigate?: () => void;
+  // Off in the mobile sheet: publishing is desktop-only.
+  showCreatorLinks?: boolean;
 }) {
   return (
     <div className="py-1">
@@ -113,7 +116,9 @@ export function AccountMenu({
       <MenuDivider />
       <MenuItem href="/library" icon={IoLibraryOutline} label="My library" onClick={onNavigate} />
       <MenuItem href="/subscription" icon={IoDiamondOutline} label="Subscription" onClick={onNavigate} />
-      <MenuItem href="/creator/dashboard" icon={IoGridOutline} label="Creator dashboard" onClick={onNavigate} />
+      {showCreatorLinks && (
+        <MenuItem href="/creator/dashboard" icon={IoGridOutline} label="Creator dashboard" onClick={onNavigate} />
+      )}
       <MenuItem href="/settings" icon={IoSettingsOutline} label="Settings" onClick={onNavigate} />
       <MenuDivider />
       <MenuItem icon={IoLogOutOutline} label="Sign out" onClick={onSignOut} />

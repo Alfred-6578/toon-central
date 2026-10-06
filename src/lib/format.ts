@@ -27,6 +27,19 @@ export function cloudinary(url: string, width: number) {
   return url.replace("/upload/", `/upload/w_${width},q_auto,f_auto/`);
 }
 
+// Any Cloudinary transformation chain, e.g. "c_fill,w_720,h_960,g_north".
+export function cloudinaryTransform(url: string, transform: string) {
+  if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
+  return url.replace("/upload/", `/upload/${transform}/`);
+}
+
+// Square avatar crop at display size (profile photos are uploaded at full camera resolution).
+// Non-Cloudinary photos (e.g. Gravatar) are returned unchanged.
+export function cloudinaryAvatar(url: string, size: number) {
+  if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
+  return url.replace("/upload/", `/upload/c_fill,g_auto,w_${size},h_${size},q_auto,f_auto/`);
+}
+
 // Cloudinary video: resized, auto codec/quality. Pass `clip` to trim it to a silent excerpt
 // (start offset and length in seconds), e.g. for hover previews.
 export function cloudinaryVideo(url: string, width: number, clip?: { start: number; length: number }) {
@@ -40,6 +53,17 @@ export function formatDuration(seconds: number) {
   const s = Math.round(seconds);
   return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 }
+
+// Clean, consistent genre URLs from the display name ("Slice of Life" → "slice-of-life",
+// "Isekai/Ojemba" → "isekai-ojemba"). The API's own slugs mix cases and spaces.
+export const genreSlug = (name: string) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+export const genreHref = (name: string) => `/genres/${genreSlug(name)}`;
+
+// Creator URLs from the username ("Sanmi crown" → "sanmi-crown", "G.millenniumcomics" → "g-millenniumcomics").
+export const creatorSlug = (username: string) =>
+  username.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+export const creatorHref = (username: string) => `/creators/${creatorSlug(username)}`;
 
 export const comicHref = (uuid: string) => `/comics/${uuid}`;
 export const shortHref = (uuid: string) => `/shorts/${uuid}`;

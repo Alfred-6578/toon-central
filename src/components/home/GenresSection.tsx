@@ -17,7 +17,7 @@ export function GenresSection({ genres, comics, counts, countSource, variant = "
   return (
     <section id="genres" className="mt-14">
       <RevealOnScroll className="block">
-        <SectionHeader title="Browse by genre" action={`All ${genres.length} genres`} />
+        <SectionHeader title="Browse by genre" action={`All ${genres.length} genres`} href="/genres" />
 
         {variant === "wall" ? (
           <GenreWall genres={genres} comics={comics} counts={counts} countSource={countSource} />

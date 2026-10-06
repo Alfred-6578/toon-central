@@ -11,10 +11,10 @@ export type DesktopMenu = "publish" | "notifications" | "account" | null;
 
 export const navItems = [
   { id: "home", label: "Home", href: "/" },
-  { id: "trending", label: "Trending", href: "#trending" },
-  { id: "shorts", label: "Shorts", href: "#shorts" },
-  { id: "originals", label: "Originals", href: "#originals" },
-  { id: "genres", label: "Genres", href: "#genres" },
+  { id: "trending", label: "Trending", href: "/#trending" },
+  { id: "shorts", label: "Shorts", href: "/#shorts" },
+  { id: "originals", label: "Originals", href: "/#originals" },
+  { id: "genres", label: "Genres", href: "/genres" },
 ];
 
 type HeaderProps = {
@@ -65,7 +65,7 @@ export function Header({
 
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-300 lg:flex">
           {navItems.map((item) => (
-            <a
+            <Link
               key={item.id}
               href={item.href}
               aria-current={activeSection === item.id ? "true" : undefined}
@@ -74,11 +74,11 @@ export function Header({
               }`}
             >
               {item.label}
-            </a>
+            </Link>
           ))}
-          <a href="#subscribe" className="flex items-center gap-1.5 border-b-2 border-transparent pb-0.5 text-sun hover:text-white">
+          <Link href="/#subscribe" className="flex items-center gap-1.5 border-b-2 border-transparent pb-0.5 text-sun hover:text-white">
             Subscribe <span className="tag bg-sun">₦500</span>
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2 sm:gap-3">
