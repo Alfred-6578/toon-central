@@ -40,9 +40,9 @@ export function cloudinaryAvatar(url: string, size: number) {
   return url.replace("/upload/", `/upload/c_fill,g_auto,w_${size},h_${size},q_auto,f_auto/`);
 }
 
-// Cloudinary video: resized, auto codec/quality. Pass `clip` to trim it to a silent excerpt
-// (start offset and length in seconds), e.g. for hover previews.
-export function cloudinaryVideo(url: string, width: number, clip?: { start: number; length: number }) {
+// Cloudinary video: resized, auto codec/quality. Pass `clip` to trim it to a silent excerpt, e.g. for
+// hover previews. `start` is seconds, or a percentage like "25p" (skips intros whatever the length).
+export function cloudinaryVideo(url: string, width: number, clip?: { start: number | `${number}p`; length: number }) {
   if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
   const trim = clip ? `so_${clip.start},du_${clip.length},ac_none,` : "";
   return url.replace("/upload/", `/upload/${trim}w_${width},q_auto,vc_auto/`);
@@ -66,6 +66,7 @@ export const creatorSlug = (username: string) =>
 export const creatorHref = (username: string) => `/creators/${creatorSlug(username)}`;
 
 export const comicHref = (uuid: string) => `/comics/${uuid}`;
+export const readerHref = (uuid: string, episode = 1) => `/comics/${uuid}/read/${episode}`;
 export const shortHref = (uuid: string) => `/shorts/${uuid}`;
 
 // A series counts as active if its last episode landed within this window.

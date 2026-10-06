@@ -27,7 +27,7 @@ export function MobileNav({ user, activeSection, sheet, onOpenSearch, onOpenShee
           <IoHomeOutline className="text-2xl" />
           Home
         </Link>
-        <Link href="/#shorts" className={`${tab} ${tabState(activeSection === "shorts" && !sheet)}`}>
+        <Link href="/shorts" className={`${tab} ${tabState(activeSection === "shorts" && !sheet)}`}>
           <IoPlayCircleOutline className="text-2xl" />
           Shorts
         </Link>
@@ -35,7 +35,8 @@ export function MobileNav({ user, activeSection, sheet, onOpenSearch, onOpenShee
           <IoSearch className="text-2xl" />
           Search
         </button>
-        <Link href="/genres" className={`${tab} ${tabState(activeSection === "genres" && !sheet)}`}>
+        {/* Genre pages count as discovering on phones, where Genres has no tab of its own */}
+        <Link href="/discover" className={`${tab} ${tabState((activeSection === "discover" || activeSection === "genres") && !sheet)}`}>
           <IoCompassOutline className="text-2xl" />
           Discover
         </Link>

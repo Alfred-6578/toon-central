@@ -45,6 +45,7 @@ export function toComic(raw: Raw): Comic {
     likes: num(raw.likesCount),
     episodes: raw.episodesCount == null ? null : num(raw.episodesCount),
     lastEpisodeAt: str(raw.lastEpisodeAt) || null,
+    createdAt: str(raw.createdAt) || null,
     isNew: Boolean(raw.isNew),
     hasNewEpisode: Boolean(raw.hasNewEpisode),
     isOriginal: num(raw.publishedByToonCentral) === 1,

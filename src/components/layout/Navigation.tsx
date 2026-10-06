@@ -6,9 +6,17 @@ import { mockNotifications, useMockSession } from "@/lib/mockSession";
 import { Header, navItems, type DesktopMenu } from "./Header";
 import { MobileNav, type MobileSheet } from "./MobileNav";
 import { AccountMenu, Sheet } from "./nav/Menus";
-import { SearchPanel } from "./nav/SearchPanel";
+import { OPEN_SEARCH_EVENT, SearchPanel } from "./nav/SearchPanel";
 
 const SPY_SECTIONS = navItems.map((item) => item.id).filter((id) => id !== "home");
+
+// Off the homepage, the nav highlights the area a page belongs to.
+const SECTION_FOR_PATH: [string, string][] = [
+  ["/shorts", "shorts"],
+  ["/discover", "discover"],
+  ["/genres", "genres"],
+  ["/originals", "originals"],
+];
 
 // Owns everything the header and mobile tab bar share: session, menus, search, scroll state.
 export function Navigation() {
@@ -20,7 +28,7 @@ export function Navigation() {
   const pathname = usePathname();
   const [homeSection, setActiveSection] = useState("home");
   // The homepage follows the scroll position; other pages highlight the area they belong to.
-  const activeSection = pathname === "/" ? homeSection : pathname.startsWith("/genres") ? "genres" : "";
+  const activeSection = pathname === "/" ? homeSection : (SECTION_FOR_PATH.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "");
   const [unreadIds, setUnreadIds] = useState(() => new Set(mockNotifications.map((n) => n.id)));
 
   const closeMenu = useCallback(() => setOpenMenu(null), []);
@@ -74,7 +82,12 @@ export function Navigation() {
       }
     };
     document.addEventListener("keydown", onKeyDown);
-    return () => document.removeEventListener("keydown", onKeyDown);
+    // Pages can open search too (e.g. the Discover search field).
+    window.addEventListener(OPEN_SEARCH_EVENT, openSearch);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener(OPEN_SEARCH_EVENT, openSearch);
+    };
   }, [openSearch]);
 
   // Freeze page scroll behind full-screen overlays.

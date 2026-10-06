@@ -238,3 +238,99 @@ img {
   background-size: 8px 8px;
   mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
 }
+
+/* "Now Showing" cinema marquee: a row of lit bulbs top and bottom, glowing poster type */
+.marquee {
+  position: relative;
+  background-color: #000;
+}
+
+.marquee::before,
+.marquee::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  height: 14px;
+  background-image: radial-gradient(circle, #fff6d6 0 2.5px, rgba(242, 187, 48, 0.55) 3.5px, transparent 6px);
+  background-size: 22px 14px;
+  background-repeat: repeat-x;
+  pointer-events: none;
+}
+
+.marquee::before {
+  top: 8px;
+}
+
+.marquee::after {
+  bottom: 8px;
+}
+
+.marquee-title {
+  color: #fff6d6;
+  text-shadow: 0 0 6px rgba(242, 187, 48, 0.9), 0 0 22px rgba(242, 187, 48, 0.45);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marquee::before,
+  .marquee::after {
+    animation: marqueeChase 1.6s steps(2) infinite;
+  }
+}
+
+/* Bulbs "chase" by shifting half a bulb back and forth */
+@keyframes marqueeChase {
+  to {
+    background-position-x: 11px;
+  }
+}
+
+/* Shorts player: double-tap heart, spinning disc, tie-in card */
+@keyframes heartBurst {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4) rotate(-12deg);
+  }
+  25% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1.15) rotate(-12deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -110%) scale(1) rotate(-12deg);
+  }
+}
+
+.heart-burst {
+  animation: heartBurst 0.8s ease-out forwards;
+}
+
+@keyframes discSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disc-spin {
+  animation: discSpin 5s linear infinite;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .disc-spin {
+    animation: none;
+  }
+}

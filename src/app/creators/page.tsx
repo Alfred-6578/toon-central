@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { CreatorCard, StudioCard } from "@/components/creator/CreatorCard";
 import { PublishCard } from "@/components/home/indies/CreatorShelves";
 import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
+import { Pagination } from "@/components/ui/Pagination";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { PAGE_SIZES, pageParam, paginate, withPage } from "@/lib/pagination";
 import { getCreatorsDirectory, getSiteStats, type CreatorSort } from "@/lib/api/client";
 
 export const metadata: Metadata = {
@@ -19,13 +22,18 @@ const sorts: { value: CreatorSort; label: string }[] = [
 ];
 
 export default async function CreatorsPage({ searchParams }: PageProps<"/creators">) {
-  const { sort: raw } = await searchParams;
-  const sort = sorts.find((s) => s.value === raw)?.value ?? "popular";
+  const query = await searchParams;
+  const sort = sorts.find((s) => s.value === query.sort)?.value ?? "popular";
   const [creators, stats] = await Promise.all([getCreatorsDirectory(sort), getSiteStats()]);
 
+  // The studio leads page 1; everyone else is paginated in sort order, grouped within each page.
   const studio = creators.find((c) => c.isOfficial);
-  const indies = creators.filter((c) => !c.isOfficial && c.comics.length > 0);
-  const animators = creators.filter((c) => !c.isOfficial && c.comics.length === 0);
+  const baseHref = sort === "popular" ? "/creators" : `/creators?sort=${sort}`;
+  const result = paginate(creators.filter((c) => !c.isOfficial), pageParam(query.page), PAGE_SIZES.creators);
+  if (result.outOfRange) redirect(withPage(baseHref, result.totalPages));
+  const indies = result.items.filter((c) => c.comics.length > 0);
+  const animators = result.items.filter((c) => c.comics.length === 0);
+  const indieTotal = creators.filter((c) => !c.isOfficial && c.comics.length > 0).length;
   const totalSeries = creators.reduce((sum, c) => sum + c.stats.series, 0);
   const totalShorts = creators.reduce((sum, c) => sum + c.shorts.length, 0);
 
@@ -61,7 +69,7 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
             </div>
           </div>
 
-          {studio && (
+          {studio && result.page === 1 && (
             <div className="mt-8">
               <StudioCard data={studio} />
             </div>
@@ -70,7 +78,7 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
           {indies.length > 0 && (
             <section className="mt-14">
               <SectionHeader title="Independent creators" action={null}>
-                <span className="pb-0.5 text-sm text-slate-400">{indies.length} creators</span>
+                <span className="pb-0.5 text-sm text-slate-400">{indieTotal} creators</span>
               </SectionHeader>
               <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
                 {indies.map((data) => (
@@ -92,6 +100,8 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
               </div>
             </section>
           )}
+
+          <Pagination result={result} baseHref={baseHref} noun="creators" />
 
           <div className="mt-14">
             <PublishCard className="" />

@@ -11,9 +11,9 @@ export type DesktopMenu = "publish" | "notifications" | "account" | null;
 
 export const navItems = [
   { id: "home", label: "Home", href: "/" },
-  { id: "trending", label: "Trending", href: "/#trending" },
-  { id: "shorts", label: "Shorts", href: "/#shorts" },
-  { id: "originals", label: "Originals", href: "/#originals" },
+  { id: "discover", label: "Discover", href: "/discover" },
+  { id: "shorts", label: "Shorts", href: "/shorts" },
+  { id: "originals", label: "Originals", href: "/originals" },
   { id: "genres", label: "Genres", href: "/genres" },
 ];
 

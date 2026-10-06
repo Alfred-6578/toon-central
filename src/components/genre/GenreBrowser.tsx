@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { GenreHeader } from "@/components/genre/GenreHeader";
 import { GenreStrip } from "@/components/genre/GenreStrip";
 import { Footer } from "@/components/layout/Footer";
@@ -7,6 +7,8 @@ import { Navigation } from "@/components/layout/Navigation";
 import { ComicGrid } from "@/components/ui/ComicGrid";
 import { getCatalogue, getGenrePageData, getSiteStats, type GenreKind, type GenreSort } from "@/lib/api/client";
 import { genreHref } from "@/lib/format";
+import { PAGE_SIZES, pageParam, paginate, withPage } from "@/lib/pagination";
+import { Pagination } from "@/components/ui/Pagination";
 
 type Query = Record<string, string | string[] | undefined>;
 
@@ -41,6 +43,9 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
   if (!data) notFound();
 
   const { genre, genres, comics, totals, source } = data;
+  const baseHref = href(genre.name, sort, kind);
+  const result = paginate(comics, pageParam(query.page), PAGE_SIZES.comics);
+  if (result.outOfRange) redirect(withPage(baseHref, result.totalPages));
   const covers = [...comics].sort((a, b) => b.views - a.views).slice(0, 3);
   // Empty genre: point at what's popular overall instead of a dead end.
   const fallback = totals.all === 0 ? (await getCatalogue()).sort((a, b) => b.views - a.views).slice(0, 5) : [];
@@ -97,7 +102,8 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
                 </div>
               </div>
 
-              <ComicGrid comics={comics} limit={comics.length} mobile="grid" />
+              <ComicGrid comics={result.items} limit={result.items.length} mobile="grid" />
+              <Pagination result={result} baseHref={baseHref} noun="series" />
 
               {source === "page" && (
                 <p className="mt-8 text-xs text-slate-500">

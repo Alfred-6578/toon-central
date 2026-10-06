@@ -8,6 +8,9 @@ import { cloudinary, comicHref, formatCount } from "@/lib/format";
 
 type Results = { query: string; comics: Comic[] };
 
+// Dispatch on window to open the search panel from anywhere on a page.
+export const OPEN_SEARCH_EVENT = "tc:open-search";
+
 export function SearchPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<Results | null>(null);

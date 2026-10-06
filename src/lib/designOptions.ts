@@ -41,6 +41,12 @@ export const designOptions = {
     defaultChoice: "coupon",
     choices: { coupon: "Coupon", classic: "Classic" },
   },
+  // Not a design: turns on invented short→comic pairings so tie-ins can be previewed. Real by default.
+  tieins: {
+    label: "Short tie-ins",
+    defaultChoice: "real",
+    choices: { real: "Real data", demo: "Demo" },
+  },
 } as const;
 
 export type DesignKey = keyof typeof designOptions;
@@ -55,11 +61,16 @@ export function resolveDesign(params: SearchParams): DesignSelection {
     const choices = designOptions[key].choices;
     return (typeof value === "string" && value in choices ? value : designOptions[key].defaultChoice) as DesignChoice<K>;
   };
-  return { hero: pick("hero"), trending: pick("trending"), shorts: pick("shorts"), originals: pick("originals"), indies: pick("indies"), latest: pick("latest"), genres: pick("genres"), subscribe: pick("subscribe") };
+  return { hero: pick("hero"), trending: pick("trending"), shorts: pick("shorts"), originals: pick("originals"), indies: pick("indies"), latest: pick("latest"), genres: pick("genres"), subscribe: pick("subscribe"), tieins: pick("tieins") };
 }
 
-// Link to the current selection with one option changed.
-export function designHref(selection: DesignSelection, key: DesignKey, choice: string) {
-  const params = new URLSearchParams({ ...selection, [key]: choice } as Record<string, string>);
-  return `/?${params.toString()}`;
+// Link to the current selection with one option changed. Defaults are left out to keep URLs short.
+export function designHref(selection: DesignSelection, key: DesignKey, choice: string, basePath = "/") {
+  const next = { ...selection, [key]: choice } as Record<DesignKey, string>;
+  const params = new URLSearchParams();
+  (Object.keys(next) as DesignKey[]).forEach((k) => {
+    if (next[k] !== designOptions[k].defaultChoice) params.set(k, next[k]);
+  });
+  const query = params.toString();
+  return `${basePath}${query ? `?${query}` : ""}`;
 }

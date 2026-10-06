@@ -5,11 +5,11 @@ import { VscNotebook } from "react-icons/vsc";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import { LibraryCTA } from "@/components/ui/LibraryCTA";
 import type { Comic } from "@/lib/api/types";
-import { cloudinary, creatorHref, formatCount, genreHref, scheduleLabel, timeAgo } from "@/lib/format";
+import { cloudinary, creatorHref, formatCount, genreHref, readerHref, scheduleLabel, timeAgo } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
 import { Synopsis } from "./Synopsis";
 
-export const readerHref = (uuid: string, episode = 1) => `/comics/${uuid}/read/${episode}`;
+export { readerHref } from "@/lib/format";
 
 function freshness(comic: Comic) {
   if (comic.status === "COMPLETED") return "Completed series";

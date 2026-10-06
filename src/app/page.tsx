@@ -10,9 +10,10 @@ import { OriginalsSection } from "@/components/home/OriginalsSection";
 import { IndiesSection } from "@/components/home/IndiesSection";
 import { PremiumCTA } from "@/components/home/PremiumCTA";
 import { DesignOptions } from "@/components/ui/DesignOptions";
-import { getGenreCounts, getGenres, getHomeFeed, getShorts, getTopCarousel, shareEpisodeCounts } from "@/lib/api/client";
+import { getGenreCounts, getGenres, getHomeFeed, getShorts, getTopCarousel, linkShortsToComics, shareEpisodeCounts } from "@/lib/api/client";
 import type { Comic } from "@/lib/api/types";
 import { resolveDesign } from "@/lib/designOptions";
+import { applyDemoTieIns } from "@/lib/demoTieIns";
 
 function uniqueComics(lists: Comic[][]) {
   return [...new Map(lists.flat().map((c) => [c.uuid, c])).values()];
@@ -43,11 +44,8 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const allComics = uniqueComics([feed.trending, feed.popularByToonCentral, feed.indieComics, feed.carousel, carousel]);
 
   // Shorts that belong to a series get a "Read the comic" link.
-  const comicsById = new Map(allComics.map((c) => [c.id, c]));
-  const linkedShorts = shorts.map((short) => {
-    const comic = short.comicId != null ? comicsById.get(short.comicId) : undefined;
-    return comic ? { ...short, linkedComic: { uuid: comic.uuid, title: comic.title } } : short;
-  });
+  const linked = linkShortsToComics(shorts, allComics);
+  const linkedShorts = design.tieins === "demo" ? applyDemoTieIns(linked, allComics) : linked;
 
   // Originals: all 13 we know about (/home only sends 10), freshest first. Series the reader hasn't
   // just seen in the Top 10 go first, and the freshest of those takes the spotlight.

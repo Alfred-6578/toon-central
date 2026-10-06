@@ -1,44 +1,31 @@
 "use client";
 
-import { useRef, useState } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { IoHeartOutline } from "react-icons/io5";
 import { MdPlayArrow } from "react-icons/md";
 import type { Short } from "@/lib/api/types";
-import { cloudinary, cloudinaryVideo, formatCount, formatDuration } from "@/lib/format";
+import { cloudinary, formatCount, formatDuration } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
-
-const PREVIEW_DELAY_MS = 300;
-// Hover previews loop a short silent excerpt: skip the opening title card, then play this many seconds.
-const PREVIEW_CLIP = { start: 2, length: 8 };
+import { useHoverPreview } from "./HoverPreview";
 
 type ShortCardProps = {
   short: Short;
   duration?: number;
   onOpen: () => void;
+  // Overrides the rail width, e.g. "w-full" in a grid.
+  className?: string;
 };
 
 // Cover card; resting a mouse on it plays a muted preview. The video only downloads on hover.
-export function ShortCard({ short, duration, onOpen }: ShortCardProps) {
-  const [previewing, setPreviewing] = useState(false);
-  const [previewReady, setPreviewReady] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const stopPreview = () => {
-    if (timer.current) clearTimeout(timer.current);
-    setPreviewing(false);
-    setPreviewReady(false);
-  };
+export function ShortCard({ short, duration, onOpen, className = "w-[44vw] shrink-0 vsm:w-56 sm:w-60" }: ShortCardProps) {
+  const preview = useHoverPreview(short.video);
 
   return (
-    <article className="group w-[44vw] shrink-0 transition-transform duration-200 hover:-translate-y-1 vsm:w-56 sm:w-60">
+    <article className={`group transition-transform duration-200 hover:-translate-y-1 ${className}`}>
       <button
         type="button"
         onClick={onOpen}
-        onPointerEnter={(event) => {
-          if (event.pointerType === "mouse") timer.current = setTimeout(() => setPreviewing(true), PREVIEW_DELAY_MS);
-        }}
-        onPointerLeave={stopPreview}
+        {...preview.handlers}
         aria-label={`Play ${short.title}${short.isSponsored ? " (sponsored)" : ""}`}
         className="block w-full text-left"
       >
@@ -51,19 +38,7 @@ export function ShortCard({ short, duration, onOpen }: ShortCardProps) {
         >
           <img src={cloudinary(short.coverImage, 480)} alt="" loading="lazy" decoding="async" className="h-full w-full object-cover" />
 
-          {previewing && (
-            <video
-              src={cloudinaryVideo(short.video, 480, PREVIEW_CLIP)}
-              muted
-              autoPlay
-              loop
-              playsInline
-              onPlaying={() => setPreviewReady(true)}
-              className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
-                previewReady ? "opacity-100" : "opacity-0"
-              }`}
-            />
-          )}
+          {preview.video}
 
           {short.isSponsored && <span className="tag absolute left-2 top-2 bg-paper">Sponsored</span>}
           {duration ? (

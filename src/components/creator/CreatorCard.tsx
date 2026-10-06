@@ -73,7 +73,7 @@ export function StudioCard({ data }: { data: CreatorPageData }) {
             <span className="tag bg-sun">Official studio</span>
             <p className="mt-2 font-display text-4xl uppercase leading-none text-white group-hover:text-mint sm:text-5xl">Toon Central</p>
             <p className="mt-2 text-sm text-slate-300">
-              {stats.series} originals · {formatCount(stats.reads)} reads · made with African creators
+              {stats.series} series · {formatCount(stats.reads)} reads · the studio behind Toon Central Originals
             </p>
           </div>
         </div>

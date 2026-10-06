@@ -18,7 +18,7 @@ export function ShortsSection({ shorts, variant = "strip" }: { shorts: Short[]; 
       }
     >
       <RevealOnScroll className="block">
-        <SectionHeader title="Shorts" action="Watch all">
+        <SectionHeader title="Shorts" action="Watch all" href="/shorts">
           <span className="pb-0.5 text-sm text-slate-400">Animated stories from African creators</span>
         </SectionHeader>
         <ShortsRail shorts={shorts} />

@@ -101,6 +101,42 @@ function createIdSetStore(key: string) {
 
 export const useMockLibrary = createIdSetStore("tc-mock-library");
 export const useMockLikes = createIdSetStore("tc-mock-likes");
+export const useMockFollows = createIdSetStore("tc-mock-follows");
+export const useMockSavedShorts = createIdSetStore("tc-mock-saved-shorts");
+
+export type MockComment = { id: string; text: string; at: string };
+
+// Comments the mock user has posted, per short. There's no comments data in the API snapshot, so
+// these are the only comments the preview can show, and they live only in this browser.
+const COMMENTS_KEY = "tc-mock-comments";
+let memoryComments = "{}";
+
+function readComments() {
+  try {
+    return localStorage.getItem(COMMENTS_KEY) ?? "{}";
+  } catch {
+    return memoryComments;
+  }
+}
+
+export function useMockComments(shortId: string) {
+  const all: Record<string, MockComment[]> = JSON.parse(useSyncExternalStore(subscribe, readComments, () => "{}"));
+  const comments = all[shortId] ?? [];
+
+  return {
+    comments,
+    add: (text: string) => {
+      const next = { ...all, [shortId]: [{ id: `${Date.now()}`, text, at: new Date().toISOString() }, ...comments] };
+      memoryComments = JSON.stringify(next);
+      try {
+        localStorage.setItem(COMMENTS_KEY, memoryComments);
+      } catch {
+        // In-memory fallback only.
+      }
+      listeners.forEach((listener) => listener());
+    },
+  };
+}
 
 export function useMockSession() {
   const signedIn = useSyncExternalStore(subscribe, read, () => false);

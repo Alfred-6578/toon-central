@@ -17,6 +17,8 @@ export type Comic = {
   // Only some endpoints send this (currently /home's indie_comics); null when unknown.
   episodes: number | null;
   lastEpisodeAt: string | null;
+  // When the series itself was first published.
+  createdAt: string | null;
   isNew: boolean;
   hasNewEpisode: boolean;
   isOriginal: boolean;
@@ -40,7 +42,8 @@ export type Short = {
   creator: Creator;
   comicId: number | null;
   // Filled in on the page when comicId matches a comic we have (e.g. the AFRI DIVAZ short).
-  linkedComic: { uuid: string; title: string } | null;
+  // `demo` marks an invented pairing (see src/lib/demoTieIns.ts), shown with a "Demo link" stamp.
+  linkedComic: { uuid: string; title: string; coverImage: string; demo?: boolean } | null;
   // No API flag yet: inferred from the posting account (see normalize.ts).
   isSponsored: boolean;
 };

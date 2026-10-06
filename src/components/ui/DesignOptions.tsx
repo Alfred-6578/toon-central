@@ -7,13 +7,22 @@ import { designHref, designOptions, type DesignKey, type DesignSelection } from 
 
 // Client-review switcher. Each option is a URL param, so every combination has a shareable link.
 // Remove from page.tsx once a direction is chosen.
-export function DesignOptions({ selection }: { selection: DesignSelection }) {
+type DesignOptionsProps = {
+  selection: DesignSelection;
+  // Page the switches link to, and which switches to show there (default: all, on the homepage).
+  basePath?: string;
+  only?: DesignKey[];
+  // Where the panel sits (the shorts page moves it off the caption).
+  className?: string;
+};
+
+export function DesignOptions({ selection, basePath = "/", only, className = "bottom-24 left-4 lg:bottom-6 lg:left-6" }: DesignOptionsProps) {
   // null = not toggled yet: expanded on desktop, collapsed on phones so it doesn't cover the page.
   const [open, setOpen] = useState<boolean | null>(null);
-  const keys = Object.keys(designOptions) as DesignKey[];
+  const keys = only ?? (Object.keys(designOptions) as DesignKey[]);
 
   return (
-    <div className="fixed bottom-24 left-4 z-30 lg:bottom-6 lg:left-6">
+    <div className={`fixed z-40 ${className}`}>
       {open !== false && (
         <div className={`w-64 border-2 border-sun bg-ink shadow-[5px_5px_0_rgba(0,0,0,0.6)] ${open === null ? "hidden lg:block" : ""}`}>
           <div className="flex items-center justify-between border-b-2 border-line px-3 py-2">
@@ -34,7 +43,7 @@ export function DesignOptions({ selection }: { selection: DesignSelection }) {
                     return (
                       <Link
                         key={choice}
-                        href={designHref(selection, key, choice)}
+                        href={designHref(selection, key, choice, basePath)}
                         scroll={false}
                         aria-current={active ? "true" : undefined}
                         className={`px-2 py-1.5 text-center text-xs font-semibold ${

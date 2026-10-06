@@ -73,7 +73,8 @@ export default async function CreatorPage({ params }: Params) {
             </section>
           )}
 
-          <div className="mt-14">
+          {/* Publishing is desktop-only, so the pitch is too */}
+          <div className="mt-14 hidden lg:block">
             <PublishCard className="" />
           </div>
         </div>

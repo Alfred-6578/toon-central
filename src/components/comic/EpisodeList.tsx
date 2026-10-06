@@ -4,7 +4,9 @@ import { dateParts } from "@/components/home/latest/releaseLogData";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { FREE_EPISODES } from "@/lib/api/client";
 import type { Comic, ComicPageData } from "@/lib/api/types";
-import { cloudinary } from "@/lib/format";
+import { cloudinary, comicHref } from "@/lib/format";
+import { PAGE_SIZES, paginate } from "@/lib/pagination";
+import { Pagination } from "@/components/ui/Pagination";
 import { readerHref } from "./ComicHeader";
 
 const formatDate = (date: string) => {
@@ -12,9 +14,10 @@ const formatDate = (date: string) => {
   return `${day} ${month} ${year}`;
 };
 
-type EpisodeListProps = Pick<ComicPageData, "episodes" | "episodesSource"> & { comic: Comic };
+type EpisodeListProps = Pick<ComicPageData, "episodes" | "episodesSource"> & { comic: Comic; page: number };
 
-export function EpisodeList({ comic, episodes, episodesSource }: EpisodeListProps) {
+export function EpisodeList({ comic, episodes, episodesSource, page }: EpisodeListProps) {
+  const result = paginate(episodes, page, PAGE_SIZES.episodes);
   return (
     <section id="episodes" className="mt-12">
       <SectionHeader title="Episodes" action={null}>
@@ -42,7 +45,7 @@ export function EpisodeList({ comic, episodes, episodesSource }: EpisodeListProp
         </div>
       ) : (
         <ol className="grid gap-3 md:grid-cols-2">
-          {episodes.map((episode) => (
+          {result.items.map((episode) => (
             <li key={episode.number}>
               <Link
                 href={readerHref(comic.uuid, episode.number)}
@@ -68,6 +71,9 @@ export function EpisodeList({ comic, episodes, episodesSource }: EpisodeListProp
             </li>
           ))}
         </ol>
+      )}
+      {episodesSource !== "unknown" && (
+        <Pagination result={result} baseHref={comicHref(comic.uuid)} noun="episodes" hash="#episodes" />
       )}
     </section>
   );

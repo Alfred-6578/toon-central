@@ -33,11 +33,40 @@ async function apiGet<T>(path: string, fallback: unknown): Promise<T> {
   return (await fetchApi<T>(path)) ?? camelize<T>(fallback);
 }
 
+type Paged = Record<string, unknown> & { pagination?: { totalPages?: number } };
+
+// Walks a paginated listing in large batches so we can filter, sort and paginate on our own server
+// with correct totals. Capped so a runaway listing can't stall a page. null when offline.
+async function fetchAllRaw(path: string, key: "comics" | "shorts", batch = 100, maxPages = 10): Promise<Raw[] | null> {
+  const sep = path.includes("?") ? "&" : "?";
+  const first = await fetchApi<Paged>(`${path}${sep}page=1&limit=${batch}`);
+  if (!Array.isArray(first?.[key])) return null;
+  const totalPages = Math.min(first.pagination?.totalPages ?? 1, maxPages);
+  const rest = await Promise.all(
+    Array.from({ length: totalPages - 1 }, (_, i) => fetchApi<Paged>(`${path}${sep}page=${i + 2}&limit=${batch}`))
+  );
+  const items = [first, ...rest].flatMap((page) => (page?.[key] as Raw[] | undefined) ?? []);
+  return [...new Map(items.map((item) => [String(item.uuid), item])).values()];
+}
+
+async function fetchAllComics(path: string): Promise<Comic[] | null> {
+  return (await fetchAllRaw(path, "comics"))?.map(toComic) ?? null;
+}
+
 // Episode counts only come with some lists; copy them onto the same series wherever else it appears.
 export function shareEpisodeCounts(lists: Comic[][]): Comic[][] {
   const counts = new Map<string, number>();
   lists.flat().forEach((c) => c.episodes != null && counts.set(c.uuid, c.episodes));
   return lists.map((list) => list.map((c) => (c.episodes == null && counts.has(c.uuid) ? { ...c, episodes: counts.get(c.uuid)! } : c)));
+}
+
+// Shorts made from a series point back to it (cover included, for the player's disc and tie-in card).
+export function linkShortsToComics(shorts: Short[], comics: Comic[]): Short[] {
+  const byId = new Map(comics.map((c) => [c.id, c]));
+  return shorts.map((s) => {
+    const comic = s.comicId != null ? byId.get(s.comicId) : undefined;
+    return comic ? { ...s, linkedComic: { uuid: comic.uuid, title: comic.title, coverImage: comic.coverImage } } : s;
+  });
 }
 
 // Every comic in the snapshot, de-duplicated; used for offline search.
@@ -225,10 +254,8 @@ export async function getGenrePageData(slug: string, sort: GenreSort, kind: Genr
   if (!genre) return null;
 
   // Live: the genre's own listing (the endpoint the live site uses). Offline: the comics we have.
-  const live = await fetchApi<{ comics?: Raw[] }>(`/genres/comic/${genre.id}/all?page=1&limit=48`);
-  const matches = live?.comics
-    ? live.comics.map(toComic)
-    : (await getCatalogue()).filter((c) => c.genres.includes(genre.name));
+  const live = await fetchAllComics(`/genres/comic/${genre.id}/all`);
+  const matches = live ?? (await getCatalogue()).filter((c) => c.genres.includes(genre.name));
 
   const totals = {
     all: matches.length,
@@ -237,7 +264,7 @@ export async function getGenrePageData(slug: string, sort: GenreSort, kind: Genr
   };
   const filtered = kind === "all" ? matches : matches.filter((c) => (kind === "originals" ? c.isOriginal : !c.isOriginal));
 
-  return { genre, genres, comics: [...filtered].sort(sorters[sort]), totals, source: live?.comics ? "live" : "page" };
+  return { genre, genres, comics: [...filtered].sort(sorters[sort]), totals, source: live ? "live" : "page" };
 }
 
 // The genre /genres opens on: the one with the most series (real totals when the API is live).
@@ -347,4 +374,69 @@ export async function getCreatorsDirectory(sort: CreatorSort): Promise<CreatorPa
     az: (a, b) => a.creator.username.localeCompare(b.creator.username, undefined, { sensitivity: "base" }),
   };
   return creators.sort(sorters[sort]);
+}
+
+export type OriginalsPageData = {
+  comics: Comic[];
+  spotlight: Comic | undefined;
+  creators: number;
+  reads: number;
+  source: "live" | "page";
+};
+
+// Every Toon Central original, including ones published under a collaborating creator's account.
+export async function getOriginalsPageData(sort: GenreSort): Promise<OriginalsPageData> {
+  // The live site's "popular by Toon Central" listing is the paginated originals endpoint.
+  const live = await fetchAllComics("/home/popular-by-toon-central?filter=all");
+  const originals = live ?? (await getCatalogue()).filter((c) => c.isOriginal);
+  const comics = [...originals].sort(sorters[sort]);
+  return {
+    comics,
+    // The freshest original leads the page.
+    spotlight: [...originals].sort(sorters.updated)[0],
+    creators: new Set(originals.map((c) => c.creator.username)).size,
+    reads: originals.reduce((sum, c) => sum + c.views, 0),
+    source: live ? "live" : "page",
+  };
+}
+
+export type ShortSort = "popular" | "newest";
+
+export type ShortsPageData = {
+  shorts: Short[];
+  // Genres present among all shorts, most used first (for the filter chips).
+  genres: string[];
+  featured: Short | undefined;
+  totals: { shorts: number; views: number; animators: number };
+  source: "live" | "page";
+};
+
+export async function getShortsPageData(genre: string | null, sort: ShortSort): Promise<ShortsPageData> {
+  // Live: the full shorts listing (the homepage only shows the first 10). Offline: the snapshot.
+  const [live, catalogue] = await Promise.all([fetchAllRaw("/home/shorts-carousel", "shorts"), getCatalogue()]);
+  const all = live ? live.map(toShort) : await getShorts();
+
+  const linked = linkShortsToComics(all, catalogue);
+
+  const counts = new Map<string, number>();
+  linked.filter((s) => !s.isSponsored).flatMap((s) => s.genres).forEach((g) => counts.set(g, (counts.get(g) ?? 0) + 1));
+  const stories = linked.filter((s) => !s.isSponsored);
+
+  const filtered = genre ? linked.filter((s) => s.genres.some((g) => genreSlug(g) === genre)) : linked;
+  const sorted = [...filtered].sort((a, b) =>
+    sort === "newest" ? (b.createdAt ?? "").localeCompare(a.createdAt ?? "") : b.views - a.views
+  );
+
+  return {
+    shorts: sorted,
+    genres: [...counts].sort((a, b) => b[1] - a[1]).map(([g]) => g),
+    // Never an ad.
+    featured: [...stories].sort((a, b) => b.views - a.views)[0],
+    totals: {
+      shorts: stories.length,
+      views: stories.reduce((sum, s) => sum + s.views, 0),
+      animators: new Set(stories.map((s) => s.creator.username)).size,
+    },
+    source: live ? "live" : "page",
+  };
 }

@@ -9,6 +9,7 @@ import { ComicGrid } from "@/components/ui/ComicGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getComicPageData, getSiteStats } from "@/lib/api/client";
 import { cloudinary, creatorHref } from "@/lib/format";
+import { pageParam } from "@/lib/pagination";
 
 export async function generateMetadata({ params }: PageProps<"/comics/[uuid]">): Promise<Metadata> {
   const { uuid } = await params;
@@ -22,8 +23,8 @@ export async function generateMetadata({ params }: PageProps<"/comics/[uuid]">):
   };
 }
 
-export default async function ComicPage({ params }: PageProps<"/comics/[uuid]">) {
-  const { uuid } = await params;
+export default async function ComicPage({ params, searchParams }: PageProps<"/comics/[uuid]">) {
+  const [{ uuid }, query] = await Promise.all([params, searchParams]);
   const [data, stats] = await Promise.all([getComicPageData(uuid), getSiteStats()]);
   if (!data) notFound();
 
@@ -39,7 +40,7 @@ export default async function ComicPage({ params }: PageProps<"/comics/[uuid]">)
         <ComicHeader comic={comic} />
 
         <div className="mx-auto px-6 md:px-8 lg:px-10">
-          <EpisodeList comic={comic} episodes={episodes} episodesSource={episodesSource} />
+          <EpisodeList comic={comic} episodes={episodes} episodesSource={episodesSource} page={pageParam(query.page)} />
 
           {shorts.length > 0 && (
             <section className="mt-14">

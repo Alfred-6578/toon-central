@@ -6,10 +6,11 @@ const columns = [
   {
     title: "Read",
     links: [
+      { label: "Discover", href: "/discover" },
       { label: "Trending", href: "/#trending" },
-      { label: "Shorts", href: "/#shorts" },
-      { label: "Originals", href: "/#originals" },
-      { label: "Genres", href: "/#genres" },
+      { label: "Shorts", href: "/shorts" },
+      { label: "Originals", href: "/originals" },
+      { label: "Genres", href: "/genres" },
       { label: "Subscription", href: "/subscription" },
     ],
   },
