@@ -16,6 +16,7 @@ const SECTION_FOR_PATH: [string, string][] = [
   ["/discover", "discover"],
   ["/genres", "genres"],
   ["/originals", "originals"],
+  ["/library", "library"],
 ];
 
 // Owns everything the header and mobile tab bar share: session, menus, search, scroll state.

@@ -1,6 +1,7 @@
 import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
+import { ContinueReadingSection } from "@/components/home/ContinueReadingSection";
 import { TrendingSection } from "@/components/home/TrendingSection";
 import { ShortsSection } from "@/components/home/ShortsSection";
 import { NewChaptersSection } from "@/components/home/NewChaptersSection";
@@ -89,6 +90,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
               <HeroCarousel variant="panel" slides={heroSlides} />
             </div>
           )}
+          <ContinueReadingSection />
           <TrendingSection comics={feed.trending} variant={design.trending} />
           <ShortsSection shorts={linkedShorts} variant={design.shorts} />
           <OriginalsSection comics={originals} spotlight={originalSpotlight} variant={design.originals} />

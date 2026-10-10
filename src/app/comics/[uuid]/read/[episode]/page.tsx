@@ -2,8 +2,11 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { ReaderDock } from "@/components/reader/ReaderDock";
+import { ReaderProgress } from "@/components/reader/ReaderProgress";
 import { ReaderGate } from "@/components/reader/ReaderGate";
 import { ReaderTopBar, episodeHref } from "@/components/reader/ReaderTopBar";
+import { ReaderTour } from "@/components/reader/ReaderTour";
 import { getComicPageData } from "@/lib/api/client";
 import { comicHref } from "@/lib/format";
 import { buildEpisode } from "@/lib/reader";
@@ -53,13 +56,15 @@ export default async function ReaderPage({ params }: Params) {
           {pages.map((page) => (
             <img
               key={page.number}
+              id={page.degraded ? undefined : `page-${page.number}`}
+              data-page={page.degraded ? undefined : page.number}
               src={page.src}
               alt={page.degraded ? "" : `${comic.title}, episode ${episode}, page ${page.number}`}
               width={page.width}
               height={page.height}
               loading={page.number <= 2 ? "eager" : "lazy"}
               decoding="async"
-              className="block h-auto w-full"
+              className="block h-auto w-full scroll-mt-16"
             />
           ))}
         </div>
@@ -83,6 +88,17 @@ export default async function ReaderPage({ params }: Params) {
           </div>
         )}
       </main>
+
+      <ReaderProgress
+        uuid={comic.uuid}
+        title={comic.title}
+        coverImage={comic.coverImage}
+        episode={episode}
+        pagesInEpisode={pages.filter((p) => !p.degraded).length}
+        totalEpisodes={total}
+      />
+      <ReaderDock />
+      <ReaderTour />
     </div>
   );
 }

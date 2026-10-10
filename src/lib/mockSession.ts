@@ -93,6 +93,8 @@ function createIdSetStore(key: string) {
   return function useIdSet() {
     const ids: string[] = JSON.parse(useSyncExternalStore(subscribe, readIds, () => "[]"));
     return {
+      // In the order they were added, oldest first.
+      ids,
       has: (id: string) => ids.includes(id),
       toggle: (id: string) => writeIds(ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]),
     };
