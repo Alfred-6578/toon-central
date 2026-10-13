@@ -2,7 +2,7 @@ import Link from "next/link";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import { dateParts } from "@/components/home/latest/releaseLogData";
 import type { CreatorPageData } from "@/lib/api/types";
-import { cloudinary, creatorHref, formatCount } from "@/lib/format";
+import { cloudinary, comicCount, creatorHref, formatCount } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
 
 // Directory card: who they are, how much they've made, and a peek at their covers.
@@ -11,8 +11,8 @@ export function CreatorCard({ data }: { data: CreatorPageData }) {
   const active = stats.lastActive ? dateParts(stats.lastActive) : null;
   const covers = comics.length ? comics.map((c) => ({ id: c.uuid, src: c.coverImage })) : shorts.map((s) => ({ id: s.uuid, src: s.coverImage }));
   const work = [
-    stats.series > 0 && `${stats.series} series`,
-    stats.series > 0 && `${formatCount(stats.reads)} reads`,
+    stats.comics > 0 && comicCount(stats.comics),
+    stats.comics > 0 && `${formatCount(stats.reads)} reads`,
     shorts.length > 0 && `${shorts.length} ${shorts.length === 1 ? "short" : "shorts"}`,
   ].filter(Boolean);
 
@@ -73,7 +73,7 @@ export function StudioCard({ data }: { data: CreatorPageData }) {
             <span className="tag bg-sun">Official studio</span>
             <p className="mt-2 font-display text-4xl uppercase leading-none text-white group-hover:text-mint sm:text-5xl">Toon Central</p>
             <p className="mt-2 text-sm text-slate-300">
-              {stats.series} series · {formatCount(stats.reads)} reads · the studio behind Toon Central Originals
+              {comicCount(stats.comics)} · {formatCount(stats.reads)} reads · the studio behind Toon Central Originals
             </p>
           </div>
         </div>

@@ -44,11 +44,11 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const heroSlides = carousel.length ? carousel : feed.carousel;
   const allComics = uniqueComics([feed.trending, feed.popularByToonCentral, feed.indieComics, feed.carousel, carousel]);
 
-  // Shorts that belong to a series get a "Read the comic" link.
+  // Shorts that belong to a comic get a "Read the comic" link.
   const linked = linkShortsToComics(shorts, allComics);
   const linkedShorts = design.tieins === "demo" ? applyDemoTieIns(linked, allComics) : linked;
 
-  // Originals: all 13 we know about (/home only sends 10), freshest first. Series the reader hasn't
+  // Originals: all 13 we know about (/home only sends 10), freshest first. Comics the reader hasn't
   // just seen in the Top 10 go first, and the freshest of those takes the spotlight.
   const byLatest = (a: Comic, b: Comic) => (b.lastEpisodeAt ?? "").localeCompare(a.lastEpisodeAt ?? "");
   const inTopTen = new Set(feed.trending.slice(0, 10).map((c) => c.uuid));
@@ -65,7 +65,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
     catalogueCounts ??
     new Map(genres.map((g) => [g.id, allComics.filter((c) => c.genres.includes(g.name)).length]));
 
-  // recent_uploads is often empty; fall back to the most recently updated series.
+  // recent_uploads is often empty; fall back to the most recently updated comic.
   const latest = feed.recentUploads.length
     ? feed.recentUploads
     : [...allComics]

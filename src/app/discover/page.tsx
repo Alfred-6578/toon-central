@@ -14,7 +14,7 @@ import { getDiscoverData } from "@/lib/discover";
 
 export const metadata: Metadata = {
   title: "Discover Mafiki | Toon Central",
-  description: "Find your next read: hidden gems, new series, finished stories and animated shorts from African creators.",
+  description: "Find your next read: hidden gems, new comics, finished stories and animated shorts from African creators.",
 };
 
 function Note({ children }: { children: React.ReactNode }) {
@@ -78,7 +78,7 @@ export default async function DiscoverPage() {
           {newest.length > 0 && (
             <section className="mt-16">
               <SectionHeader title="New on Toon Central" action={null}>
-                <Note>The newest series, not just new episodes</Note>
+                <Note>The newest comics, not just new episodes</Note>
               </SectionHeader>
               <ComicGrid comics={newest} />
             </section>
@@ -117,7 +117,7 @@ export default async function DiscoverPage() {
           {/* 9. Surprise me */}
           <section className="mb-20 mt-20 border-2 border-dashed border-line px-6 py-12 text-center">
             <p className="font-display text-4xl uppercase leading-none text-white sm:text-5xl">Still can&apos;t decide?</p>
-            <p className="mt-3 text-sm text-slate-400">Let us pick one of {everything.length} series for you.</p>
+            <p className="mt-3 text-sm text-slate-400">Let us pick one of {everything.length} comics for you.</p>
             <div className="mt-7">
               <SurpriseMe uuids={everything} />
             </div>

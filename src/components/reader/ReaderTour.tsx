@@ -12,7 +12,7 @@ const SEEN_KEY = "tc-reader-tour-seen";
 // (hidden at this width) are skipped.
 const STEPS = [
   { target: "episodes", title: "Flip episodes", body: "Jump to the previous or next episode from here, any time." },
-  { target: "library", title: "Keep the series", body: "Bookmark this series to add it to your library and catch every new episode." },
+  { target: "library", title: "Keep this comic", body: "Bookmark this comic to add it to your library and catch every new episode." },
   { target: "share", title: "Pass it on", body: "Share the episode to Facebook or X, or copy the link for your group chat." },
   { target: "autoscroll", title: "Hands-free reading", body: "Start auto scroll and the pages roll by themselves. Tap the speed to go faster. On a phone, hold a finger down to pause on a panel." },
 ];

@@ -3,7 +3,7 @@ import type { Comic, CreatorPageData, Genre, Short } from "@/lib/api/types";
 import { creatorHref, genreHref } from "@/lib/format";
 import { interleaveByCreator } from "@/lib/shortsFeed";
 
-// Mood collections built from genre tags. Action is left out on purpose: almost every series has it.
+// Mood collections built from genre tags. Action is left out on purpose: almost every comic has it.
 export const VIBES = [
   { id: "heroes", tone: "sun", title: "Heroes & powers", blurb: "Capes, curses and people who refuse to stay down.", genres: ["Superhero", "Supernatural", "Martial Arts", "Military"] },
   { id: "myths", tone: "mint", title: "Myths & legends", blurb: "Old gods, lost kingdoms and worlds next door.", genres: ["Fantasy", "Historical", "Epic Fantasy", "Isekai/Ojemba", "Urban Fantasy", "Anthology"] },
@@ -48,7 +48,7 @@ export async function getDiscoverData(): Promise<DiscoverData> {
   ]);
   const topTen = new Set(feed.trending.slice(0, 10).map((c) => c.uuid));
 
-  // Each series appears in at most one list section. Scarce lists claim first, so they still fill.
+  // Each comic appears in at most one list section. Scarce lists claim first, so they still fill.
   const used = new Set<string>();
   const claim = (comics: Comic[]) => {
     const picked = comics.filter((c) => !used.has(c.uuid)).slice(0, SECTION_SIZE);

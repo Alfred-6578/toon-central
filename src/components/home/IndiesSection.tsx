@@ -13,7 +13,7 @@ type IndiesSectionProps = {
 
 export function IndiesSection({ comics, topTenIds, variant = "creators" }: IndiesSectionProps) {
   const creatorCount = new Set(comics.map((c) => c.creator.username)).size;
-  // Same rule as Originals: series the reader hasn't just seen in the Top 10 go first.
+  // Same rule as Originals: comics the reader hasn't just seen in the Top 10 go first.
   const ordered = [...comics.filter((c) => !topTenIds.has(c.uuid)), ...comics.filter((c) => topTenIds.has(c.uuid))];
 
   return (

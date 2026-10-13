@@ -2,8 +2,8 @@
 
 import { useSyncExternalStore } from "react";
 
-// Where the reader left off in each series, kept in this browser (localStorage) until accounts
-// can sync it. One entry per series: the latest episode and page they reached.
+// Where the reader left off in each comic, kept in this browser (localStorage) until accounts
+// can sync it. One entry per comic: the latest episode and page they reached.
 export type ReadingProgress = {
   uuid: string;
   title: string;
@@ -18,8 +18,8 @@ export type ReadingProgress = {
 };
 
 const KEY = "tc-reading-progress";
-// Also the library's reading history, so keep plenty; older series fall off.
-const MAX_SERIES = 50;
+// Also the library's reading history, so keep plenty; older comics fall off.
+const MAX_COMICS = 50;
 
 const listeners = new Set<() => void>();
 let memory = "{}";
@@ -35,7 +35,7 @@ function read() {
 function write(all: Record<string, ReadingProgress>) {
   const kept = Object.values(all)
     .sort((a, b) => b.updatedAt - a.updatedAt)
-    .slice(0, MAX_SERIES);
+    .slice(0, MAX_COMICS);
   memory = JSON.stringify(Object.fromEntries(kept.map((p) => [p.uuid, p])));
   try {
     localStorage.setItem(KEY, memory);

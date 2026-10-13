@@ -17,7 +17,7 @@ export type ReaderEpisode = {
   premiumEpisode: boolean;
 };
 
-// Stand-in pages until the live API supplies real ones: crops of the series' own cover and banner art,
+// Stand-in pages until the live API supplies real ones: crops of the comic's own cover and banner art,
 // shifted per episode so consecutive episodes don't look identical.
 const COVER_CROPS = ["north", "center", "south", "north_west", "north_east", "south_west", "south_east"];
 const BANNER_CROPS = ["west", "center", "east"];

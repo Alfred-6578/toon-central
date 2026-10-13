@@ -48,7 +48,7 @@ export default async function ReaderPage({ params }: Params) {
 
       <main className="mx-auto max-w-[720px] pb-24">
         <p className="mx-4 mt-4 border-2 border-dashed border-line px-4 py-3 text-xs leading-5 text-slate-400 sm:mx-0">
-          Preview build: these pages are stand-ins cropped from the series&apos; cover and banner art.
+          Preview build: these pages are stand-ins cropped from the comic&apos;s cover and banner art.
           {episodesSource !== "live" && " Real pages arrive with the live API."}
         </p>
 
@@ -75,7 +75,7 @@ export default async function ReaderPage({ params }: Params) {
           <div className="mx-4 mt-10 border-2 border-line bg-panel p-6 text-center sm:mx-0">
             <p className="font-display text-3xl uppercase leading-none text-white">End of episode {episode}</p>
             <p className="mt-2 text-sm text-slate-400">
-              {hasNext ? "The story continues." : total == null ? "More episodes arrive with the live API." : "You're all caught up on this series."}
+              {hasNext ? "The story continues." : total == null ? "More episodes arrive with the live API." : "You're all caught up on this comic."}
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               {hasNext && (
@@ -83,7 +83,7 @@ export default async function ReaderPage({ params }: Params) {
                   Next: episode {episode + 1}
                 </Link>
               )}
-              <Link href={comicHref(comic.uuid)} className="btn btn-ghost px-6 py-3 text-base">Back to series</Link>
+              <Link href={comicHref(comic.uuid)} className="btn btn-ghost px-6 py-3 text-base">Back to comic</Link>
             </div>
           </div>
         )}

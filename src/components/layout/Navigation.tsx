@@ -1,7 +1,9 @@
 "use client";
 
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { authHref } from "@/lib/auth";
 import { mockNotifications, useMockSession } from "@/lib/mockSession";
 import { Header, navItems, type DesktopMenu } from "./Header";
 import { MobileNav, type MobileSheet } from "./MobileNav";
@@ -21,7 +23,7 @@ const SECTION_FOR_PATH: [string, string][] = [
 
 // Owns everything the header and mobile tab bar share: session, menus, search, scroll state.
 export function Navigation() {
-  const { user, signIn, signOut } = useMockSession();
+  const { user, signOut } = useMockSession();
   const [openMenu, setOpenMenu] = useState<DesktopMenu>(null);
   const [sheet, setSheet] = useState<MobileSheet>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -101,10 +103,10 @@ export function Navigation() {
     };
   }, [searchOpen, sheet]);
 
-  const handleSignIn = () => {
-    signIn();
-    setSheet(null);
-  };
+  // On the auth pages themselves, keep pointing at the same place rather than at /auth.
+  const back = pathname.startsWith("/auth") ? "/" : pathname;
+  const signInHref = authHref("signin", back);
+  const joinHref = authHref("signup", back);
   const handleSignOut = () => {
     signOut();
     setOpenMenu(null);
@@ -121,7 +123,8 @@ export function Navigation() {
         onToggleMenu={(menu) => setOpenMenu((current) => (current === menu ? null : menu))}
         onCloseMenu={closeMenu}
         onOpenSearch={openSearch}
-        onSignIn={handleSignIn}
+        signInHref={signInHref}
+        joinHref={joinHref}
         onSignOut={handleSignOut}
         notifications={mockNotifications}
         unreadIds={unreadIds}
@@ -143,11 +146,11 @@ export function Navigation() {
         ) : (
           <div className="px-4 pb-4 pt-2">
             <p className="text-sm leading-6 text-slate-300">
-              Save series to your library, get new-episode alerts and support African creators.
+              Save comics to your library, get new-episode alerts and support African creators.
             </p>
             <div className="mt-4 grid grid-cols-2 gap-3">
-              <button type="button" onClick={handleSignIn} className="btn btn-ghost h-11">Sign in</button>
-              <button type="button" onClick={handleSignIn} className="btn btn-primary h-11">Join now</button>
+              <Link href={signInHref} onClick={closeSheet} className="btn btn-ghost h-11">Sign in</Link>
+              <Link href={joinHref} onClick={closeSheet} className="btn btn-primary h-11">Join now</Link>
             </div>
           </div>
         )}

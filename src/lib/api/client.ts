@@ -53,14 +53,14 @@ async function fetchAllComics(path: string): Promise<Comic[] | null> {
   return (await fetchAllRaw(path, "comics"))?.map(toComic) ?? null;
 }
 
-// Episode counts only come with some lists; copy them onto the same series wherever else it appears.
+// Episode counts only come with some lists; copy them onto the same comic wherever else it appears.
 export function shareEpisodeCounts(lists: Comic[][]): Comic[][] {
   const counts = new Map<string, number>();
   lists.flat().forEach((c) => c.episodes != null && counts.set(c.uuid, c.episodes));
   return lists.map((list) => list.map((c) => (c.episodes == null && counts.has(c.uuid) ? { ...c, episodes: counts.get(c.uuid)! } : c)));
 }
 
-// Shorts made from a series point back to it (cover included, for the player's disc and tie-in card).
+// Shorts made from a comic point back to it (cover included, for the player's disc and tie-in card).
 export function linkShortsToComics(shorts: Short[], comics: Comic[]): Short[] {
   const byId = new Map(comics.map((c) => [c.id, c]));
   return shorts.map((s) => {
@@ -267,7 +267,7 @@ export async function getGenrePageData(slug: string, sort: GenreSort, kind: Genr
   return { genre, genres, comics: [...filtered].sort(sorters[sort]), totals, source: live ? "live" : "page" };
 }
 
-// The genre /genres opens on: the one with the most series (real totals when the API is live).
+// The genre /genres opens on: the one with the most comics (real totals when the API is live).
 export async function getDefaultGenre(): Promise<Genre | undefined> {
   const [genres, catalogue] = await Promise.all([getGenres(), getCatalogue()]);
   const live = await getGenreCounts(genres);
@@ -321,7 +321,7 @@ export async function getCreatorPageData(slug: string): Promise<CreatorPageData 
   const genres = [...genreCounts].sort((a, b) => b[1] - a[1]).map(([g]) => g);
 
   const isOfficial = creator.username === OFFICIAL_ACCOUNT;
-  // Per-series handles can point at collaborators or at Toon Central itself, so: the studio page uses
+  // Per-comic handles can point at collaborators or at Toon Central itself, so: the studio page uses
   // the company's own accounts, and creator pages drop Toon Central's handles.
   const socials = isOfficial
     ? OFFICIAL_SOCIALS
@@ -345,10 +345,10 @@ export async function getCreatorPageData(slug: string): Promise<CreatorPageData 
     genres,
     socials,
     stats: {
-      series: comics.length,
+      comics: comics.length,
       reads: comics.reduce((sum, c) => sum + c.views, 0),
       likes: comics.reduce((sum, c) => sum + c.likes, 0),
-      // Only when every series has a known count; a partial total would understate it.
+      // Only when every comic has a known count; a partial total would understate it.
       chapters: comics.length && known.length === comics.length ? known.reduce((sum, c) => sum + (c.episodes ?? 0), 0) : null,
       shortViews: theirShorts.reduce((sum, s) => sum + s.views, 0),
       lastActive: dates.sort().at(-1) ?? null,

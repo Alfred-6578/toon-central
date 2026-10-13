@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import type { Comic } from "@/lib/api/types";
 import type { Vibe } from "@/lib/discover";
-import { cloudinary } from "@/lib/format";
+import { cloudinary, comicCount } from "@/lib/format";
 
 const toneColor = { mint: "var(--color-mint)", sun: "var(--color-sun)", paper: "var(--color-paper)" };
 
@@ -41,7 +41,7 @@ export function VibeTiles({ vibes }: { vibes: VibeTile[] }) {
           <div className="p-4">
             <div className="flex items-baseline justify-between gap-3">
               <p className="font-display text-2xl uppercase leading-none text-white group-hover:text-mint">{vibe.title}</p>
-              <p className="shrink-0 text-xs font-semibold text-slate-400">{count} series</p>
+              <p className="shrink-0 text-xs font-semibold text-slate-400">{comicCount(count)}</p>
             </div>
             <p className="mt-2 text-sm leading-5 text-slate-400">{vibe.blurb}</p>
           </div>

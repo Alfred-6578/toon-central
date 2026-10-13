@@ -9,13 +9,19 @@ import { genreTag } from "@/lib/tagStyles";
 // Every genre in one sideways strip for hopping between them; the current one is scrolled into view.
 export function GenreStrip({ genres, current }: { genres: Genre[]; current: number }) {
   const activeRef = useRef<HTMLAnchorElement | null>(null);
+  const stripRef = useRef<HTMLElement | null>(null);
 
+  // Centre the current genre by scrolling the strip sideways only. scrollIntoView would also move
+  // the page down to the strip, which sits below the genre wall.
   useEffect(() => {
-    activeRef.current?.scrollIntoView({ block: "nearest", inline: "center" });
+    const strip = stripRef.current;
+    const active = activeRef.current;
+    if (!strip || !active) return;
+    strip.scrollLeft = active.offsetLeft - strip.clientWidth / 2 + active.offsetWidth / 2;
   }, [current]);
 
   return (
-    <nav aria-label="All genres" className="hide-scrollbar -mx-6 overflow-x-auto px-6 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
+    <nav ref={stripRef} aria-label="All genres" className="hide-scrollbar relative -mx-6 overflow-x-auto px-6 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
       <ul className="flex w-max gap-2 py-1">
         {[...genres]
           .sort((a, b) => a.name.localeCompare(b.name))

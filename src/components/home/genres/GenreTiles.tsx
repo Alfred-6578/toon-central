@@ -1,5 +1,5 @@
 import type { Comic, Genre } from "@/lib/api/types";
-import { cloudinary } from "@/lib/format";
+import { cloudinary, comicCount } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
 import { genreHref, pickFeatured, type Featured } from "./GenreWall";
 
@@ -15,7 +15,7 @@ function Tile({ item, className = "" }: { item: Featured; className?: string }) 
           <p className="truncate font-display text-lg uppercase leading-none text-ink">{item.genre.name}</p>
         </div>
       </div>
-      {item.count > 0 && <p className="mt-2 text-xs text-slate-400">{item.count} series</p>}
+      {item.count > 0 && <p className="mt-2 text-xs text-slate-400">{comicCount(item.count)}</p>}
     </a>
   );
 }

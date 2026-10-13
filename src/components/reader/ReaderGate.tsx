@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { IoLockClosed } from "react-icons/io5";
+import { authHref } from "@/lib/auth";
 import { useMockSession, writeSessionCookie } from "@/lib/mockSession";
 
 type ReaderGateProps = {
@@ -15,7 +16,8 @@ type ReaderGateProps = {
 // asks the server to re-render: the unlocked pages arrive from the server, not from un-hiding.
 export function ReaderGate({ episode, firstEpisodeHref }: ReaderGateProps) {
   const router = useRouter();
-  const { user, signIn } = useMockSession();
+  const pathname = usePathname();
+  const { user } = useMockSession();
 
   const synced = useRef(false);
 
@@ -40,13 +42,9 @@ export function ReaderGate({ episode, firstEpisodeHref }: ReaderGateProps) {
       </p>
       <div className="mt-7 flex flex-wrap justify-center gap-3">
         <Link href="/subscription" className="btn btn-primary px-6 py-3 text-base">Subscribe</Link>
-        <button
-          type="button"
-          onClick={signIn}
-          className="btn btn-ghost px-6 py-3 text-base"
-        >
+        <Link href={authHref("signin", pathname)} className="btn btn-ghost px-6 py-3 text-base">
           Already Premium? Sign in
-        </button>
+        </Link>
       </div>
       <p className="mt-6 text-xs text-slate-500">
         Or start from the beginning: <Link href={firstEpisodeHref} className="font-semibold text-slate-300 underline-offset-4 hover:underline">episode 1 is free</Link>

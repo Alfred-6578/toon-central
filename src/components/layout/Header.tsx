@@ -25,7 +25,9 @@ type HeaderProps = {
   onToggleMenu: (menu: Exclude<DesktopMenu, null>) => void;
   onCloseMenu: () => void;
   onOpenSearch: () => void;
-  onSignIn: () => void;
+  // Where Sign in / Join now go, carrying the current page as ?next=.
+  signInHref: string;
+  joinHref: string;
   onSignOut: () => void;
   notifications: MockNotification[];
   unreadIds: Set<string>;
@@ -43,7 +45,8 @@ export function Header({
   onToggleMenu,
   onCloseMenu,
   onOpenSearch,
-  onSignIn,
+  signInHref,
+  joinHref,
   onSignOut,
   notifications,
   unreadIds,
@@ -146,12 +149,12 @@ export function Header({
             </>
           ) : (
             <>
-              <button type="button" onClick={onSignIn} className="btn btn-ghost hidden h-10 lg:inline-flex">
+              <Link href={signInHref} className="btn btn-ghost hidden h-10 lg:inline-flex">
                 Sign in
-              </button>
-              <button type="button" onClick={onSignIn} className="btn btn-primary h-10">
+              </Link>
+              <Link href={joinHref} className="btn btn-primary h-10">
                 Join now
-              </button>
+              </Link>
             </>
           )}
         </div>

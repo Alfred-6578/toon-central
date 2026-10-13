@@ -6,34 +6,13 @@ import { IoBookmark, IoClose, IoPlay } from "react-icons/io5";
 import { ComicCard } from "@/components/ui/ComicCard";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import { Pagination } from "@/components/ui/Pagination";
-import type { Comic, Creator, Short } from "@/lib/api/types";
-import { cloudinary, cloudinaryTransform, comicHref, creatorHref, formatCount, timeAgo } from "@/lib/format";
+import type { Comic, Short } from "@/lib/api/types";
+import { cloudinary, cloudinaryTransform, comicCount, comicHref, creatorHref, formatCount, timeAgo } from "@/lib/format";
 import { useMockFollows, useMockLibrary, useMockSavedShorts, useMockSession } from "@/lib/mockSession";
 import { PAGE_SIZES, paginate } from "@/lib/pagination";
+import { authHref } from "@/lib/auth";
+import { LIBRARY_TABS, SAVED_SORTS, type FollowedCreator, type LibraryTab, type SavedSort } from "@/lib/library";
 import { clearProgress, removeProgress, resumeTarget, useReadingProgress, type ReadingProgress } from "@/lib/readingProgress";
-
-export const LIBRARY_TABS = [
-  { value: "saved", label: "Saved series" },
-  { value: "history", label: "History" },
-  { value: "shorts", label: "Saved shorts" },
-  { value: "following", label: "Following" },
-] as const;
-export type LibraryTab = (typeof LIBRARY_TABS)[number]["value"];
-
-export const SAVED_SORTS = [
-  { value: "recent", label: "Recently saved" },
-  { value: "updated", label: "Last updated" },
-  { value: "az", label: "A–Z" },
-] as const;
-export type SavedSort = (typeof SAVED_SORTS)[number]["value"];
-
-export type FollowedCreator = {
-  creator: Creator;
-  series: number;
-  shorts: number;
-  lastActive: string | null;
-  latest: { uuid: string; title: string; coverImage: string }[];
-};
 
 type LibraryViewProps = {
   tab: LibraryTab;
@@ -55,14 +34,14 @@ const tabHref = (tab: LibraryTab, sort?: SavedSort) => {
 // The reader's shelf. Everything saved lives in this browser for now, so the lists are picked out of
 // the catalogue here, after the page loads.
 export function LibraryView({ tab, sort, page, comics, shorts, creators }: LibraryViewProps) {
-  const { user, signIn } = useMockSession();
+  const { user } = useMockSession();
   const library = useMockLibrary();
   const savedShorts = useMockSavedShorts();
   const follows = useMockFollows();
   const history = useReadingProgress();
 
   const byUuid = new Map(comics.map((c) => [c.uuid, c]));
-  const progressBySeries = new Map(history.map((p) => [p.uuid, p]));
+  const progressByComic = new Map(history.map((p) => [p.uuid, p]));
 
   // Saved ids that still exist in the catalogue, newest save first.
   const savedComics = [...library.ids].reverse().flatMap((id) => byUuid.get(id) ?? []);
@@ -82,7 +61,7 @@ export function LibraryView({ tab, sort, page, comics, shorts, creators }: Libra
         <div>
           <h1 className="font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl">Your library</h1>
           <p className="mt-3 text-sm text-slate-300">
-            {counts.saved} series · {counts.shorts} shorts · following {counts.following}
+            {comicCount(counts.saved)} · {counts.shorts} {counts.shorts === 1 ? "short" : "shorts"} · following {counts.following}
           </p>
         </div>
       </div>
@@ -92,7 +71,7 @@ export function LibraryView({ tab, sort, page, comics, shorts, creators }: Libra
           <p className="text-sm text-slate-300">
             <span className="font-bold text-white">Saved on this device only.</span> Sign in to keep your library on every phone and laptop.
           </p>
-          <button type="button" onClick={signIn} className="btn btn-primary px-5 py-2 text-sm">Sign in</button>
+          <Link href={authHref("signin", "/library")} className="btn btn-primary px-5 py-2 text-sm">Sign in</Link>
         </div>
       )}
 
@@ -121,7 +100,7 @@ export function LibraryView({ tab, sort, page, comics, shorts, creators }: Libra
       </nav>
 
       <div className="mt-8">
-        {tab === "saved" && <SavedSeries comics={savedComics} sort={sort} page={page} progress={progressBySeries} />}
+        {tab === "saved" && <SavedComics comics={savedComics} sort={sort} page={page} progress={progressByComic} />}
         {tab === "history" && <History history={history} byUuid={byUuid} />}
         {tab === "shorts" && <SavedShorts shorts={savedShortList} page={page} onRemove={savedShorts.toggle} />}
         {tab === "following" && <Following creators={followed} onUnfollow={follows.toggle} />}
@@ -146,12 +125,12 @@ const sorters: Record<SavedSort, ((a: Comic, b: Comic) => number) | null> = {
   az: (a, b) => a.title.localeCompare(b.title, undefined, { sensitivity: "base" }),
 };
 
-function SavedSeries({ comics, sort, page, progress }: { comics: Comic[]; sort: SavedSort; page: number; progress: Map<string, ReadingProgress> }) {
+function SavedComics({ comics, sort, page, progress }: { comics: Comic[]; sort: SavedSort; page: number; progress: Map<string, ReadingProgress> }) {
   if (!comics.length) {
     return (
       <Empty
         title="Nothing saved yet"
-        body="Tap the bookmark on any series and it lands here, ready for when the next episode drops."
+        body="Tap the bookmark on any comic and it lands here, ready for when the next episode drops."
         href="/discover"
         action="Find something to read"
       />
@@ -188,7 +167,7 @@ function SavedSeries({ comics, sort, page, progress }: { comics: Comic[]; sort: 
         ))}
       </div>
 
-      <Pagination result={result} baseHref={tabHref("saved", sort)} noun="series" />
+      <Pagination result={result} baseHref={tabHref("saved", sort)} noun="comics" />
     </>
   );
 }
@@ -227,7 +206,7 @@ function History({ history, byUuid }: { history: ReadingProgress[]; byUuid: Map<
     return (
       <Empty
         title="No reading history"
-        body="Every series you open shows up here with the page you stopped on."
+        body="Every comic you open shows up here with the page you stopped on."
         href="/discover"
         action="Start reading"
       />
@@ -370,7 +349,7 @@ function Following({ creators, onUnfollow }: { creators: FollowedCreator[]; onUn
 
   return (
     <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-      {creators.map(({ creator, series, shorts, lastActive, latest }) => (
+      {creators.map(({ creator, comics, shorts, lastActive, latest }) => (
         <li key={creator.username} className="flex flex-col border-2 border-line bg-panel p-4">
           <div className="flex items-center gap-3">
             <Link href={creatorHref(creator.username)}>
@@ -381,7 +360,7 @@ function Following({ creators, onUnfollow }: { creators: FollowedCreator[]; onUn
                 {creator.username}
               </Link>
               <p className="text-xs text-slate-400">
-                {[series && `${series} series`, shorts && `${shorts} shorts`].filter(Boolean).join(" · ")}
+                {[comics && comicCount(comics), shorts && `${shorts} ${shorts === 1 ? "short" : "shorts"}`].filter(Boolean).join(" · ")}
                 {lastActive && ` · active ${timeAgo(lastActive)}`}
               </p>
             </div>

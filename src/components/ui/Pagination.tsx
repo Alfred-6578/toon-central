@@ -6,7 +6,7 @@ type PaginationProps = {
   result: Page<unknown>;
   // The current URL without ?page=, e.g. "/genres/action?sort=az".
   baseHref: string;
-  // What's being counted, for "21–40 of 46 series".
+  // What's being counted, for "21–40 of 46 comics".
   noun: string;
   // Keeps the list in view after a page change, e.g. "#episodes".
   hash?: string;

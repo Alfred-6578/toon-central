@@ -10,7 +10,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { ComicGrid } from "@/components/ui/ComicGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getCreatorPageData, getSiteStats } from "@/lib/api/client";
-import { cloudinary, creatorSlug } from "@/lib/format";
+import { cloudinary, comicCount, creatorSlug } from "@/lib/format";
 
 type Params = PageProps<"/creators/[slug]">;
 
@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const data = await getCreatorPageData(creatorSlug(decodeURIComponent(slug)));
   if (!data) return { title: "Creator not found | Toon Central" };
   const { creator, stats } = data;
-  const work = [stats.series && `${stats.series} series`, data.shorts.length && `${data.shorts.length} shorts`].filter(Boolean).join(" and ");
+  const work = [stats.comics && comicCount(stats.comics), data.shorts.length && `${data.shorts.length} shorts`].filter(Boolean).join(" and ");
   return {
     title: `${creator.username} | Toon Central`,
     description: `${creator.username} on Toon Central: ${work}.`,
@@ -50,7 +50,7 @@ export default async function CreatorPage({ params }: Params) {
         <div className="mx-auto px-6 pb-16 md:px-8 lg:px-10">
           {comics.length > 0 && (
             <section className="mt-12">
-              <SectionHeader title="Series" action={null}>
+              <SectionHeader title="Comics" action={null}>
                 <span className="pb-0.5 text-sm text-slate-400">Most read first</span>
               </SectionHeader>
               <ComicGrid comics={comics} limit={comics.length} mobile="grid" />

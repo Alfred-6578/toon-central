@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { IoLockClosed } from "react-icons/io5";
 import { dateParts } from "@/components/home/latest/releaseLogData";
 import { SectionHeader } from "@/components/ui/SectionHeader";
@@ -14,19 +15,30 @@ const formatDate = (date: string) => {
   return `${day} ${month} ${year}`;
 };
 
-type EpisodeListProps = Pick<ComicPageData, "episodes" | "episodesSource"> & { comic: Comic; page: number };
+type EpisodeListProps = Pick<ComicPageData, "episodes" | "episodesSource"> & {
+  comic: Comic;
+  page: number;
+  // Replaces the "Episodes" heading, e.g. with the Episodes | Shorts tabs.
+  heading?: ReactNode;
+};
 
-export function EpisodeList({ comic, episodes, episodesSource, page }: EpisodeListProps) {
+export function EpisodeList({ comic, episodes, episodesSource, page, heading }: EpisodeListProps) {
   const result = paginate(episodes, page, PAGE_SIZES.episodes);
+  const summary = episodes.length > 0 && (
+    <span className="pb-0.5 text-sm text-slate-400">
+      {episodes.length} {episodes.length === 1 ? "episode" : "episodes"} · first {FREE_EPISODES} free
+    </span>
+  );
   return (
-    <section id="episodes" className="mt-12">
-      <SectionHeader title="Episodes" action={null}>
-        {episodes.length > 0 && (
-          <span className="pb-0.5 text-sm text-slate-400">
-            {episodes.length} {episodes.length === 1 ? "episode" : "episodes"} · first {FREE_EPISODES} free
-          </span>
-        )}
-      </SectionHeader>
+    <>
+      {heading ? (
+        <>
+          {heading}
+          {summary && <p className="-mt-1 mb-5">{summary}</p>}
+        </>
+      ) : (
+        <SectionHeader title="Episodes" action={null}>{summary}</SectionHeader>
+      )}
 
       {episodesSource === "placeholder" && (
         <p className="mb-5 border-2 border-dashed border-line px-4 py-3 text-xs text-slate-400">
@@ -38,7 +50,7 @@ export function EpisodeList({ comic, episodes, episodesSource, page }: EpisodeLi
       {episodesSource === "unknown" ? (
         <div className="flex flex-col items-start gap-4 border-2 border-line bg-panel p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-sm leading-6 text-slate-300">
-            The episode list for this series comes from the live API, which isn&apos;t connected in this preview. You can still start
+            The episode list for this comic comes from the live API, which isn&apos;t connected in this preview. You can still start
             from the first episode.
           </p>
           <Link href={readerHref(comic.uuid)} className="btn btn-primary px-5 py-3">Read episode 1</Link>
@@ -75,6 +87,6 @@ export function EpisodeList({ comic, episodes, episodesSource, page }: EpisodeLi
       {episodesSource !== "unknown" && (
         <Pagination result={result} baseHref={comicHref(comic.uuid)} noun="episodes" hash="#episodes" />
       )}
-    </section>
+    </>
   );
 }

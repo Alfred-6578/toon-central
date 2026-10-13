@@ -2,6 +2,9 @@ const compact = new Intl.NumberFormat("en", { notation: "compact", maximumFracti
 
 export const formatCount = (n: number) => compact.format(n);
 
+// "1 comic", "18 comics". Comics are never called "series": Series is planned as a separate medium.
+export const comicCount = (n: number) => `${n} ${n === 1 ? "comic" : "comics"}`;
+
 const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
   ["year", 31536000],
@@ -69,7 +72,7 @@ export const comicHref = (uuid: string) => `/comics/${uuid}`;
 export const readerHref = (uuid: string, episode = 1) => `/comics/${uuid}/read/${episode}`;
 export const shortHref = (uuid: string) => `/shorts/${uuid}`;
 
-// A series counts as active if its last episode landed within this window.
+// A comic counts as active if its last episode landed within this window.
 const ACTIVE_DAYS = 21;
 
 export function isRecentlyUpdated(lastEpisodeAt: string | null) {
@@ -78,7 +81,7 @@ export function isRecentlyUpdated(lastEpisodeAt: string | null) {
   return age >= 0 && age < ACTIVE_DAYS * 86400 * 1000;
 }
 
-// "Updates Saturdays", but only for ongoing series that are actually keeping their schedule.
+// "Updates Saturdays", but only for ongoing comics that are actually keeping their schedule.
 export function scheduleLabel(comic: { status: string; updateDays: string | null; lastEpisodeAt: string | null }) {
   if (comic.status === "COMPLETED" || !comic.updateDays || !isRecentlyUpdated(comic.lastEpisodeAt)) return null;
   return `Updates ${comic.updateDays}s`;

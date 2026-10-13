@@ -1,7 +1,7 @@
 import { IoLaptopOutline } from "react-icons/io5";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import type { Comic, Creator } from "@/lib/api/types";
-import { cloudinary, comicHref, creatorHref, formatCount } from "@/lib/format";
+import { cloudinary, comicCount, comicHref, creatorHref, formatCount } from "@/lib/format";
 
 type CreatorGroup = { creator: Creator; comics: Comic[]; reads: number; latest: string; inTopTen: boolean };
 
@@ -31,13 +31,13 @@ function CreatorShelf({ group }: { group: CreatorGroup }) {
         <div className="min-w-0">
           <p className="truncate font-bold text-white group-hover:text-mint">{creator.username}</p>
           <p className="mt-0.5 text-xs text-slate-400">
-            {comics.length} series · {formatCount(reads)} reads
+            {comicCount(comics.length)} · {formatCount(reads)} reads
           </p>
         </div>
       </a>
 
       {comics.length === 1 ? (
-        <SingleSeries comic={comics[0]} />
+        <SingleComic comic={comics[0]} />
       ) : (
         <ul className="mt-4 grid grid-cols-4 gap-2.5">
           {comics.slice(0, 4).map((comic) => (
@@ -45,7 +45,7 @@ function CreatorShelf({ group }: { group: CreatorGroup }) {
               <a href={comicHref(comic.uuid)} className="group block">
                 <Cover comic={comic} />
                 <p className="mt-1.5 truncate text-xs font-semibold text-white group-hover:text-mint">{comic.title}</p>
-                <p className="text-[11px] text-slate-400">{seriesMeta(comic)}</p>
+                <p className="text-[11px] text-slate-400">{comicMeta(comic)}</p>
               </a>
             </li>
           ))}
@@ -55,7 +55,7 @@ function CreatorShelf({ group }: { group: CreatorGroup }) {
   );
 }
 
-const seriesMeta = (comic: Comic) =>
+const comicMeta = (comic: Comic) =>
   `${comic.episodes != null ? `${comic.episodes} ch` : `${formatCount(comic.views)} reads`}${comic.status === "COMPLETED" ? " · Done" : ""}`;
 
 function Cover({ comic }: { comic: Comic }) {
@@ -66,8 +66,8 @@ function Cover({ comic }: { comic: Comic }) {
   );
 }
 
-// A creator with one series gets that series' blurb beside the cover instead of an empty row.
-function SingleSeries({ comic }: { comic: Comic }) {
+// A creator with one comic gets that comic's blurb beside the cover instead of an empty row.
+function SingleComic({ comic }: { comic: Comic }) {
   return (
     <a href={comicHref(comic.uuid)} className="group mt-4 flex gap-4">
       <div className="w-24 shrink-0">
@@ -75,7 +75,7 @@ function SingleSeries({ comic }: { comic: Comic }) {
       </div>
       <div className="min-w-0">
         <p className="truncate text-sm font-semibold text-white group-hover:text-mint">{comic.title}</p>
-        <p className="text-[11px] text-slate-400">{seriesMeta(comic)}</p>
+        <p className="text-[11px] text-slate-400">{comicMeta(comic)}</p>
         {comic.description && <p className="mt-2 line-clamp-4 text-xs leading-5 text-slate-300">{comic.description}</p>}
       </div>
     </a>

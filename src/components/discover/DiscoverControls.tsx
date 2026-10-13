@@ -20,7 +20,7 @@ export function DiscoverSearch() {
   );
 }
 
-// Opens a random series.
+// Opens a random comic.
 export function SurpriseMe({ uuids }: { uuids: string[] }) {
   const router = useRouter();
 

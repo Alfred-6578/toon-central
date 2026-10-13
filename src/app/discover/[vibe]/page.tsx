@@ -8,7 +8,7 @@ import { ComicGrid } from "@/components/ui/ComicGrid";
 import { Pagination } from "@/components/ui/Pagination";
 import { getSiteStats } from "@/lib/api/client";
 import { getVibe, VIBES } from "@/lib/discover";
-import { genreHref } from "@/lib/format";
+import { comicCount, genreHref } from "@/lib/format";
 import { PAGE_SIZES, pageParam, paginate, withPage } from "@/lib/pagination";
 
 type Params = PageProps<"/discover/[vibe]">;
@@ -48,7 +48,7 @@ export default async function VibePage({ params, searchParams }: Params) {
             <h1 className="mt-8 font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">{vibe.title}</h1>
             <p className="mt-4 max-w-xl text-slate-300">{vibe.blurb}</p>
             <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-slate-400">
-              <span className="mr-1">{comics.length} series tagged</span>
+              <span className="mr-1">{comicCount(comics.length)} tagged</span>
               {vibe.genres.map((genre) => (
                 <Link key={genre} href={genreHref(genre)} className="border-2 border-line px-2 py-1 font-semibold text-slate-300 hover:border-mint hover:text-white">
                   {genre}
@@ -62,12 +62,12 @@ export default async function VibePage({ params, searchParams }: Params) {
           {comics.length ? (
             <>
               <ComicGrid comics={result.items} limit={result.items.length} mobile="grid" />
-              <Pagination result={result} baseHref={baseHref} noun="series" />
+              <Pagination result={result} baseHref={baseHref} noun="comics" />
             </>
           ) : (
             <div className="border-2 border-dashed border-line p-8 text-center">
               <p className="font-display text-4xl uppercase leading-none text-white">Nothing here yet</p>
-              <p className="mt-3 text-sm text-slate-400">No series in this preview carry these genres.</p>
+              <p className="mt-3 text-sm text-slate-400">No comics in this preview carry these genres.</p>
               <Link href="/discover" className="btn btn-ghost mt-6 px-5 py-3">Back to Discover</Link>
             </div>
           )}

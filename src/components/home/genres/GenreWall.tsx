@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import type { Comic, Genre } from "@/lib/api/types";
-import { cloudinary, genreHref as genreHrefByName } from "@/lib/format";
+import { cloudinary, comicCount, genreHref as genreHrefByName } from "@/lib/format";
 import { genreTag, genreTone } from "@/lib/tagStyles";
 
 export const genreHref = (genre: Genre) => genreHrefByName(genre.name);
@@ -64,7 +64,7 @@ function FeaturedTile({ item }: { item: Featured }) {
       <div className="p-4">
         <div className="flex items-baseline justify-between gap-3">
           <p className="font-display text-2xl uppercase leading-none text-white group-hover:text-mint">{item.genre.name}</p>
-          {item.count > 0 && <p className="shrink-0 text-xs font-semibold text-slate-400">{item.count} series</p>}
+          {item.count > 0 && <p className="shrink-0 text-xs font-semibold text-slate-400">{comicCount(item.count)}</p>}
         </div>
         <p className="mt-2 truncate text-xs text-slate-400">
           {item.covers.map((c) => c.title).join(" · ")}
@@ -119,7 +119,7 @@ export function GenreWall({ genres, comics, counts, countSource }: GenreWallProp
       </ul>
 
       {countSource === "page" && (
-        <p className="mt-4 text-xs text-slate-500">Counts cover the {comics.length} series featured on this page.</p>
+        <p className="mt-4 text-xs text-slate-500">Counts cover the {comics.length} comics featured on this page.</p>
       )}
     </>
   );

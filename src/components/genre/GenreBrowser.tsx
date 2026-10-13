@@ -1,11 +1,11 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import { GenreHeader } from "@/components/genre/GenreHeader";
-import { GenreStrip } from "@/components/genre/GenreStrip";
+import { GenreWall } from "@/components/genre/GenreWall";
 import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { ComicGrid } from "@/components/ui/ComicGrid";
-import { getCatalogue, getGenrePageData, getSiteStats, type GenreKind, type GenreSort } from "@/lib/api/client";
+import { getCatalogue, getGenreCounts, getGenrePageData, getSiteStats, type GenreKind, type GenreSort } from "@/lib/api/client";
 import { genreHref } from "@/lib/format";
 import { PAGE_SIZES, pageParam, paginate, withPage } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/Pagination";
@@ -39,16 +39,18 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
   const sort = pick(query.sort, sorts.map((s) => s.value), "popular");
   const kind = pick(query.kind, kinds.map((k) => k.value), "all");
 
-  const [data, stats] = await Promise.all([getGenrePageData(slug, sort, kind), getSiteStats()]);
+  const [data, stats, catalogue] = await Promise.all([getGenrePageData(slug, sort, kind), getSiteStats(), getCatalogue()]);
   if (!data) notFound();
 
   const { genre, genres, comics, totals, source } = data;
+  // Genre sizes for the wall: real catalogue totals when the API is live, otherwise counted from what we have.
+  const counts =
+    (await getGenreCounts(genres)) ?? new Map(genres.map((g) => [g.id, catalogue.filter((c) => c.genres.includes(g.name)).length]));
   const baseHref = href(genre.name, sort, kind);
   const result = paginate(comics, pageParam(query.page), PAGE_SIZES.comics);
   if (result.outOfRange) redirect(withPage(baseHref, result.totalPages));
-  const covers = [...comics].sort((a, b) => b.views - a.views).slice(0, 3);
   // Empty genre: point at what's popular overall instead of a dead end.
-  const fallback = totals.all === 0 ? (await getCatalogue()).sort((a, b) => b.views - a.views).slice(0, 5) : [];
+  const fallback = totals.all === 0 ? [...catalogue].sort((a, b) => b.views - a.views).slice(0, 5) : [];
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -56,15 +58,13 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
         <Navigation />
         <div className="h-[66px]" />
 
-        <GenreHeader genre={genre} total={totals.all} originals={totals.originals} indies={totals.indies} covers={covers} />
+        <GenreWall genres={genres} comics={catalogue} counts={counts} current={genre.id} />
+
+        <GenreHeader genre={genre} total={totals.all} originals={totals.originals} indies={totals.indies} />
 
         <div className="mx-auto px-6 md:px-8 lg:px-10">
-          <div className="mt-6">
-            <GenreStrip genres={genres} current={genre.id} />
-          </div>
-
           {totals.all > 0 ? (
-            <section className="mb-16 mt-8">
+            <section className="mb-16 mt-6">
               <div className="mb-6 flex flex-col gap-4 border-b-2 border-line pb-4 sm:flex-row sm:items-end sm:justify-between">
                 <div className="flex border-2 border-line" role="group" aria-label="Show">
                   {kinds.map(({ value, label }) => {
@@ -103,11 +103,11 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
               </div>
 
               <ComicGrid comics={result.items} limit={result.items.length} mobile="grid" />
-              <Pagination result={result} baseHref={baseHref} noun="series" />
+              <Pagination result={result} baseHref={baseHref} noun="comics" />
 
               {source === "page" && (
                 <p className="mt-8 text-xs text-slate-500">
-                  Showing the series in this preview. The full {genre.name} catalogue loads once the live API is connected.
+                  Showing the comics in this preview. The full {genre.name} catalogue loads once the live API is connected.
                 </p>
               )}
             </section>
@@ -117,7 +117,7 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
                 <p className="font-display text-4xl uppercase leading-none text-white">No {genre.name} Mafiki yet</p>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-400">
                   {source === "page"
-                    ? "None of the series in this preview are tagged with this genre. The full catalogue may have some once the live API is connected."
+                    ? "None of the comics in this preview are tagged with this genre. The full catalogue may have some once the live API is connected."
                     : "Be the first to publish one."}
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">

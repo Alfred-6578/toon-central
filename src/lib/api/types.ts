@@ -17,14 +17,14 @@ export type Comic = {
   // Only some endpoints send this (currently /home's indie_comics); null when unknown.
   episodes: number | null;
   lastEpisodeAt: string | null;
-  // When the series itself was first published.
+  // When the comic itself was first published.
   createdAt: string | null;
   isNew: boolean;
   hasNewEpisode: boolean;
   isOriginal: boolean;
   genres: string[];
   creator: Creator;
-  // Public promo handle the creator supplied for this series, e.g. "4_7studios@instagram".
+  // Public promo handle the creator supplied for this comic, e.g. "4_7studios@instagram".
   socialHandle: string | null;
 };
 
@@ -89,5 +89,5 @@ export type CreatorPageData = {
   shorts: Short[];
   genres: string[];
   socials: SocialLink[];
-  stats: { series: number; reads: number; likes: number; chapters: number | null; shortViews: number; lastActive: string | null };
+  stats: { comics: number; reads: number; likes: number; chapters: number | null; shortViews: number; lastActive: string | null };
 };

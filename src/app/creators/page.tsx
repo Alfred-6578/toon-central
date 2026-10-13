@@ -9,6 +9,7 @@ import { Pagination } from "@/components/ui/Pagination";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { PAGE_SIZES, pageParam, paginate, withPage } from "@/lib/pagination";
 import { getCreatorsDirectory, getSiteStats, type CreatorSort } from "@/lib/api/client";
+import { comicCount } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Creators | Toon Central",
@@ -34,7 +35,7 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
   const indies = result.items.filter((c) => c.comics.length > 0);
   const animators = result.items.filter((c) => c.comics.length === 0);
   const indieTotal = creators.filter((c) => !c.isOfficial && c.comics.length > 0).length;
-  const totalSeries = creators.reduce((sum, c) => sum + c.stats.series, 0);
+  const totalComics = creators.reduce((sum, c) => sum + c.stats.comics, 0);
   const totalShorts = creators.reduce((sum, c) => sum + c.shorts.length, 0);
 
   return (
@@ -49,7 +50,7 @@ export default async function CreatorsPage({ searchParams }: PageProps<"/creator
             <div>
               <h1 className="font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl">Creators</h1>
               <p className="mt-3 text-sm text-slate-300">
-                {creators.length} creators · {totalSeries} series · {totalShorts} shorts
+                {creators.length} creators · {comicCount(totalComics)} · {totalShorts} shorts
               </p>
             </div>
 

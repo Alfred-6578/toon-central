@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComicHeader } from "@/components/comic/ComicHeader";
+import { ComicTabs } from "@/components/comic/ComicTabs";
 import { EpisodeList } from "@/components/comic/EpisodeList";
 import { ShortsRail } from "@/components/home/shorts/ShortsRail";
 import { Footer } from "@/components/layout/Footer";
@@ -29,6 +30,9 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
   if (!data) notFound();
 
   const { comic, episodes, episodesSource, moreFromCreator, similar, shorts } = data;
+  // Comics with shorts get an Episodes | Shorts switch instead of two separate sections.
+  const tab = shorts.length > 0 && query.tab === "shorts" ? "shorts" : "episodes";
+  const tabs = shorts.length > 0 && <ComicTabs uuid={comic.uuid} tab={tab} episodes={episodes.length} shorts={shorts.length} />;
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -40,16 +44,23 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
         <ComicHeader comic={comic} />
 
         <div className="mx-auto px-6 md:px-8 lg:px-10">
-          <EpisodeList comic={comic} episodes={episodes} episodesSource={episodesSource} page={pageParam(query.page)} />
-
-          {shorts.length > 0 && (
-            <section className="mt-14">
-              <SectionHeader title="Watch the short" action={null}>
-                <span className="pb-0.5 text-sm text-slate-400">Animated from this series</span>
-              </SectionHeader>
-              <ShortsRail shorts={shorts.map((s) => ({ ...s, linkedComic: null }))} />
-            </section>
-          )}
+          <section id="episodes" className="mt-12">
+            {tab === "shorts" ? (
+              <>
+                {tabs}
+                <p className="-mt-1 mb-5 text-sm text-slate-400">Animated from {comic.title}</p>
+                <ShortsRail shorts={shorts.map((s) => ({ ...s, linkedComic: null }))} />
+              </>
+            ) : (
+              <EpisodeList
+                comic={comic}
+                episodes={episodes}
+                episodesSource={episodesSource}
+                page={pageParam(query.page)}
+                heading={tabs || undefined}
+              />
+            )}
+          </section>
 
           {moreFromCreator.length > 0 && (
             <section className="mt-14">

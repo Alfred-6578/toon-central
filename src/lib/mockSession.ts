@@ -27,7 +27,7 @@ export type MockNotification = { id: string; title: string; body: string; time: 
 
 export const mockNotifications: MockNotification[] = [
   { id: "n1", title: "New episode of ODOGWU", body: "47STUDIOS just dropped the latest chapter.", time: "2h ago" },
-  { id: "n2", title: "AFRI DIVAZ was updated", body: "A series in your library has new pages.", time: "Yesterday" },
+  { id: "n2", title: "AFRI DIVAZ was updated", body: "A comic in your library has new pages.", time: "Yesterday" },
   { id: "n3", title: "Sanmi crown replied to you", body: "On AZANIA: \"Thank you! More soon.\"", time: "3d ago" },
   { id: "n4", title: "Premium renews soon", body: "Your ₦500 plan renews on 12 Nov.", time: "5d ago" },
 ];
@@ -68,7 +68,7 @@ function subscribe(listener: () => void) {
   };
 }
 
-// A set of ids kept in localStorage (saved series, liked shorts) for the mock user.
+// A set of ids kept in localStorage (saved comics, liked shorts) for the mock user.
 function createIdSetStore(key: string) {
   let memory = "[]";
 

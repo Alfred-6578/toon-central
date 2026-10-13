@@ -77,8 +77,8 @@ export function CreatorHeader({ data }: { data: CreatorPageData }) {
         </div>
 
         <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-5 border-t-2 border-line pt-6">
-          {stats.series > 0 && <Stat value={String(stats.series)} label="Series" />}
-          {stats.series > 0 && <Stat value={formatCount(stats.reads)} label="Reads" />}
+          {stats.comics > 0 && <Stat value={String(stats.comics)} label={stats.comics === 1 ? "Comic" : "Comics"} />}
+          {stats.comics > 0 && <Stat value={formatCount(stats.reads)} label="Reads" />}
           {stats.chapters != null && <Stat value={String(stats.chapters)} label={stats.chapters === 1 ? "Chapter" : "Chapters"} />}
           {shorts.length > 0 && <Stat value={String(shorts.length)} label={shorts.length === 1 ? "Short" : "Shorts"} />}
           {shorts.length > 0 && <Stat value={formatCount(stats.shortViews)} label="Short views" />}

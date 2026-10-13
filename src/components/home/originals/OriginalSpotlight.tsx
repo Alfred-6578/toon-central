@@ -6,7 +6,7 @@ import { cloudinary, comicHref, formatCount, scheduleLabel, timeAgo } from "@/li
 import { genreTag } from "@/lib/tagStyles";
 
 function freshness(comic: Comic) {
-  if (comic.status === "COMPLETED") return "Completed series";
+  if (comic.status === "COMPLETED") return "Completed";
   return scheduleLabel(comic) ?? (comic.lastEpisodeAt ? `Last episode ${timeAgo(comic.lastEpisodeAt)}` : "Ongoing");
 }
 
