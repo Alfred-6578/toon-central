@@ -30,7 +30,7 @@ export function ShortCard({ short, duration, onOpen, className = "w-[44vw] shrin
         className="block w-full text-left"
       >
         <div
-          className={`relative aspect-[4/5] overflow-hidden border-2 bg-panel transition-shadow duration-200 ${
+          className={`halftone-sweep relative aspect-[4/5] overflow-hidden border-2 transition-shadow duration-200 ${
             short.isSponsored
               ? "border-dashed border-sun"
               : "border-line group-hover:border-mint group-hover:shadow-[6px_6px_0_var(--color-mint-deep)]"

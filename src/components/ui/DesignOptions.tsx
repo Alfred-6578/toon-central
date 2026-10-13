@@ -16,6 +16,9 @@ type DesignOptionsProps = {
   className?: string;
 };
 
+// Up to three choices side by side; four wrap into two rows of two.
+const columnsFor = (count: number) => (count > 3 ? 2 : count);
+
 export function DesignOptions({ selection, basePath = "/", only, className = "bottom-24 left-4 lg:bottom-6 lg:left-6" }: DesignOptionsProps) {
   // null = not toggled yet: expanded on desktop, collapsed on phones so it doesn't cover the page.
   const [open, setOpen] = useState<boolean | null>(null);
@@ -37,7 +40,10 @@ export function DesignOptions({ selection, basePath = "/", only, className = "bo
             {keys.map((key) => (
               <div key={key}>
                 <p className="mb-1.5 text-xs font-semibold text-slate-400">{designOptions[key].label}</p>
-                <div className="grid grid-cols-2 border-2 border-line">
+                <div
+                  className="grid border-2 border-line"
+                  style={{ gridTemplateColumns: `repeat(${columnsFor(Object.keys(designOptions[key].choices).length)}, minmax(0, 1fr))` }}
+                >
                   {Object.entries(designOptions[key].choices).map(([choice, label]) => {
                     const active = selection[key] === choice;
                     return (

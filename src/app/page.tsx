@@ -2,6 +2,7 @@ import { Navigation } from "@/components/layout/Navigation";
 import { Footer } from "@/components/layout/Footer";
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { ContinueReadingSection } from "@/components/home/ContinueReadingSection";
+import { WelcomeScreen } from "@/components/home/WelcomeScreen";
 import { TrendingSection } from "@/components/home/TrendingSection";
 import { ShortsSection } from "@/components/home/ShortsSection";
 import { NewChaptersSection } from "@/components/home/NewChaptersSection";
@@ -22,7 +23,8 @@ function uniqueComics(lists: Comic[][]) {
 
 export default async function Home({ searchParams }: PageProps<"/">) {
   // Design options under review (?hero=…&trending=…), see src/lib/designOptions.ts.
-  const design = resolveDesign(await searchParams);
+  const query = await searchParams;
+  const design = resolveDesign(query);
 
   const [rawFeed, rawCarousel, shorts, genres] = await Promise.all([
     getHomeFeed(),
@@ -116,6 +118,14 @@ export default async function Home({ searchParams }: PageProps<"/">) {
       </main>
 
       <DesignOptions selection={design} />
+      {/* First visit only; ?intro=1 replays it for demos. The covers are the hero's, already loading. */}
+      <WelcomeScreen
+        variant={design.welcome}
+        covers={heroSlides}
+        catalogue={[...allComics].sort((a, b) => b.views - a.views)}
+        genres={genres}
+        force={query.intro === "1"}
+      />
     </div>
   );
 }

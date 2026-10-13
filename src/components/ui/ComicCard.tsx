@@ -40,7 +40,7 @@ export function ComicCard({ comic, tone = "dark", showOriginalBadge = true, clas
   return (
     <article className={`group relative transition-transform duration-200 hover:-translate-y-1 ${className}`}>
       <a href={comicHref(comic.uuid)} className="block">
-        <div className={`relative aspect-[3/4] overflow-hidden border-2 bg-panel transition-shadow duration-200 ${t.frame}`}>
+        <div className={`halftone-sweep relative aspect-[3/4] overflow-hidden border-2 transition-shadow duration-200 ${t.frame}`}>
           <img
             src={cloudinary(comic.coverImage, 500)}
             alt={comic.title}

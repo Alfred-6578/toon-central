@@ -1,5 +1,6 @@
 "use client";
 
+import { BubbleDots } from "@/components/ui/Loaders";
 import { useEffect, useState } from "react";
 import { FaRegEye } from "react-icons/fa6";
 import { IoClose, IoSearch } from "react-icons/io5";
@@ -74,7 +75,7 @@ export function SearchPanel({ open, onClose }: { open: boolean; onClose: () => v
           <p className="font-display text-xl uppercase leading-none text-white">
             {searching ? `Results for “${results!.query}”` : "Trending right now"}
           </p>
-          {loading && <span className="text-xs text-slate-400">Searching…</span>}
+          {loading && <BubbleDots label="Searching" className="text-slate-400" />}
         </div>
 
         {results && results.comics.length === 0 && (

@@ -334,3 +334,162 @@ img {
     animation: none;
   }
 }
+
+/* ─── Loading & welcome ─────────────────────────────────────────────── */
+
+/* The logo being inked: each stroke is traced, then filled, then the whole mark fades for the next pass. */
+.ink-logo path {
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-dasharray: 720;
+  stroke-dashoffset: 720;
+  fill-opacity: 0;
+  animation: inkDraw 2.8s ease-in-out infinite;
+}
+.ink-logo path:nth-of-type(2) { animation-delay: 0.08s; }
+.ink-logo path:nth-of-type(3) { animation-delay: 0.16s; }
+.ink-logo path:nth-of-type(4) { animation-delay: 0.24s; }
+.ink-logo path:nth-of-type(5) { animation-delay: 0.32s; }
+.ink-logo path:nth-of-type(6) { animation-delay: 0.4s; }
+.ink-logo path:nth-of-type(7) { animation-delay: 0.48s; }
+.ink-logo path:nth-of-type(8) { animation-delay: 0.56s; }
+.ink-logo rect {
+  opacity: 0;
+  animation: inkBand 2.8s ease-in-out infinite;
+}
+
+@keyframes inkDraw {
+  0% { stroke-dashoffset: 720; fill-opacity: 0; opacity: 1; }
+  45% { stroke-dashoffset: 0; fill-opacity: 0; }
+  62% { fill-opacity: 1; }
+  88% { stroke-dashoffset: 0; fill-opacity: 1; opacity: 1; }
+  100% { stroke-dashoffset: 0; fill-opacity: 1; opacity: 0; }
+}
+@keyframes inkBand {
+  0%, 50% { opacity: 0; }
+  64%, 88% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Appears only if loading takes a moment, so quick page changes never flash a loader. */
+.delayed-in {
+  opacity: 0;
+  animation: fadeIn 0.3s ease-out 0.25s forwards;
+}
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* Cover placeholder: faint halftone with a brighter band of dots rolling across, like ink on a press.
+   Sits behind a cover <img>; the loaded image simply covers it. */
+.halftone-sweep {
+  position: relative;
+  background-color: var(--color-panel);
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.07) 1.2px, transparent 1.6px);
+  background-size: 9px 9px;
+  overflow: hidden;
+}
+.halftone-sweep::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(62, 255, 162, 0.35) 1.4px, transparent 1.8px);
+  background-size: 9px 9px;
+  mask-image: linear-gradient(110deg, transparent 35%, #000 50%, transparent 65%);
+  mask-size: 250% 100%;
+  animation: halftoneSweep 1.6s linear infinite;
+}
+.halftone-sweep > img {
+  position: relative;
+}
+@keyframes halftoneSweep {
+  from { mask-position: 100% 0; }
+  to { mask-position: -150% 0; }
+}
+
+/* Speech bubble with three dots: the small loading icon. */
+.bubble-dots span {
+  animation: bubbleDot 1s ease-in-out infinite;
+}
+.bubble-dots span:nth-child(2) { animation-delay: 0.15s; }
+.bubble-dots span:nth-child(3) { animation-delay: 0.3s; }
+@keyframes bubbleDot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-35%); opacity: 1; }
+}
+
+/* Welcome screen: panels print top to bottom, one after another; then the speech bubble pops. */
+.panel-print {
+  clip-path: inset(0 0 100% 0);
+  animation: panelPrint 0.45s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+@keyframes panelPrint {
+  to { clip-path: inset(0 0 0 0); }
+}
+.bubble-pop {
+  opacity: 0;
+  transform: scale(0.6) rotate(-4deg);
+  animation: bubblePop 0.35s cubic-bezier(0.3, 1.5, 0.5, 1) forwards;
+}
+@keyframes bubblePop {
+  to { opacity: 1; transform: scale(1) rotate(2deg); }
+}
+.welcome-rise {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: welcomeRise 0.4s ease-out forwards;
+}
+@keyframes welcomeRise {
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ink-logo path { animation: none; stroke-dashoffset: 0; fill-opacity: 1; }
+  .ink-logo rect { animation: none; opacity: 1; }
+  .halftone-sweep::before { animation: none; mask-image: none; opacity: 0.4; }
+  .bubble-dots span { animation: none; opacity: 0.8; }
+  .panel-print, .bubble-pop, .welcome-rise, .delayed-in { animation: none; clip-path: none; opacity: 1; transform: none; }
+}
+
+/* The welcome sequence holds until its covers have loaded (or a short timeout passes). */
+[data-welcome-ready="false"] .panel-print,
+[data-welcome-ready="false"] .bubble-pop,
+[data-welcome-ready="false"] .welcome-rise {
+  animation-play-state: paused;
+}
+
+/* Welcome "cover wall": rows of covers drifting sideways, alternate rows the other way. */
+.cover-drift {
+  animation: coverDrift 60s linear infinite;
+}
+.cover-drift-reverse {
+  animation-direction: reverse;
+}
+@keyframes coverDrift {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cover-drift { animation: none; }
+}
+
+/* Welcome "pull back": starts zoomed into the centre cover, eases out to the whole wall. */
+.pull-back {
+  transform: translate(-50%, -50%) scale(var(--zoom-from, 4));
+  animation: pullBack 1.7s cubic-bezier(0.65, 0, 0.35, 1) 0.3s forwards;
+}
+@keyframes pullBack {
+  to { transform: translate(-50%, -50%) scale(1); }
+}
+.fade-in-late {
+  opacity: 0;
+  animation: fadeIn 0.6s ease-out forwards;
+}
+[data-welcome-ready="false"] .pull-back,
+[data-welcome-ready="false"] .fade-in-late {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pull-back { animation: none; transform: translate(-50%, -50%) scale(1); }
+  .fade-in-late { animation: none; opacity: 1; }
+}
