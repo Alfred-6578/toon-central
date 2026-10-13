@@ -16,7 +16,7 @@ export function NewChaptersSection({ comics, log, variant = "log" }: NewChapters
   return (
     <section id="latest" className="mt-14">
       <RevealOnScroll className="block">
-        <SectionHeader title="Latest Updates">
+        <SectionHeader title="Latest Updates" action="View all" href="/new/latest">
           {variant === "log" && <span className="pb-0.5 text-sm text-slate-400">New episodes and shorts, newest first</span>}
         </SectionHeader>
 

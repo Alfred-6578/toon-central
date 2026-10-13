@@ -61,6 +61,7 @@ export default async function DiscoverPage() {
             </section>
           )}
 
+
           {/* 3. Hidden gems */}
           {gems.length > 0 && (
             <section className="mt-16">

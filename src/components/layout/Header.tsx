@@ -81,8 +81,12 @@ export function Header({
               {item.label}
             </Link>
           ))}
-          <Link href="/#subscribe" className="flex items-center gap-1.5 border-b-2 border-transparent pb-0.5 text-sun hover:text-white">
-            Subscribe <span className="tag bg-sun">₦500</span>
+          <Link
+            href="/subscription"
+            aria-current={activeSection === "subscription" ? "true" : undefined}
+            className={`flex items-center gap-1.5 border-b-2 pb-0.5 text-sun hover:text-white ${activeSection === "subscription" ? "border-sun" : "border-transparent"}`}
+          >
+            Subscribe <span className="tag whitespace-nowrap bg-sun"><span className="hidden xl:inline">From&nbsp;</span>₦100</span>
           </Link>
         </nav>
 
@@ -159,10 +163,10 @@ export function Header({
             </>
           ) : (
             <>
-              <Link href={signInHref} className="btn btn-ghost hidden h-10 lg:inline-flex">
+              <Link href={signInHref} className="btn btn-ghost hidden h-10 whitespace-nowrap lg:inline-flex">
                 Sign in
               </Link>
-              <Link href={joinHref} className="btn btn-primary h-10">
+              <Link href={joinHref} className="btn btn-primary h-10 whitespace-nowrap">
                 Join now
               </Link>
             </>

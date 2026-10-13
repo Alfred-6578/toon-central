@@ -108,7 +108,7 @@ export function AccountMenu({
       <div className="mx-4 mb-2 grid grid-cols-2 border-2 border-line text-xs">
         <div className="border-r-2 border-line p-2.5">
           <span className={`tag ${user.plan.tier === "Premium" ? "bg-mint" : "bg-paper"}`}>{user.plan.tier}</span>
-          <p className="mt-1.5 text-slate-400">{user.plan.renews ? `Renews ${user.plan.renews}` : "₦500/month"}</p>
+          <p className="mt-1.5 text-slate-400">{user.plan.renews ? `Renews ${user.plan.renews}` : "Free plan"}</p>
         </div>
         <div className="p-2.5">
           <p className="flex items-center gap-1.5 font-semibold text-white">

@@ -6,7 +6,7 @@ import { BubbleDots } from "@/components/ui/Loaders";
 import { Logo } from "@/components/ui/Logo";
 import type { Comic, Genre } from "@/lib/api/types";
 import { useRouter } from "next/navigation";
-import { cloudinary, cloudinaryTransform, genreHref } from "@/lib/format";
+import { cloudinary, genreHref } from "@/lib/format";
 import type { DesignChoice } from "@/lib/designOptions";
 import { useLocalValue } from "@/lib/localValue";
 
@@ -18,6 +18,9 @@ const READY_TIMEOUT_MS = 6000;
 // Same size the homepage hero loads, so the welcome reuses that download (and the image service
 // already has it made) instead of asking for a size nothing else uses.
 const COVER_WIDTH = 700;
+// Same size ComicCard uses, so the homepage's own cards reuse these downloads (and vice versa).
+// Crops are done in the browser (object-fit), not as new Cloudinary versions.
+const CARD_WIDTH = 500;
 
 type WelcomeProps = {
   variant: DesignChoice<"welcome">;
@@ -213,7 +216,7 @@ const VOICES_OUTRO = 0.4 + GREETINGS.length * VOICE_STEP + 0.2;
 
 function VoicesWelcome({ catalogue, onClose }: { catalogue: Comic[]; onClose: () => void }) {
   // One character per greeting: the most-read covers, cropped close on the art.
-  const faces = catalogue.slice(0, GREETINGS.length).map((c) => cloudinaryTransform(c.coverImage, "c_fill,w_360,h_300,g_north,q_auto,f_auto"));
+  const faces = catalogue.slice(0, GREETINGS.length).map((c) => cloudinary(c.coverImage, CARD_WIDTH));
   const ready = useImagesReady(faces);
   const startRef = useFocusWhen(ready, VOICES_OUTRO + 0.4);
 
@@ -230,7 +233,7 @@ function VoicesWelcome({ catalogue, onClose }: { catalogue: Comic[]; onClose: ()
           {faces.map((src, i) => (
             <li key={src} className="relative">
               <div className="halftone-sweep overflow-hidden border-[3px] border-black shadow-[4px_4px_0_#000]">
-                <img src={src} alt="" className="panel-print aspect-[2/1] w-full object-cover sm:aspect-[6/5]" style={{ animationDelay: `${0.4 + i * VOICE_STEP}s` }} />
+                <img src={src} alt="" className="panel-print aspect-[2/1] w-full object-cover object-[50%_20%] sm:aspect-[6/5]" style={{ animationDelay: `${0.4 + i * VOICE_STEP}s` }} />
               </div>
               <div
                 className={`bubble-pop absolute -top-4 max-w-[85%] border-2 border-black bg-white px-2 py-1 sm:-top-5 sm:px-2.5 sm:py-1.5 text-ink shadow-[2px_2px_0_#000] ${i % 2 ? "right-1" : "left-1"}`}
@@ -272,7 +275,7 @@ const PULL_MS = 1700;
 
 function PullBackWelcome({ covers, catalogue, onClose }: { covers: Comic[]; catalogue: Comic[]; onClose: () => void }) {
   const hero = covers[0];
-  const heroArt = cloudinary(hero.coverImage, 900);
+  const heroArt = cloudinary(hero.coverImage, COVER_WIDTH);
   const ready = useImagesReady([heroArt]);
   const startRef = useFocusWhen(ready, PULL_MS / 1000 + 0.8);
   const gridRef = useRef<HTMLDivElement>(null);
@@ -303,12 +306,10 @@ function PullBackWelcome({ covers, catalogue, onClose }: { covers: Comic[]; cata
           i === centre ? (
             <img key="centre" data-centre={layout} src={heroArt} alt="" className="aspect-[3/4] w-full border-[3px] border-black object-cover" />
           ) : (
-            <img
-              key={i}
-              src={cloudinary(cell(i).coverImage, 240)}
-              alt=""
-              className="aspect-[3/4] w-full border-[3px] border-black object-cover"
-            />
+            // Tiles still loading show the halftone placeholder rather than a black square.
+            <div key={i} className="halftone-sweep aspect-[3/4] border-[3px] border-black">
+              <img src={cloudinary(cell(i).coverImage, CARD_WIDTH)} alt="" className="h-full w-full object-cover" />
+            </div>
           )
         )}
       </div>
@@ -367,7 +368,7 @@ const MAX_PICKS = 3;
 
 function WallWelcome({ catalogue, genres, onClose }: { catalogue: Comic[]; genres: Genre[]; onClose: () => void }) {
   const covers = catalogue.slice(0, 20);
-  const ready = useImagesReady(covers.slice(0, 6).map((c) => cloudinary(c.coverImage, 220)));
+  const ready = useImagesReady(covers.slice(0, 6).map((c) => cloudinary(c.coverImage, CARD_WIDTH)));
   const continueRef = useFocusWhen(ready, 1);
   const router = useRouter();
   const [, setSavedPicks] = useLocalValue(PICKS_KEY, "[]");
@@ -401,12 +402,9 @@ function WallWelcome({ catalogue, genres, onClose }: { catalogue: Comic[]; genre
           {rows.map((row, r) => (
             <div key={r} className={`cover-drift flex w-max gap-4 ${r % 2 ? "cover-drift-reverse" : ""}`}>
               {[...row, ...row, ...row, ...row].map((comic, i) => (
-                <img
-                  key={`${comic.uuid}-${i}`}
-                  src={cloudinary(comic.coverImage, 220)}
-                  alt=""
-                  className="aspect-[3/4] w-28 shrink-0 border-[3px] border-black object-cover sm:w-36"
-                />
+                <div key={`${comic.uuid}-${i}`} className="halftone-sweep aspect-[3/4] w-28 shrink-0 border-[3px] border-black sm:w-36">
+                  <img src={cloudinary(comic.coverImage, CARD_WIDTH)} alt="" className="h-full w-full object-cover" />
+                </div>
               ))}
             </div>
           ))}

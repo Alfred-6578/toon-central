@@ -37,13 +37,13 @@ export function ReaderGate({ episode, firstEpisodeHref }: ReaderGateProps) {
         Keep reading episode {episode}
       </h2>
       <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-slate-300">
-        That&apos;s the free preview. Premium unlocks the rest of this episode, early chapters and ad-free reading, from{" "}
-        <span className="font-bold text-mint">₦500/month</span>.
+        That&apos;s the free preview. A pass or plan unlocks the rest of this episode and every locked chapter, from{" "}
+        <span className="font-bold text-mint">₦100 a day</span>.
       </p>
       <div className="mt-7 flex flex-wrap justify-center gap-3">
         <Link href="/subscription" className="btn btn-primary px-6 py-3 text-base">Subscribe</Link>
         <Link href={authHref("signin", pathname)} className="btn btn-ghost px-6 py-3 text-base">
-          Already Premium? Sign in
+          Already subscribed? Sign in
         </Link>
       </div>
       <p className="mt-6 text-xs text-slate-500">

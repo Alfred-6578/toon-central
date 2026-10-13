@@ -85,7 +85,7 @@ export function ProfileView({ comics, creators }: { comics: Comic[]; creators: F
         <div className="flex flex-wrap items-stretch gap-3">
           <div className="border-2 border-line px-4 py-2.5">
             <span className={`tag ${user.plan.tier === "Premium" ? "bg-mint" : "bg-paper"}`}>{user.plan.tier}</span>
-            <p className="mt-1.5 text-xs text-slate-400">{user.plan.renews ? `Renews ${user.plan.renews}` : "₦500/month"}</p>
+            <p className="mt-1.5 text-xs text-slate-400">{user.plan.renews ? `Renews ${user.plan.renews}` : "Free plan"}</p>
           </div>
           <div className="border-2 border-line px-4 py-2.5">
             <p className="flex items-center gap-1.5 font-semibold text-white">

@@ -1,13 +1,14 @@
 "use client";
 
-import { IoBanOutline, IoCutOutline, IoDiamondOutline, IoFlashOutline, IoWalletOutline } from "react-icons/io5";
+import { IoBanOutline, IoCutOutline, IoLibraryOutline, IoLockOpenOutline, IoWalletOutline } from "react-icons/io5";
 import { Avatar } from "@/components/layout/nav/Menus";
 import { useMockSession, type MockUser } from "@/lib/mockSession";
 
-// The live site's own pitch: "Premium titles, early chapters, and ad-free reading - all from ₦500/month."
+// What the live subscription page's passes include. Price is the cheapest way in: the ₦100 day pass
+// (the old "from ₦500/month" line didn't match any plan: ₦500 is the weekly pass).
 const benefits = [
-  { icon: IoDiamondOutline, label: "Premium titles" },
-  { icon: IoFlashOutline, label: "Early chapters" },
+  { icon: IoLockOpenOutline, label: "Every locked chapter" },
+  { icon: IoLibraryOutline, label: "Every comic" },
   { icon: IoBanOutline, label: "Ad-free reading" },
 ];
 
@@ -31,7 +32,7 @@ function Coupon() {
 
       <div className="grid border-2 border-dashed border-paper/50 md:grid-cols-[minmax(0,1fr)_auto]">
         <div className="p-6 sm:p-8">
-          <span className="tag -rotate-2 bg-sun text-sm">Toon Central Premium</span>
+          <span className="tag -rotate-2 bg-sun text-sm">Toon Central plans</span>
           <h2 className="mt-4 font-display text-4xl uppercase leading-none text-white sm:text-5xl md:text-6xl">
             Unlock the full library
           </h2>
@@ -50,8 +51,8 @@ function Coupon() {
         <div className="relative flex flex-col items-center justify-center gap-1 border-t-2 border-dashed border-paper/50 bg-paper p-6 text-center text-ink md:w-72 md:border-l-2 md:border-t-0">
           <Notches />
           <p className="text-xs font-bold uppercase tracking-wide text-ink/60">From</p>
-          <p className="font-display text-7xl leading-none">₦500</p>
-          <p className="font-display text-xl uppercase leading-none">per month</p>
+          <p className="font-display text-7xl leading-none">₦100</p>
+          <p className="font-display text-xl uppercase leading-none">per day</p>
           <a href="/subscription" className="btn btn-primary mt-5 w-full px-6 py-3 text-base">Subscribe</a>
         </div>
       </div>
@@ -70,7 +71,7 @@ function MemberCard({ user }: { user: MockUser }) {
         <div>
           <span className="tag bg-mint">Premium member</span>
           <h2 className="mt-3 font-display text-4xl uppercase leading-none text-white sm:text-5xl">You&apos;re all set, {firstName}</h2>
-          <p className="mt-2 text-slate-300">Premium titles, early chapters and ad-free reading are unlocked.</p>
+          <p className="mt-2 text-slate-300">Every locked chapter and ad-free reading are unlocked.</p>
         </div>
       </div>
 

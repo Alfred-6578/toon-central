@@ -3,7 +3,6 @@ import type { ReactNode } from "react";
 import { IoLockClosed } from "react-icons/io5";
 import { dateParts } from "@/components/home/latest/releaseLogData";
 import { SectionHeader } from "@/components/ui/SectionHeader";
-import { FREE_EPISODES } from "@/lib/api/client";
 import type { Comic, ComicPageData } from "@/lib/api/types";
 import { cloudinary, comicHref } from "@/lib/format";
 import { PAGE_SIZES, paginate } from "@/lib/pagination";
@@ -26,7 +25,7 @@ export function EpisodeList({ comic, episodes, episodesSource, page, heading }: 
   const result = paginate(episodes, page, PAGE_SIZES.episodes);
   const summary = episodes.length > 0 && (
     <span className="pb-0.5 text-sm text-slate-400">
-      {episodes.length} {episodes.length === 1 ? "episode" : "episodes"} · first {FREE_EPISODES} free
+      {episodes.length} {episodes.length === 1 ? "episode" : "episodes"}
     </span>
   );
   return (

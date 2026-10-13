@@ -47,7 +47,7 @@ export const mockNotifications: MockNotification[] = [
   { id: "n1", kind: "episode", title: "New episode of ODOGWU", body: "47STUDIOS just dropped the latest chapter.", time: "2h ago", href: "/comics/4c06eec3-c5a8-4c4c-b2e0-2aaad1478f01" },
   { id: "n2", kind: "episode", title: "AFRI DIVAZ was updated", body: "A comic in your library has new pages.", time: "Yesterday", href: "/comics/9e20eecf-14ee-4312-bf68-ea3e9f348c0f" },
   { id: "n3", kind: "reply", title: "Sanmi crown replied to you", body: "On AZANIA: \"Thank you! More soon.\"", time: "3d ago", href: "/creators/sanmi-crown" },
-  { id: "n4", kind: "account", title: "Premium renews soon", body: "Your ₦500 plan renews on 12 Nov.", time: "5d ago", href: "/subscription" },
+  { id: "n4", kind: "account", title: "Premium renews soon", body: "Your Premium plan renews on 12 Nov.", time: "5d ago", href: "/subscription" },
 ];
 
 let memoryValue = false;

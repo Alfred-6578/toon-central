@@ -22,24 +22,15 @@ export function PremiumCTA({ variant = "coupon" }: { variant?: DesignChoice<"sub
               Unlock the full library
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-slate-300">
-              Premium titles, early chapters, and ad-free reading, all from{" "}
-              <span className="font-bold text-mint">₦500/month</span>.
+              Every locked chapter, every comic and ad-free reading, from{" "}
+              <span className="font-bold text-mint">₦100 a day</span>.
             </p>
           </div>
 
-          <form className="flex w-full max-w-xl flex-col gap-4 max-lg:hidden sm:flex-row sm:items-center">
-            <input
-              type="email"
-              placeholder="Enter your email"
-              className="h-12 flex-1 rounded-[3px] border-2 border-line bg-ink px-4 text-sm text-white placeholder:text-slate-500 outline-none focus:border-mint"
-            />
-            <button type="submit" className="btn btn-primary h-12 px-6 text-base">
-              Subscribe now
-            </button>
-          </form>
-          <button className="btn btn-primary h-12 px-6 text-base lg:hidden">
+          {/* Was an email field that went nowhere ("Subscribe" means Premium here, not a newsletter). */}
+          <a href="/subscription" className="btn btn-primary h-12 shrink-0 px-8 text-base">
             Subscribe now
-          </button>
+          </a>
         </div>
       </RevealOnScroll>
     </section>

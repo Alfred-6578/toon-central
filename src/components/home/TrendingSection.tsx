@@ -9,7 +9,7 @@ export function TrendingSection({ comics, variant = "chart" }: { comics: Comic[]
   return (
     <section id="trending" className="mt-14">
       <RevealOnScroll className="block">
-        <SectionHeader title="Trending">
+        <SectionHeader title="Trending" action="Full chart" href="/new">
           {variant === "chart" && <span className="pb-0.5 text-sm text-slate-400">Top 10 Mafiki · ranked by total reads</span>}
         </SectionHeader>
         {variant === "chart" ? <TrendingChart comics={comics} /> : <ComicGrid comics={comics} />}
