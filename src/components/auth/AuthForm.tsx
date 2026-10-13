@@ -33,7 +33,7 @@ function validate(mode: AuthMode, v: Values): Errors {
 
 // Sign in, join and password reset. Preview only: nothing is sent anywhere. Submitting flips the
 // mock session on (src/lib/mockSession.ts) and returns the reader to where they came from.
-export function AuthForm({ mode, next }: { mode: AuthMode; next: string }) {
+export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next: string; referrer?: string | null }) {
   const router = useRouter();
   const { user, signIn, signOut } = useMockSession();
   const [values, setValues] = useState(EMPTY);
@@ -123,6 +123,11 @@ export function AuthForm({ mode, next }: { mode: AuthMode; next: string }) {
 
   return (
     <Card title={copy.title} lede={copy.lede}>
+      {referrer && (
+        <p className="-mt-3 mb-6 w-fit border-2 border-black bg-sun px-3 py-1.5 text-sm font-bold text-ink shadow-[3px_3px_0_#000]">
+          Invited by @{referrer}
+        </p>
+      )}
       {mode !== "forgot" && (
         <>
           <button

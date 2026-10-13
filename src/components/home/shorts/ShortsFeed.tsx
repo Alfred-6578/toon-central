@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { IoChevronDown, IoChevronUp, IoClose, IoVolumeHighOutline, IoVolumeMuteOutline } from "react-icons/io5";
+import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
 import type { Short } from "@/lib/api/types";
 import { CommentsDrawer } from "./feed/CommentsDrawer";
 import { ShortSlot } from "./feed/ShortSlot";
@@ -232,6 +232,8 @@ export function ShortsFeed({ shorts, startIndex, onClose, onDuration, deepLinked
             onNext={() => scrollToSlot(i + 1)}
             onComments={() => setCommentsFor(short)}
             onShare={() => share(short)}
+            muted={muted}
+            onToggleMute={toggleMute}
             onDuration={onDuration}
           />
         ))}
@@ -271,9 +273,6 @@ export function ShortsFeed({ shorts, startIndex, onClose, onDuration, deepLinked
           Shorts <span className="text-slate-400">{Math.min(active + 1, shorts.length)} / {shorts.length}</span>
         </p>
         <div className="pointer-events-auto flex gap-2">
-          <button type="button" onClick={toggleMute} aria-label={muted ? "Unmute" : "Mute"} className={iconButton}>
-            {muted ? <IoVolumeMuteOutline /> : <IoVolumeHighOutline />}
-          </button>
           {!isPage && (
             <button type="button" onClick={close} autoFocus aria-label="Close shorts" className={iconButton}>
               <IoClose />

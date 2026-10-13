@@ -2,7 +2,18 @@
 
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { IoAdd, IoBookmark, IoBookmarkOutline, IoChatbubbleEllipses, IoCheckmark, IoHeart, IoHeartOutline, IoShareSocial } from "react-icons/io5";
+import {
+  IoAdd,
+  IoBookmark,
+  IoBookmarkOutline,
+  IoChatbubbleEllipses,
+  IoCheckmark,
+  IoHeart,
+  IoHeartOutline,
+  IoShareSocial,
+  IoVolumeHighOutline,
+  IoVolumeMuteOutline,
+} from "react-icons/io5";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import type { Short } from "@/lib/api/types";
 import { cloudinary, comicHref, creatorHref, formatCount } from "@/lib/format";
@@ -14,6 +25,8 @@ type ActionRailProps = {
   following: boolean;
   comments: number;
   playing: boolean;
+  muted: boolean;
+  onToggleMute: () => void;
   onLike: () => void;
   onSave: () => void;
   onFollow: () => void;
@@ -51,12 +64,17 @@ function RailButton({
 
 // TikTok-style column: creator + follow, like, comments, save, share, and the spinning disc. On a short
 // made from a comic, the disc is the comic's cover and opens the comic ("what's this story?").
-export function ActionRail({ short, liked, saved, following, comments, playing, onLike, onSave, onFollow, onComments, onShare, className = "" }: ActionRailProps) {
+export function ActionRail({ short, liked, saved, following, comments, playing, muted, onToggleMute, onLike, onSave, onFollow, onComments, onShare, className = "" }: ActionRailProps) {
   const comic = short.linkedComic;
   const ad = short.isSponsored;
 
   return (
     <div className={`flex flex-col items-center gap-4 ${className}`}>
+      {/* Sound first: it's the control people reach for most. */}
+      <RailButton label={muted ? "Unmute" : "Mute"} active={muted} onClick={onToggleMute}>
+        {muted ? <IoVolumeMuteOutline /> : <IoVolumeHighOutline />}
+      </RailButton>
+
       {!ad && (
         <div className="relative mb-2">
           <Link href={creatorHref(short.creator.username)} aria-label={`${short.creator.username}'s profile`}>

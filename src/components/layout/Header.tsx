@@ -31,6 +31,7 @@ type HeaderProps = {
   onSignOut: () => void;
   notifications: MockNotification[];
   unreadIds: Set<string>;
+  onOpenNotification: (id: string) => void;
   onMarkAllRead: () => void;
 };
 
@@ -50,6 +51,7 @@ export function Header({
   onSignOut,
   notifications,
   unreadIds,
+  onOpenNotification,
   onMarkAllRead,
 }: HeaderProps) {
   const menuRef = useDismiss<HTMLDivElement>(openMenu !== null, onCloseMenu);
@@ -124,7 +126,15 @@ export function Header({
                 </button>
                 {openMenu === "notifications" && (
                   <MenuPanel className="absolute right-0 top-full mt-2 w-80 max-w-[calc(100vw-2rem)]">
-                    <NotificationsMenu items={notifications} unreadIds={unreadIds} onMarkAllRead={onMarkAllRead} />
+                    <NotificationsMenu
+                      items={notifications}
+                      unreadIds={unreadIds}
+                      onMarkAllRead={onMarkAllRead}
+                      onOpen={(id) => {
+                        onOpenNotification(id);
+                        onCloseMenu();
+                      }}
+                    />
                   </MenuPanel>
                 )}
               </div>

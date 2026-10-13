@@ -11,25 +11,43 @@ export type MockUser = {
   name: string;
   username: string;
   initials: string;
+  bio: string;
+  email: string;
+  joined: string;
   plan: { tier: "Premium" | "Free"; renews: string | null };
   credits: number;
+  followers: number;
+  // Friends who joined with this reader's referral link.
+  referrals: number;
 };
 
 export const mockUser: MockUser = {
   name: "Demo Reader",
   username: "demo_reader",
   initials: "DR",
+  bio: "",
+  email: "reader@example.com",
+  joined: "2025-03-14",
   plan: { tier: "Premium", renews: "12 Nov" },
   credits: 1250,
+  followers: 24,
+  referrals: 2,
 };
 
-export type MockNotification = { id: string; title: string; body: string; time: string };
+export type MockNotification = {
+  id: string;
+  kind: "episode" | "reply" | "account";
+  title: string;
+  body: string;
+  time: string;
+  href: string;
+};
 
 export const mockNotifications: MockNotification[] = [
-  { id: "n1", title: "New episode of ODOGWU", body: "47STUDIOS just dropped the latest chapter.", time: "2h ago" },
-  { id: "n2", title: "AFRI DIVAZ was updated", body: "A comic in your library has new pages.", time: "Yesterday" },
-  { id: "n3", title: "Sanmi crown replied to you", body: "On AZANIA: \"Thank you! More soon.\"", time: "3d ago" },
-  { id: "n4", title: "Premium renews soon", body: "Your ₦500 plan renews on 12 Nov.", time: "5d ago" },
+  { id: "n1", kind: "episode", title: "New episode of ODOGWU", body: "47STUDIOS just dropped the latest chapter.", time: "2h ago", href: "/comics/4c06eec3-c5a8-4c4c-b2e0-2aaad1478f01" },
+  { id: "n2", kind: "episode", title: "AFRI DIVAZ was updated", body: "A comic in your library has new pages.", time: "Yesterday", href: "/comics/9e20eecf-14ee-4312-bf68-ea3e9f348c0f" },
+  { id: "n3", kind: "reply", title: "Sanmi crown replied to you", body: "On AZANIA: \"Thank you! More soon.\"", time: "3d ago", href: "/creators/sanmi-crown" },
+  { id: "n4", kind: "account", title: "Premium renews soon", body: "Your ₦500 plan renews on 12 Nov.", time: "5d ago", href: "/subscription" },
 ];
 
 let memoryValue = false;
@@ -96,6 +114,7 @@ function createIdSetStore(key: string) {
       // In the order they were added, oldest first.
       ids,
       has: (id: string) => ids.includes(id),
+      addAll: (more: string[]) => writeIds([...new Set([...ids, ...more])]),
       toggle: (id: string) => writeIds(ids.includes(id) ? ids.filter((x) => x !== id) : [...ids, id]),
     };
   };
@@ -105,6 +124,51 @@ export const useMockLibrary = createIdSetStore("tc-mock-library");
 export const useMockLikes = createIdSetStore("tc-mock-likes");
 export const useMockFollows = createIdSetStore("tc-mock-follows");
 export const useMockSavedShorts = createIdSetStore("tc-mock-saved-shorts");
+const useReadNotifications = createIdSetStore("tc-mock-read-notifications");
+
+// The bell, the account sheet and /notifications share which notifications have been read.
+export function useMockNotifications() {
+  const read = useReadNotifications();
+  const unreadIds = new Set(mockNotifications.filter((n) => !read.has(n.id)).map((n) => n.id));
+  return {
+    items: mockNotifications,
+    unreadIds,
+    markRead: (id: string) => read.addAll([id]),
+    markAllRead: () => read.addAll(mockNotifications.map((n) => n.id)),
+  };
+}
+
+// Edits from /settings, laid over the mock user (name, username, bio).
+const PROFILE_KEY = "tc-mock-profile";
+let memoryProfile = "{}";
+
+function readProfile() {
+  try {
+    return localStorage.getItem(PROFILE_KEY) ?? "{}";
+  } catch {
+    return memoryProfile;
+  }
+}
+
+export type ProfileEdits = Partial<Pick<MockUser, "name" | "username" | "bio" | "email">>;
+
+export function updateProfile(edits: ProfileEdits) {
+  memoryProfile = JSON.stringify({ ...JSON.parse(readProfile()), ...edits });
+  try {
+    localStorage.setItem(PROFILE_KEY, memoryProfile);
+  } catch {
+    // In-memory fallback only.
+  }
+  listeners.forEach((listener) => listener());
+}
+
+const initialsOf = (name: string) =>
+  name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]!.toUpperCase())
+    .join("") || "?";
 
 export type MockComment = { id: string; text: string; at: string };
 
@@ -142,10 +206,21 @@ export function useMockComments(shortId: string) {
 
 export function useMockSession() {
   const signedIn = useSyncExternalStore(subscribe, read, () => false);
+  const edits: ProfileEdits = JSON.parse(useSyncExternalStore(subscribe, readProfile, () => "{}"));
+  const user = { ...mockUser, ...edits };
+  user.initials = initialsOf(user.name);
 
   return {
-    user: signedIn ? mockUser : null,
+    user: signedIn ? user : null,
     signIn: () => write(true),
     signOut: () => write(false),
   };
+}
+
+const noopSubscribe = () => () => {};
+
+// False on the server and during hydration, true after. Account pages wait for it so a signed-in
+// reader doesn't see a "Sign in" panel flash before their session is read from this browser.
+export function useHydrated() {
+  return useSyncExternalStore(noopSubscribe, () => true, () => false);
 }

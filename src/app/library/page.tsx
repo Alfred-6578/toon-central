@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { LibraryView } from "@/components/library/LibraryView";
 import { getCatalogue, getCreatorsDirectory, getShortsPageData, getSiteStats } from "@/lib/api/client";
-import { LIBRARY_TABS, SAVED_SORTS, type FollowedCreator } from "@/lib/library";
+import { LIBRARY_TABS, SAVED_SORTS, toFollowedCreators } from "@/lib/library";
 import { pageParam } from "@/lib/pagination";
 
 export const metadata: Metadata = {
@@ -28,17 +28,7 @@ export default async function LibraryPage({ searchParams }: PageProps<"/library"
     getSiteStats(),
   ]);
 
-  // Only what the Following tab shows, not every creator's full catalogue.
-  const following: FollowedCreator[] = creators.map(({ creator, comics, shorts, stats }) => ({
-    creator,
-    comics: comics.length,
-    shorts: shorts.length,
-    lastActive: stats.lastActive,
-    latest: [...comics]
-      .sort((a, b) => (b.lastEpisodeAt ?? "").localeCompare(a.lastEpisodeAt ?? ""))
-      .slice(0, 3)
-      .map((c) => ({ uuid: c.uuid, title: c.title, coverImage: c.coverImage })),
-  }));
+  const following = toFollowedCreators(creators);
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { ReactNode } from "react";
 import type { IconType } from "react-icons";
 import {
@@ -9,6 +10,7 @@ import {
   IoGridOutline,
   IoLibraryOutline,
   IoLogOutOutline,
+  IoNotificationsOutline,
   IoSchoolOutline,
   IoSettingsOutline,
   IoVideocamOutline,
@@ -44,7 +46,7 @@ export function MenuItem({ label, href, icon: Icon, hint, onClick }: MenuItemPro
   );
 
   return href ? (
-    <a href={href} className={className} onClick={onClick}>{content}</a>
+    <Link href={href} className={className} onClick={onClick}>{content}</Link>
   ) : (
     <button type="button" className={className} onClick={onClick}>{content}</button>
   );
@@ -83,22 +85,25 @@ export function AccountMenu({
   onSignOut,
   onNavigate,
   showCreatorLinks = true,
+  unreadCount,
 }: {
   user: MockUser;
   onSignOut: () => void;
   onNavigate?: () => void;
   // Off in the mobile sheet: publishing is desktop-only.
   showCreatorLinks?: boolean;
+  // Phones have no bell in the header, so the sheet lists Notifications with this count.
+  unreadCount?: number;
 }) {
   return (
     <div className="py-1">
-      <div className="flex items-center gap-3 px-4 py-3">
+      <Link href="/me" onClick={onNavigate} className="group flex items-center gap-3 px-4 py-3 hover:bg-panel">
         <Avatar user={user} className="h-11 w-11 text-base" />
-        <div className="min-w-0">
-          <p className="truncate font-semibold text-white">{user.name}</p>
-          <p className="truncate text-xs text-slate-400">@{user.username}</p>
+        <div className="min-w-0 flex-1">
+          <p className="truncate font-semibold text-white group-hover:text-mint">{user.name}</p>
+          <p className="truncate text-xs text-slate-400">@{user.username} · View profile</p>
         </div>
-      </div>
+      </Link>
 
       <div className="mx-4 mb-2 grid grid-cols-2 border-2 border-line text-xs">
         <div className="border-r-2 border-line p-2.5">
@@ -115,6 +120,15 @@ export function AccountMenu({
 
       <MenuDivider />
       <MenuItem href="/library" icon={IoLibraryOutline} label="My library" onClick={onNavigate} />
+      {unreadCount !== undefined && (
+        <MenuItem
+          href="/notifications"
+          icon={IoNotificationsOutline}
+          label="Notifications"
+          hint={unreadCount ? `${unreadCount} new` : undefined}
+          onClick={onNavigate}
+        />
+      )}
       <MenuItem href="/subscription" icon={IoDiamondOutline} label="Subscription" onClick={onNavigate} />
       {showCreatorLinks && (
         <MenuItem href="/creator/dashboard" icon={IoGridOutline} label="Creator dashboard" onClick={onNavigate} />
@@ -130,10 +144,12 @@ export function NotificationsMenu({
   items,
   unreadIds,
   onMarkAllRead,
+  onOpen,
 }: {
   items: MockNotification[];
   unreadIds: Set<string>;
   onMarkAllRead: () => void;
+  onOpen: (id: string) => void;
 }) {
   return (
     <div>
@@ -147,16 +163,21 @@ export function NotificationsMenu({
       </div>
       <ul className="max-h-96 overflow-y-auto">
         {items.map((item) => (
-          <li key={item.id} className="flex gap-3 border-b-2 border-line px-4 py-3 last:border-b-0">
-            <span className={`mt-1.5 h-2 w-2 shrink-0 ${unreadIds.has(item.id) ? "bg-mint" : "bg-transparent"}`} />
-            <div className="min-w-0">
-              <p className="text-sm font-semibold text-white">{item.title}</p>
-              <p className="mt-0.5 text-xs leading-5 text-slate-400">{item.body}</p>
-              <p className="mt-1 text-[11px] text-slate-500">{item.time}</p>
-            </div>
+          <li key={item.id} className="border-b-2 border-line last:border-b-0">
+            <Link href={item.href} onClick={() => onOpen(item.id)} className="flex gap-3 px-4 py-3 hover:bg-panel">
+              <span className={`mt-1.5 h-2 w-2 shrink-0 ${unreadIds.has(item.id) ? "bg-mint" : "bg-transparent"}`} />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold text-white">{item.title}</p>
+                <p className="mt-0.5 text-xs leading-5 text-slate-400">{item.body}</p>
+                <p className="mt-1 text-[11px] text-slate-500">{item.time}</p>
+              </div>
+            </Link>
           </li>
         ))}
       </ul>
+      <Link href="/notifications" className="block border-t-2 border-line px-4 py-2.5 text-center text-sm font-semibold text-mint hover:bg-panel">
+        See all notifications
+      </Link>
     </div>
   );
 }

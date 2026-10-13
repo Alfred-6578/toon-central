@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { authHref } from "@/lib/auth";
-import { mockNotifications, useMockSession } from "@/lib/mockSession";
+import { useMockNotifications, useMockSession } from "@/lib/mockSession";
 import { Header, navItems, type DesktopMenu } from "./Header";
 import { MobileNav, type MobileSheet } from "./MobileNav";
 import { AccountMenu, Sheet } from "./nav/Menus";
@@ -32,7 +32,7 @@ export function Navigation() {
   const [homeSection, setActiveSection] = useState("home");
   // The homepage follows the scroll position; other pages highlight the area they belong to.
   const activeSection = pathname === "/" ? homeSection : (SECTION_FOR_PATH.find(([prefix]) => pathname.startsWith(prefix))?.[1] ?? "");
-  const [unreadIds, setUnreadIds] = useState(() => new Set(mockNotifications.map((n) => n.id)));
+  const notifications = useMockNotifications();
 
   const closeMenu = useCallback(() => setOpenMenu(null), []);
   const closeSheet = useCallback(() => setSheet(null), []);
@@ -126,9 +126,10 @@ export function Navigation() {
         signInHref={signInHref}
         joinHref={joinHref}
         onSignOut={handleSignOut}
-        notifications={mockNotifications}
-        unreadIds={unreadIds}
-        onMarkAllRead={() => setUnreadIds(new Set())}
+        notifications={notifications.items}
+        unreadIds={notifications.unreadIds}
+        onMarkAllRead={notifications.markAllRead}
+        onOpenNotification={notifications.markRead}
       />
 
       <MobileNav
@@ -142,7 +143,13 @@ export function Navigation() {
 
       <Sheet open={sheet === "account"} title={user ? "Your account" : "Join Toon Central"} onClose={closeSheet}>
         {user ? (
-          <AccountMenu user={user} onSignOut={handleSignOut} onNavigate={closeSheet} showCreatorLinks={false} />
+          <AccountMenu
+            user={user}
+            onSignOut={handleSignOut}
+            onNavigate={closeSheet}
+            showCreatorLinks={false}
+            unreadCount={notifications.unreadIds.size}
+          />
         ) : (
           <div className="px-4 pb-4 pt-2">
             <p className="text-sm leading-6 text-slate-300">

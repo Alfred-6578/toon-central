@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { IoArrowForward, IoHeart, IoMusicalNotes, IoPlay, IoRefresh } from "react-icons/io5";
+import { IoClose, IoHeart, IoPlay, IoRefresh } from "react-icons/io5";
 import type { Short } from "@/lib/api/types";
 import { cloudinary, cloudinaryVideo, comicHref, creatorHref, formatCount, genreSlug, readerHref } from "@/lib/format";
 import { useMockComments, useMockFollows, useMockLikes, useMockSavedShorts, useMockSession } from "@/lib/mockSession";
@@ -23,35 +23,54 @@ type ShortSlotProps = {
   onNext: () => void;
   onComments: () => void;
   onShare: () => void;
+  muted: boolean;
+  onToggleMute: () => void;
   onDuration?: (uuid: string, seconds: number) => void;
 };
 
-function Caption({ short, showTieIn }: { short: Short; showTieIn: boolean }) {
+// Kept short so the video stays visible: creator, a one-line title and two hashtags. "more" opens the
+// full title, description and every hashtag.
+function Caption({ short, showTieIn, onDismissTieIn }: { short: Short; showTieIn: boolean; onDismissTieIn: () => void }) {
   const [expanded, setExpanded] = useState(false);
   const comic = short.linkedComic;
+  const tags = short.isSponsored ? [] : short.genres.map((genre) => ({ genre, label: `#${genre.replace(/[^A-Za-z0-9]+/g, "")}` }));
+  const hasMore = Boolean(short.description) || tags.length > 2 || short.title.length > 40;
 
   return (
     <div className="pointer-events-auto max-w-md">
       {/* The tie-in card slides up a few seconds in, TikTok "anchor" style. It's in the page from the
           start (hidden) so its cover has already loaded when it appears. */}
       {comic && (
-        <Link
-          href={comicHref(comic.uuid)}
+        <div
           aria-hidden={!showTieIn}
-          tabIndex={showTieIn ? undefined : -1}
-          className={`mb-3 flex items-center gap-3 border-2 border-black bg-paper p-2 pr-3 text-ink shadow-[4px_4px_0_rgba(0,0,0,0.5)] hover:-translate-y-px ${
+          className={`relative mb-3 w-fit max-w-full border-2 border-black bg-paper text-ink shadow-[3px_3px_0_rgba(0,0,0,0.5)] ${
             showTieIn ? "slide-up" : "invisible"
           }`}
         >
-          <img src={cloudinary(comic.coverImage, 100)} alt="" className="aspect-[3/4] w-10 shrink-0 border-2 border-ink object-cover" />
-          <div className="min-w-0 flex-1">
-            <span className="tag bg-sun px-1 text-[9px]">From the comic</span>
-            {comic.demo && <span className="tag ml-1 border border-dashed border-ink bg-transparent px-1 text-[9px]">Demo link</span>}
-            <p className="mt-0.5 truncate text-sm font-bold">{comic.title}</p>
-            <p className="text-xs text-ink/60">Episode 1 is free</p>
-          </div>
-          <IoArrowForward className="shrink-0 text-lg" />
-        </Link>
+          <Link
+            href={comicHref(comic.uuid)}
+            tabIndex={showTieIn ? undefined : -1}
+            className="flex items-center gap-2.5 py-1.5 pl-1.5 pr-10"
+          >
+            <img src={cloudinary(comic.coverImage, 80)} alt="" className="aspect-[3/4] w-8 shrink-0 border-2 border-ink object-cover" />
+            <div className="min-w-0">
+              <span className="tag bg-sun px-1 text-[9px]">From the comic</span>
+              {comic.demo && <span className="tag ml-1 border border-dashed border-ink bg-transparent px-1 text-[9px]">Demo link</span>}
+              <p className="truncate text-sm font-bold leading-tight">
+                {comic.title} <span className="font-normal text-ink/60">· Ep 1 free</span>
+              </p>
+            </div>
+          </Link>
+          <button
+            type="button"
+            onClick={onDismissTieIn}
+            tabIndex={showTieIn ? undefined : -1}
+            aria-label="Hide comic card"
+            className="absolute right-0 top-0 flex h-full w-9 items-center justify-center border-l-2 border-black/15 text-lg text-ink/60 hover:text-ink"
+          >
+            <IoClose />
+          </button>
+        </div>
       )}
 
       <p className="flex items-center gap-2 text-[15px] font-bold text-white drop-shadow">
@@ -64,41 +83,40 @@ function Caption({ short, showTieIn }: { short: Short; showTieIn: boolean }) {
         )}
         <span className="text-xs font-semibold text-slate-300">· {formatCount(short.views)} views</span>
       </p>
-      <p className="mt-1 font-semibold text-white drop-shadow">{short.title}</p>
-      {short.description && (
-        <p className={`mt-1 text-sm leading-5 text-slate-200 drop-shadow ${expanded ? "max-h-40 overflow-y-auto" : "line-clamp-2"}`}>
-          {short.description}
-        </p>
+
+      <p className={`mt-0.5 font-semibold text-white drop-shadow ${expanded ? "" : "truncate"}`}>{short.title}</p>
+
+      {expanded && short.description && (
+        <p className="mt-1 max-h-32 overflow-y-auto text-sm leading-5 text-slate-200 drop-shadow">{short.description}</p>
       )}
-      {short.description && short.description.length > 90 && (
-        <button type="button" onClick={() => setExpanded((open) => !open)} className="mt-0.5 text-sm font-bold text-white">
-          {expanded ? "less" : "more"}
-        </button>
-      )}
-      {!short.isSponsored && short.genres.length > 0 && (
-        <p className="mt-1.5 flex flex-wrap gap-x-2 text-sm font-bold text-white">
-          {short.genres.slice(0, 4).map((genre) => (
+
+      {(tags.length > 0 || hasMore) && (
+        <p className={`mt-1 flex gap-x-2 text-sm font-bold text-white drop-shadow ${expanded ? "flex-wrap" : "items-baseline overflow-hidden whitespace-nowrap"}`}>
+          {(expanded ? tags : tags.slice(0, 2)).map(({ genre, label }) => (
             // Full navigation on purpose: it leaves the player for the filtered shorts page.
             <a key={genre} href={`/shorts?genre=${genreSlug(genre)}`} className="hover:text-mint">
-              #{genre.replace(/[^A-Za-z0-9]+/g, "")}
+              {label}
             </a>
           ))}
+          {hasMore && (
+            <button type="button" onClick={() => setExpanded((open) => !open)} className="font-bold text-slate-300 hover:text-white">
+              {expanded ? "less" : "…more"}
+            </button>
+          )}
         </p>
       )}
-      <p className="mt-2 flex items-center gap-1.5 text-xs text-slate-300">
-        <IoMusicalNotes className="shrink-0" />
-        <span className="truncate">Original audio · {short.creator.username}</span>
-      </p>
     </div>
   );
 }
 
-export function ShortSlot({ short, index, near, isActive, isNext, registerVideo, registerSlot, onNext, onComments, onShare, onDuration }: ShortSlotProps) {
+export function ShortSlot({ short, index, near, isActive, isNext, registerVideo, registerSlot, onNext, onComments, onShare, muted, onToggleMute, onDuration }: ShortSlotProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [paused, setPaused] = useState(false);
   const [progress, setProgress] = useState(0);
   const [showTieIn, setShowTieIn] = useState(false);
+  // The reader closed the comic card; it stays closed until they come back to this short.
+  const [tieInDismissed, setTieInDismissed] = useState(false);
   const [endCard, setEndCard] = useState<number | null>(null);
   const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
 
@@ -120,6 +138,7 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
     setWasActive(isActive);
     if (!isActive) {
       setShowTieIn(false);
+      setTieInDismissed(false);
       setEndCard(null);
       setProgress(0);
     }
@@ -184,6 +203,8 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
       following={follows.has(short.creator.username)}
       comments={comments.length}
       playing={isActive && !paused}
+      muted={muted}
+      onToggleMute={onToggleMute}
       onLike={() => {
         requireUser();
         likes.toggle(short.uuid);
@@ -256,8 +277,8 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
           )}
 
           {/* Caption over a bottom gradient; leaves room for the phone rail on the right */}
-          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent px-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pr-20 pt-24 md:pr-4">
-            <Caption short={short} showTieIn={isActive && showTieIn} />
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent px-4 pb-[calc(env(safe-area-inset-bottom)+1.25rem)] pr-20 pt-14 md:pr-4">
+            <Caption short={short} showTieIn={isActive && showTieIn && !tieInDismissed} onDismissTieIn={() => setTieInDismissed(true)} />
           </div>
 
           {/* Scrubbable progress bar */}
@@ -278,7 +299,8 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
             </div>
           )}
 
-          {rail("absolute bottom-28 right-3 z-10 md:hidden")}
+          {/* Beside the caption (which leaves room on its right), near the bottom like TikTok. */}
+          {rail("absolute bottom-[calc(env(safe-area-inset-bottom)+1.25rem)] right-3 z-10 md:hidden")}
 
           {/* End card for comic tie-ins */}
           {comic && endCard !== null && (

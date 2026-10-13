@@ -4,7 +4,7 @@ import { AuthForm } from "@/components/auth/AuthForm";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Navigation } from "@/components/layout/Navigation";
 import { getCatalogue } from "@/lib/api/client";
-import { safeNext, type AuthMode } from "@/lib/auth";
+import { safeNext, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
 
 const PAGES: Record<AuthMode, { title: string; bubble: string }> = {
   signin: { title: "Sign in", bubble: "Your story's waiting where you left it!" },
@@ -26,6 +26,9 @@ export default async function AuthPage({ params, searchParams }: PageProps<"/aut
   if (!isMode(mode)) notFound();
 
   const next = safeNext(Array.isArray(query.next) ? query.next[0] : query.next);
+  // Referral links: /auth/signup?ref=username. Only a well-formed username is shown back.
+  const rawRef = Array.isArray(query.ref) ? query.ref[0] : query.ref;
+  const referrer = mode === "signup" && rawRef && USERNAME_PATTERN.test(rawRef) ? rawRef : null;
   // The art side: the four most-read covers.
   const covers = [...(await getCatalogue())].sort((a, b) => b.views - a.views).slice(0, 4);
 
@@ -37,7 +40,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<"/aut
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-80" />
         <div className="relative">
           <AuthShell covers={covers} bubble={PAGES[mode].bubble}>
-            <AuthForm mode={mode} next={next} />
+            <AuthForm mode={mode} next={next} referrer={referrer} />
           </AuthShell>
         </div>
       </main>
