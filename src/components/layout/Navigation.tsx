@@ -148,7 +148,6 @@ export function Navigation() {
             user={user}
             onSignOut={handleSignOut}
             onNavigate={closeSheet}
-            showCreatorLinks={false}
             unreadCount={notifications.unreadIds.size}
           />
         ) : (

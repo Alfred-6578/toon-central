@@ -7,11 +7,13 @@ export type Plan = {
   name: string;
   // Naira.
   price: number;
-  period: "month" | "week" | "day";
+  period: "month" | "year" | "week" | "day";
   blurb?: string;
   features: string[];
   // Highlights one option, as the live site does ("Best value" on Daily Access).
   badge?: string;
+  // A price we suggested that the client hasn't confirmed; stamped "Proposed price" on the page.
+  proposed?: boolean;
 };
 
 export type CreditPack = { id: string; credits: number; price: number };
@@ -41,6 +43,18 @@ export const PLANS: Plan[] = [
     features: ["Everything in Basic", "600 free credits monthly", "Membership of Toon Central's creative community"],
   },
 ];
+
+// Yearly billing isn't on the live site yet. Proposed: pay for 10 months, get 12 ("2 months free").
+// Unconfirmed, so every yearly price is stamped. Replace with the client's prices when they exist.
+const MONTHS_CHARGED_PER_YEAR = 10;
+
+export const YEARLY_PLANS: Plan[] = PLANS.map((plan) =>
+  plan.price === 0
+    ? { ...plan, period: "year" }
+    : { ...plan, period: "year", price: plan.price * MONTHS_CHARGED_PER_YEAR, proposed: true }
+);
+
+export const YEARLY_SAVING = "2 months free";
 
 // "Special offers": short passes that unlock everything. (The live site says "All comics & series
 // included"; written "every comic" here because Series isn't a medium on the site yet.)

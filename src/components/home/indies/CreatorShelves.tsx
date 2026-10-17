@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { IoLaptopOutline } from "react-icons/io5";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import type { Comic, Creator } from "@/lib/api/types";
@@ -95,7 +96,7 @@ export function PublishCard({ className = "md:col-span-2 lg:col-span-3" }: { cla
       </div>
       <div className="relative flex flex-wrap gap-3">
         {/* Publishing is desktop-only (same lg breakpoint as the header's Publish menu) */}
-        <a href="/creator/new" className="btn btn-primary hidden px-5 py-3 lg:inline-flex">Start publishing</a>
+        <Link href="/creator/comics/new" className="btn btn-primary hidden px-5 py-3 lg:inline-flex">Start publishing</Link>
         <span className="flex items-center gap-2 border-2 border-line px-4 py-2.5 text-sm font-semibold text-slate-200 lg:hidden">
           <IoLaptopOutline className="text-lg text-mint" /> Publish from a computer
         </span>

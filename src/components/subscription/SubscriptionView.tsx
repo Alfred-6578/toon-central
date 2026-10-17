@@ -3,14 +3,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { IoCheckmark, IoClose, IoCutOutline, IoWalletOutline } from "react-icons/io5";
+import { IoCellular, IoCheckmark, IoClose, IoCutOutline, IoWalletOutline } from "react-icons/io5";
+import { MtnPayFlow, openMtnPay } from "@/components/mtn/MtnPayFlow";
+import { PassBanner } from "@/components/mtn/PassBanner";
 import { authHref } from "@/lib/auth";
 import { useHydrated, useMockSession } from "@/lib/mockSession";
-import { CREDIT_PACKS, naira, PASS_TERMS, PASSES, PLANS, type CreditPack, type Plan } from "@/data/subscription";
+import { CREDIT_PACKS, naira, PASS_TERMS, PASSES, PLANS, YEARLY_PLANS, YEARLY_SAVING, type CreditPack, type Plan } from "@/data/subscription";
 
 type Item = { kind: "plan"; plan: Plan } | { kind: "credits"; pack: CreditPack };
 
-const periodLabel = (plan: Plan) => `per ${plan.period}`;
+const periodLabel = (plan: Plan) => (plan.price === 0 ? "free forever" : `per ${plan.period}`);
 
 // /subscription, laid out like the live page: monthly plans, credit packs, then the day/week passes.
 // Plans are cut-out coupons (as on the homepage). Payments aren't connected in this preview; the
@@ -20,6 +22,8 @@ export function SubscriptionView() {
   const hydrated = useHydrated();
   const { user } = useMockSession();
   const [checkout, setCheckout] = useState<Item | null>(null);
+  const [billing, setBilling] = useState<"month" | "year">("month");
+  const plans = billing === "year" ? YEARLY_PLANS : PLANS;
 
   const signedIn = hydrated && !!user;
   // The reader's current tier (the mock account is on Premium); signed out, nothing is current.
@@ -45,10 +49,30 @@ export function SubscriptionView() {
         </div>
       )}
 
+      <div className="mb-8 empty:hidden">
+        <PassBanner />
+      </div>
+
       <section aria-labelledby="plans-title">
-        <SectionTitle id="plans-title" title="Monthly plans" note="Every paid plan comes with free credits each month" />
+        <SectionTitle id="plans-title" title="Plans" note="Every paid plan comes with free credits each month" />
+        <div className="-mt-2 mb-8 flex flex-wrap items-center gap-3">
+          <div className="flex border-2 border-line" role="group" aria-label="Billing">
+            {(["month", "year"] as const).map((value) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setBilling(value)}
+                aria-pressed={billing === value}
+                className={`px-5 py-2 font-display text-lg uppercase leading-none ${billing === value ? "bg-mint text-ink" : "text-slate-300 hover:text-white"}`}
+              >
+                {value === "month" ? "Monthly" : "Yearly"}
+              </button>
+            ))}
+          </div>
+          <span className="tag -rotate-2 bg-sun">{YEARLY_SAVING} yearly</span>
+        </div>
         <ul className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-          {PLANS.map((plan) => (
+          {plans.map((plan) => (
             <li key={plan.id}>
               <PlanCoupon
                 plan={plan}
@@ -103,13 +127,19 @@ export function SubscriptionView() {
               <PlanCoupon
                 plan={pass}
                 terms={PASS_TERMS(pass.period)}
-                action={{ label: `Get ${pass.name}`, onClick: () => setCheckout({ kind: "plan", plan: pass }) }}
+                action={
+                  pass.id === "daily"
+                    ? { label: `Pay ₦${pass.price} with MTN`, onClick: openMtnPay, mtn: true }
+                    : { label: `Get ${pass.name}`, onClick: () => setCheckout({ kind: "plan", plan: pass }) }
+                }
+                secondary={pass.id === "daily" ? { label: "Or pay by card", onClick: () => setCheckout({ kind: "plan", plan: pass }) } : undefined}
               />
             </li>
           ))}
         </ul>
       </section>
 
+      <MtnPayFlow />
       {checkout && (
         <CheckoutSheet item={checkout} signedIn={signedIn} signInHref={authHref("signup", pathname)} onClose={() => setCheckout(null)} />
       )}
@@ -126,9 +156,21 @@ function SectionTitle({ id, title, note }: { id: string; title: string; note: st
   );
 }
 
-type Action = { label: string; href?: string; onClick?: () => void } | null;
+type Action = { label: string; href?: string; onClick?: () => void; mtn?: boolean } | null;
 
-function PlanCoupon({ plan, current = false, terms, action }: { plan: Plan; current?: boolean; terms?: string; action: Action }) {
+function PlanCoupon({
+  plan,
+  current = false,
+  terms,
+  action,
+  secondary,
+}: {
+  plan: Plan;
+  current?: boolean;
+  terms?: string;
+  action: Action;
+  secondary?: { label: string; onClick: () => void };
+}) {
   const highlighted = Boolean(plan.badge) || current;
 
   return (
@@ -144,13 +186,32 @@ function PlanCoupon({ plan, current = false, terms, action }: { plan: Plan; curr
           <p className="font-display text-xl uppercase leading-none">{plan.name}</p>
           <p className="mt-1 font-display text-5xl leading-none sm:text-6xl">{naira(plan.price)}</p>
           <p className="text-xs font-bold uppercase tracking-wide text-ink/60">{periodLabel(plan)}</p>
+          {plan.period === "year" && plan.price > 0 && (
+            <p className="text-xs font-semibold text-ink/70">{naira(Math.round(plan.price / 12))} a month, billed yearly</p>
+          )}
+          {plan.proposed && (
+            <span className="mt-1 border border-dashed border-ink/60 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-ink/70">
+              Proposed price
+            </span>
+          )}
           {current ? (
             <span className="btn mt-3 w-full cursor-default border-black bg-ink px-5 py-2.5 text-sm text-white">Your plan</span>
           ) : action?.href ? (
             <Link href={action.href} className="btn btn-primary mt-3 w-full px-5 py-2.5 text-sm">{action.label}</Link>
           ) : action ? (
-            <button type="button" onClick={action.onClick} className="btn btn-primary mt-3 w-full px-5 py-2.5 text-sm">{action.label}</button>
+            <button
+              type="button"
+              onClick={action.onClick}
+              className={`btn mt-3 w-full gap-2 px-5 py-2.5 text-sm ${action.mtn ? "border-black bg-sun text-ink shadow-[3px_3px_0_#000]" : "btn-primary"}`}
+            >
+              {action.mtn && <IoCellular />} {action.label}
+            </button>
           ) : null}
+          {secondary && (
+            <button type="button" onClick={secondary.onClick} className="mt-2 text-xs font-semibold text-ink/70 underline-offset-4 hover:underline">
+              {secondary.label}
+            </button>
+          )}
         </div>
 
         <div className="flex-1 p-4 sm:p-5">

@@ -1,20 +1,35 @@
-import { FREE_EPISODES } from "@/lib/api/client";
+import { FREE_EPISODES } from "@/lib/rules";
 import type { Comic } from "@/lib/api/types";
 import { cloudinaryTransform } from "@/lib/format";
+import { episodeKey, pageKey, type Unlocks } from "@/lib/session";
 
-// Live-site rule: free episodes read in full; Premium episodes show a preview of their first pages.
+// Live-site rule: free episodes read in full; locked episodes show their first pages, and every page
+// after that is locked until the reader unlocks it with credits (or has a pass).
 export const PAGES_PER_EPISODE = 10;
 export const PREVIEW_PAGES = 5;
-// How many degraded pages to show under the paywall: enough to tease, not worth sending more.
-const TEASER_PAGES = 2;
 
-export type ReaderPage = { number: number; src: string; width: number; height: number; degraded: boolean };
+// Live-site prices, in credits: one page for a day, or the whole episode for good.
+export const UNLOCK_PRICES = { page: 10, episode: 50 };
+export const PAGE_UNLOCK_MS = 24 * 60 * 60 * 1000;
+
+export type ReaderPage = {
+  number: number;
+  src: string;
+  width: number;
+  height: number;
+  // Locked: `src` is the blurred, watermarked version; the clean one was never sent.
+  degraded: boolean;
+  // Unlocked with credits for a limited time (page unlocks): when that access ends.
+  unlockedUntil: number | null;
+};
 
 export type ReaderEpisode = {
   pages: ReaderPage[];
-  // True when the reader hit the paywall: the remaining pages were withheld, not hidden.
-  gated: boolean;
+  lockedCount: number;
   premiumEpisode: boolean;
+  // Bought the whole episode.
+  ownsEpisode: boolean;
+  passActive: boolean;
 };
 
 // Stand-in pages until the live API supplies real ones: crops of the comic's own cover and banner art,
@@ -32,7 +47,7 @@ function standInSource(comic: Comic, episode: number, page: number) {
 function cleanPage(comic: Comic, episode: number, page: number): ReaderPage {
   const { url, gravity, width, height } = standInSource(comic, episode, page);
   const src = cloudinaryTransform(url, `c_fill,w_${width},h_${height},g_${gravity},q_auto,f_auto`);
-  return { number: page, src, width, height, degraded: false };
+  return { number: page, src, width, height, degraded: false, unlockedUntil: null };
 }
 
 // The only version of a locked page that ever leaves the server: tiny, blurred and watermarked,
@@ -50,17 +65,24 @@ function degradedPage(comic: Comic, episode: number, page: number): ReaderPage {
       "q_auto:low,f_auto",
     ].join("/")
   );
-  return { number: page, src, width, height, degraded: true };
+  return { number: page, src, width, height, degraded: true, unlockedUntil: null };
 }
 
-export function buildEpisode(comic: Comic, episode: number, premiumReader: boolean): ReaderEpisode {
+// The server decides what each page is. Locked pages are only ever sent degraded; a page goes clean
+// once the reader owns the episode or has a page unlock that hasn't expired.
+export function buildEpisode(comic: Comic, episode: number, unlocks: Unlocks, now: number, passUntil: number | null = null): ReaderEpisode {
   const premiumEpisode = episode > FREE_EPISODES;
-  const gated = premiumEpisode && !premiumReader;
-  const readable = gated ? PREVIEW_PAGES : PAGES_PER_EPISODE;
+  const ownsEpisode = unlocks[episodeKey(comic.uuid, episode)] === "full";
+  // An active pass (e.g. MTN Daily) opens every locked page while it lasts.
+  const passActive = passUntil != null && passUntil > now;
 
-  const pages = Array.from({ length: readable }, (_, i) => cleanPage(comic, episode, i + 1));
-  if (gated) {
-    for (let i = 0; i < TEASER_PAGES; i++) pages.push(degradedPage(comic, episode, readable + i + 1));
-  }
-  return { pages, gated, premiumEpisode };
+  const pages = Array.from({ length: PAGES_PER_EPISODE }, (_, i) => {
+    const number = i + 1;
+    if (!premiumEpisode || ownsEpisode || passActive || number <= PREVIEW_PAGES) return cleanPage(comic, episode, number);
+    const until = unlocks[pageKey(comic.uuid, episode, number)];
+    if (typeof until === "number" && until > now) return { ...cleanPage(comic, episode, number), unlockedUntil: until };
+    return degradedPage(comic, episode, number);
+  });
+
+  return { pages, lockedCount: pages.filter((p) => p.degraded).length, premiumEpisode, ownsEpisode, passActive };
 }

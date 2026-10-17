@@ -158,7 +158,8 @@ export async function getCatalogue(): Promise<Comic[]> {
 }
 
 // Matches the live site: the first episodes are free, later ones need Premium.
-export const FREE_EPISODES = 3;
+import { FREE_EPISODES } from "@/lib/rules";
+export { FREE_EPISODES };
 
 function placeholderEpisodes(comic: Comic): Episode[] {
   const count = comic.episodes ?? 0;

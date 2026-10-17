@@ -47,6 +47,12 @@ export const designOptions = {
     defaultChoice: "page",
     choices: { page: "Comic page", voices: "Many voices", zoom: "Pull back", wall: "Cover wall" },
   },
+  // Not a design: which creator the Studio demo shows (no creator-side data exists yet).
+  studio: {
+    label: "Studio demo",
+    defaultChoice: "new",
+    choices: { new: "New creator", established: "Established" },
+  },
   // Not a design: turns on invented short→comic pairings so tie-ins can be previewed. Real by default.
   tieins: {
     label: "Short tie-ins",
@@ -67,7 +73,7 @@ export function resolveDesign(params: SearchParams): DesignSelection {
     const choices = designOptions[key].choices;
     return (typeof value === "string" && value in choices ? value : designOptions[key].defaultChoice) as DesignChoice<K>;
   };
-  return { hero: pick("hero"), trending: pick("trending"), shorts: pick("shorts"), originals: pick("originals"), indies: pick("indies"), latest: pick("latest"), genres: pick("genres"), subscribe: pick("subscribe"), welcome: pick("welcome"), tieins: pick("tieins") };
+  return { hero: pick("hero"), trending: pick("trending"), shorts: pick("shorts"), originals: pick("originals"), indies: pick("indies"), latest: pick("latest"), genres: pick("genres"), subscribe: pick("subscribe"), welcome: pick("welcome"), studio: pick("studio"), tieins: pick("tieins") };
 }
 
 // Link to the current selection with one option changed. Defaults are left out to keep URLs short.

@@ -10,6 +10,9 @@ import { authHref, USERNAME_PATTERN } from "@/lib/auth";
 import { useLocalValue } from "@/lib/localValue";
 import { updateProfile, useMockSession, useHydrated } from "@/lib/mockSession";
 import { clearProgress, useReadingProgress } from "@/lib/readingProgress";
+import { MtnPayFlow, openMtnPay } from "@/components/mtn/MtnPayFlow";
+import { PassBanner } from "@/components/mtn/PassBanner";
+import { usePass } from "@/lib/mtnPass";
 
 const SECTIONS = [
   { id: "profile", label: "Profile" },
@@ -292,6 +295,8 @@ function AccountSection() {
         <SaveRow saved={saved} label="Update email" />
       </form>
 
+      <MtnPassSetting />
+
       <div className="mt-8 grid gap-4 border-t-2 border-line pt-6 sm:grid-cols-2">
         <div>
           <p className="text-sm font-semibold text-slate-200">Password</p>
@@ -312,6 +317,28 @@ function AccountSection() {
         </div>
       </div>
     </Section>
+  );
+}
+
+function MtnPassSetting() {
+  const pass = usePass();
+  return (
+    <div className="mt-8 border-t-2 border-line pt-6">
+      <p className="text-sm font-semibold text-slate-200">MTN Daily pass</p>
+      {pass ? (
+        <div className="mt-3">
+          <PassBanner />
+        </div>
+      ) : (
+        <p className="mt-1 text-sm text-slate-400">
+          Not active.{" "}
+          <button type="button" onClick={openMtnPay} className="font-semibold text-mint hover:underline">
+            Get one for ₦100 from your MTN line
+          </button>
+        </p>
+      )}
+      <MtnPayFlow />
+    </div>
   );
 }
 

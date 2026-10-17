@@ -1,53 +1,40 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { IoLockClosed } from "react-icons/io5";
-import { authHref } from "@/lib/auth";
-import { useMockSession, writeSessionCookie } from "@/lib/mockSession";
+import { IoCellular, IoLockClosed } from "react-icons/io5";
+import { openMtnPay } from "@/components/mtn/MtnPayFlow";
+import { UNLOCK_PRICES } from "@/lib/reader";
+import { openUnlock } from "./UnlockDialog";
 
 type ReaderGateProps = {
   episode: number;
+  lockedCount: number;
   firstEpisodeHref: string;
 };
 
-// Shown where the server stopped sending pages. Signing in (mock) sets the session cookie, then
-// asks the server to re-render: the unlocked pages arrive from the server, not from un-hiding.
-export function ReaderGate({ episode, firstEpisodeHref }: ReaderGateProps) {
-  const router = useRouter();
-  const pathname = usePathname();
-  const { user } = useMockSession();
-
-  const synced = useRef(false);
-
-  // Signed in from an earlier visit (localStorage) but the cookie is missing: sync it and re-render.
-  // Once only, so blocked cookies can't cause a refresh loop.
-  useEffect(() => {
-    if (!user || synced.current) return;
-    synced.current = true;
-    writeSessionCookie(true);
-    router.refresh();
-  }, [user, router]);
-
+// After the last page: how much is still locked and the quickest ways to read it. Locked pages arrive
+// from the server only as blurred previews; unlocking re-renders them clean.
+export function ReaderGate({ episode, lockedCount, firstEpisodeHref }: ReaderGateProps) {
   return (
-    <div className="relative -mt-72 bg-gradient-to-b from-transparent via-ink/95 to-ink px-6 pb-14 pt-56 text-center">
-      <span className="tag -rotate-2 gap-1.5 bg-sun text-sm"><IoLockClosed /> Premium episode</span>
-      <h2 className="mx-auto mt-4 max-w-md font-display text-4xl uppercase leading-none text-white sm:text-5xl">
-        Keep reading episode {episode}
+    <div className="mx-4 mt-10 border-2 border-sun bg-panel p-6 text-center sm:mx-0">
+      <span className="tag -rotate-2 gap-1.5 bg-sun text-sm"><IoLockClosed /> Locked</span>
+      <h2 className="mx-auto mt-4 max-w-md font-display text-4xl uppercase leading-none text-white">
+        {lockedCount} {lockedCount === 1 ? "page" : "pages"} of episode {episode} to go
       </h2>
-      <p className="mx-auto mt-4 max-w-md text-sm leading-6 text-slate-300">
-        That&apos;s the free preview. A pass or plan unlocks the rest of this episode and every locked chapter, from{" "}
-        <span className="font-bold text-mint">₦100 a day</span>.
+      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-300">
+        Unlock the whole episode for <span className="font-bold text-mint">{UNLOCK_PRICES.episode} credits</span>, tap a locked page to unlock
+        just that one, or open everything for a day for ₦100 from your MTN line.
       </p>
-      <div className="mt-7 flex flex-wrap justify-center gap-3">
-        <Link href="/subscription" className="btn btn-primary px-6 py-3 text-base">Subscribe</Link>
-        <Link href={authHref("signin", pathname)} className="btn btn-ghost px-6 py-3 text-base">
-          Already subscribed? Sign in
-        </Link>
+      <div className="mt-6 flex flex-wrap justify-center gap-3">
+        <button type="button" onClick={() => openUnlock({ page: null, preview: null })} className="btn btn-primary px-6 py-3 text-base">
+          Unlock episode
+        </button>
+        <button type="button" onClick={openMtnPay} className="btn gap-2 border-black bg-sun px-6 py-3 text-base text-ink shadow-[3px_3px_0_#000]">
+          <IoCellular /> ₦100 with MTN
+        </button>
       </div>
       <p className="mt-6 text-xs text-slate-500">
-        Or start from the beginning: <Link href={firstEpisodeHref} className="font-semibold text-slate-300 underline-offset-4 hover:underline">episode 1 is free</Link>
+        New here? <Link href={firstEpisodeHref} className="font-semibold text-slate-300 underline-offset-4 hover:underline">Episode 1 is free</Link>
       </p>
     </div>
   );

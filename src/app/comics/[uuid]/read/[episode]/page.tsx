@@ -4,13 +4,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ReaderDock } from "@/components/reader/ReaderDock";
 import { ReaderProgress } from "@/components/reader/ReaderProgress";
+import { MtnPayFlow } from "@/components/mtn/MtnPayFlow";
+import { PassBanner } from "@/components/mtn/PassBanner";
+import { LockedPage } from "@/components/reader/LockedPage";
 import { ReaderGate } from "@/components/reader/ReaderGate";
+import { UnlockDialog } from "@/components/reader/UnlockDialog";
 import { ReaderTopBar, episodeHref } from "@/components/reader/ReaderTopBar";
 import { ReaderTour } from "@/components/reader/ReaderTour";
 import { getComicPageData } from "@/lib/api/client";
 import { comicHref } from "@/lib/format";
 import { buildEpisode } from "@/lib/reader";
-import { SESSION_COOKIE } from "@/lib/session";
+import { parsePass, parseUnlocks, PASS_COOKIE, UNLOCKS_COOKIE } from "@/lib/session";
 
 type Params = PageProps<"/comics/[uuid]/read/[episode]">;
 
@@ -32,14 +36,20 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   return { title: `${data.comic.title} · Episode ${data.episode} | Toon Central` };
 }
 
+// What this request's reader has unlocked, and the time to judge 24-hour unlocks against.
+async function readAccess() {
+  const jar = await cookies();
+  return [parseUnlocks(jar.get(UNLOCKS_COOKIE)?.value), Date.now(), parsePass(jar.get(PASS_COOKIE)?.value)?.until ?? null] as const;
+}
+
 export default async function ReaderPage({ params }: Params) {
   const data = await load(params);
   if (!data) notFound();
 
   const { comic, episode, total, episodesSource } = data;
-  // The server decides access. Demo: the mock sign-in cookie makes you Premium.
-  const premiumReader = (await cookies()).get(SESSION_COOKIE)?.value === "1";
-  const { pages, gated } = buildEpisode(comic, episode, premiumReader);
+  // The server decides which pages go out clean: unlocked ones (mock record in a cookie, see
+  // session.ts) and the free preview. Everything else is only ever sent blurred.
+  const { pages, lockedCount, premiumEpisode, passActive } = buildEpisode(comic, episode, ...(await readAccess()));
   const hasNext = total != null && episode < total;
 
   return (
@@ -52,25 +62,39 @@ export default async function ReaderPage({ params }: Params) {
           {episodesSource !== "live" && " Real pages arrive with the live API."}
         </p>
 
+        {premiumEpisode && passActive && (
+          <div className="mx-4 mt-4 sm:mx-0">
+            <PassBanner />
+          </div>
+        )}
+
         <div className="mt-4">
-          {pages.map((page) => (
-            <img
-              key={page.number}
-              id={page.degraded ? undefined : `page-${page.number}`}
-              data-page={page.degraded ? undefined : page.number}
-              src={page.src}
-              alt={page.degraded ? "" : `${comic.title}, episode ${episode}, page ${page.number}`}
-              width={page.width}
-              height={page.height}
-              loading={page.number <= 2 ? "eager" : "lazy"}
-              decoding="async"
-              className="block h-auto w-full scroll-mt-16"
-            />
-          ))}
+          {pages.map((page) =>
+            page.degraded ? (
+              <LockedPage key={page.number} number={page.number} src={page.src} width={page.width} height={page.height} />
+            ) : (
+              <div key={page.number} className="relative">
+                <img
+                  id={`page-${page.number}`}
+                  data-page={page.number}
+                  src={page.src}
+                  alt={`${comic.title}, episode ${episode}, page ${page.number}`}
+                  width={page.width}
+                  height={page.height}
+                  loading={page.number <= 2 ? "eager" : "lazy"}
+                  decoding="async"
+                  className="block h-auto w-full scroll-mt-16"
+                />
+                {page.unlockedUntil && (
+                  <span className="tag absolute right-2 top-2 bg-mint">Unlocked · 24h</span>
+                )}
+              </div>
+            )
+          )}
         </div>
 
-        {gated ? (
-          <ReaderGate episode={episode} firstEpisodeHref={episodeHref(comic.uuid, 1)} />
+        {lockedCount > 0 ? (
+          <ReaderGate episode={episode} lockedCount={lockedCount} firstEpisodeHref={episodeHref(comic.uuid, 1)} />
         ) : (
           <div className="mx-4 mt-10 border-2 border-line bg-panel p-6 text-center sm:mx-0">
             <p className="font-display text-3xl uppercase leading-none text-white">End of episode {episode}</p>
@@ -97,6 +121,8 @@ export default async function ReaderPage({ params }: Params) {
         pagesInEpisode={pages.filter((p) => !p.degraded).length}
         totalEpisodes={total}
       />
+      <UnlockDialog uuid={comic.uuid} episode={episode} lockedCount={lockedCount} />
+      <MtnPayFlow />
       <ReaderDock />
       <ReaderTour />
     </div>

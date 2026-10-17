@@ -63,7 +63,7 @@ export function Avatar({ user, className = "h-9 w-9 text-sm" }: { user: MockUser
 }
 
 const publishItems = [
-  { href: "/creator/new", icon: IoCloudUploadOutline, label: "Upload comic" },
+  { href: "/creator/comics/new", icon: IoCloudUploadOutline, label: "Upload comic" },
   { href: "/shorts/upload", icon: IoVideocamOutline, label: "Upload short" },
   { href: "/creator/dashboard", icon: IoGridOutline, label: "Creator dashboard" },
   { href: "/creator101", icon: IoSchoolOutline, label: "Creator101", hint: "Guide" },
@@ -90,7 +90,7 @@ export function AccountMenu({
   user: MockUser;
   onSignOut: () => void;
   onNavigate?: () => void;
-  // Off in the mobile sheet: publishing is desktop-only.
+  // Creator Studio link (phones can view the Studio; publishing inside it is desktop-only).
   showCreatorLinks?: boolean;
   // Phones have no bell in the header, so the sheet lists Notifications with this count.
   unreadCount?: number;
@@ -131,7 +131,7 @@ export function AccountMenu({
       )}
       <MenuItem href="/subscription" icon={IoDiamondOutline} label="Subscription" onClick={onNavigate} />
       {showCreatorLinks && (
-        <MenuItem href="/creator/dashboard" icon={IoGridOutline} label="Creator dashboard" onClick={onNavigate} />
+        <MenuItem href="/creator/dashboard" icon={IoGridOutline} label="Creator Studio" onClick={onNavigate} />
       )}
       <MenuItem href="/settings" icon={IoSettingsOutline} label="Settings" onClick={onNavigate} />
       <MenuDivider />

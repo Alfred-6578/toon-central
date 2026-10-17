@@ -204,10 +204,31 @@ export function useMockComments(shortId: string) {
   };
 }
 
+// Credits the mock reader has spent (unlocking pages), taken off their starting balance.
+const SPENT_KEY = "tc-mock-credits-spent";
+
+function readSpent() {
+  try {
+    return localStorage.getItem(SPENT_KEY) ?? "0";
+  } catch {
+    return "0";
+  }
+}
+
+export function spendCredits(amount: number) {
+  try {
+    localStorage.setItem(SPENT_KEY, String(Number(readSpent()) + amount));
+  } catch {
+    // Storage unavailable: the unlock still goes through, the balance just doesn't drop.
+  }
+  listeners.forEach((listener) => listener());
+}
+
 export function useMockSession() {
   const signedIn = useSyncExternalStore(subscribe, read, () => false);
   const edits: ProfileEdits = JSON.parse(useSyncExternalStore(subscribe, readProfile, () => "{}"));
-  const user = { ...mockUser, ...edits };
+  const spent = Number(useSyncExternalStore(subscribe, readSpent, () => "0")) || 0;
+  const user = { ...mockUser, ...edits, credits: Math.max(0, mockUser.credits - spent) };
   user.initials = initialsOf(user.name);
 
   return {
