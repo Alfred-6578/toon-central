@@ -6,6 +6,7 @@ import { useEffect, useId, useState, type FormEvent, type InputHTMLAttributes } 
 import { IoCheckmarkCircle, IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { authHref, PASSWORD_MIN, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
 import { useMockSession } from "@/lib/mockSession";
+import { notifyWelcome } from "@/lib/notifications";
 
 type Values = { username: string; email: string; password: string; terms: boolean };
 type Errors = Partial<Record<keyof Values, string>>;
@@ -58,6 +59,8 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
     setPending(true);
     setTimeout(() => {
       signIn();
+      // New accounts get the welcome message (once); it pops up on the page they land on.
+      if (mode === "signup") setTimeout(() => notifyWelcome(values.username || undefined), 900);
       router.replace(next);
       // The reader decides access on the server; re-render so an unlocked episode arrives.
       router.refresh();

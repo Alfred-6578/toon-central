@@ -3,7 +3,8 @@
 import { IoAdd, IoChevronDown, IoNotificationsOutline, IoSearch } from "react-icons/io5";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import type { MockNotification, MockUser } from "@/lib/mockSession";
+import type { MockUser } from "@/lib/mockSession";
+import type { MockNotification } from "@/lib/notifications";
 import { AccountMenu, Avatar, MenuPanel, NotificationsMenu, PublishMenu } from "./nav/Menus";
 import { useDismiss } from "./nav/useDismiss";
 

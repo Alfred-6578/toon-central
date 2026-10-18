@@ -34,21 +34,7 @@ export const mockUser: MockUser = {
   referrals: 2,
 };
 
-export type MockNotification = {
-  id: string;
-  kind: "episode" | "reply" | "account";
-  title: string;
-  body: string;
-  time: string;
-  href: string;
-};
 
-export const mockNotifications: MockNotification[] = [
-  { id: "n1", kind: "episode", title: "New episode of ODOGWU", body: "47STUDIOS just dropped the latest chapter.", time: "2h ago", href: "/comics/4c06eec3-c5a8-4c4c-b2e0-2aaad1478f01" },
-  { id: "n2", kind: "episode", title: "AFRI DIVAZ was updated", body: "A comic in your library has new pages.", time: "Yesterday", href: "/comics/9e20eecf-14ee-4312-bf68-ea3e9f348c0f" },
-  { id: "n3", kind: "reply", title: "Sanmi crown replied to you", body: "On AZANIA: \"Thank you! More soon.\"", time: "3d ago", href: "/creators/sanmi-crown" },
-  { id: "n4", kind: "account", title: "Premium renews soon", body: "Your Premium plan renews on 12 Nov.", time: "5d ago", href: "/subscription" },
-];
 
 let memoryValue = false;
 const listeners = new Set<() => void>();
@@ -87,7 +73,7 @@ function subscribe(listener: () => void) {
 }
 
 // A set of ids kept in localStorage (saved comics, liked shorts) for the mock user.
-function createIdSetStore(key: string) {
+export function createIdSetStore(key: string) {
   let memory = "[]";
 
   const readIds = () => {
@@ -122,21 +108,9 @@ function createIdSetStore(key: string) {
 
 export const useMockLibrary = createIdSetStore("tc-mock-library");
 export const useMockLikes = createIdSetStore("tc-mock-likes");
+export const useMockComicLikes = createIdSetStore("tc-mock-comic-likes");
 export const useMockFollows = createIdSetStore("tc-mock-follows");
 export const useMockSavedShorts = createIdSetStore("tc-mock-saved-shorts");
-const useReadNotifications = createIdSetStore("tc-mock-read-notifications");
-
-// The bell, the account sheet and /notifications share which notifications have been read.
-export function useMockNotifications() {
-  const read = useReadNotifications();
-  const unreadIds = new Set(mockNotifications.filter((n) => !read.has(n.id)).map((n) => n.id));
-  return {
-    items: mockNotifications,
-    unreadIds,
-    markRead: (id: string) => read.addAll([id]),
-    markAllRead: () => read.addAll(mockNotifications.map((n) => n.id)),
-  };
-}
 
 // Edits from /settings, laid over the mock user (name, username, bio).
 const PROFILE_KEY = "tc-mock-profile";

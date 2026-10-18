@@ -2,16 +2,11 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import type { IconType } from "react-icons";
-import { IoBookOutline, IoChatbubbleOutline, IoDiamondOutline } from "react-icons/io5";
 import { SignInPrompt } from "@/components/auth/SignInPrompt";
-import { useMockNotifications, useMockSession, useHydrated, type MockNotification } from "@/lib/mockSession";
+import { KIND_STYLE, notificationHref } from "@/components/notifications/kinds";
+import { useMockSession, useHydrated } from "@/lib/mockSession";
+import { useMockNotifications } from "@/lib/notifications";
 
-const KIND_ICON: Record<MockNotification["kind"], IconType> = {
-  episode: IoBookOutline,
-  reply: IoChatbubbleOutline,
-  account: IoDiamondOutline,
-};
 
 // Everything behind the bell, with an Unread filter. Read state is shared with the bell's dropdown.
 export function NotificationsView() {
@@ -62,18 +57,18 @@ export function NotificationsView() {
       ) : (
         <ul className="border-2 border-line">
           {shown.map((item) => {
-            const Icon = KIND_ICON[item.kind];
+            const { icon: Icon, color } = KIND_STYLE[item.kind];
             const unread = unreadIds.has(item.id);
             return (
               <li key={item.id} className="border-b-2 border-line last:border-b-0">
                 <Link
-                  href={item.href}
+                  href={notificationHref(item.id)}
                   onClick={() => markRead(item.id)}
                   className={`flex items-start gap-4 px-4 py-4 transition-colors hover:bg-panel sm:px-5 ${unread ? "bg-panel/60" : ""}`}
                 >
                   <span
                     className={`flex h-10 w-10 shrink-0 items-center justify-center border-2 text-lg ${
-                      unread ? "border-black bg-mint text-ink" : "border-line text-slate-400"
+                      unread ? `border-black ${color} text-ink` : "border-line text-slate-400"
                     }`}
                   >
                     <Icon />

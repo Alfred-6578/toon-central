@@ -1,14 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { AccountPage } from "@/components/account/AccountPage";
+import { DemoNotifications } from "@/components/notifications/DemoNotifications";
 import { BubbleDots, ComicGridSkeleton, InkLogoLoader } from "@/components/ui/Loaders";
 
-export const metadata: Metadata = { title: "Loading & welcome preview | Toon Central", robots: { index: false } };
+export const metadata: Metadata = { title: "Loading, welcome & notifications preview | Toon Central", robots: { index: false } };
 
 // For client review: every loading state in one place, and a way to replay the one-time welcome.
 export default function LoadingPreviewPage() {
   return (
-    <AccountPage title="Loading & welcome" width="max-w-6xl">
+    <AccountPage title="Previews" width="max-w-6xl">
       <div className="grid gap-12">
         <section>
           <h2 className="font-display text-3xl uppercase text-white">Welcome screen</h2>
@@ -21,6 +22,15 @@ export default function LoadingPreviewPage() {
             <Link href="/?welcome=zoom&intro=1" className="btn btn-primary px-5 py-3">C · Pull back</Link>
             <Link href="/?welcome=wall&intro=1" className="btn btn-primary px-5 py-3">D · Cover wall</Link>
           </div>
+        </section>
+
+        <section>
+          <h2 className="font-display text-3xl uppercase text-white">Notification pop-ups</h2>
+          <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
+            Real moments send these: joining (welcome), finishing your first episode or first unlock (congratulations), and new
+            episodes of comics in your library. Each pops up wherever the reader is and opens to a full message.
+          </p>
+          <DemoNotifications />
         </section>
 
         <section>

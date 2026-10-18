@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FaFacebookF, FaXTwitter } from "react-icons/fa6";
 import { IoBookmark, IoBookmarkOutline, IoCopyOutline, IoShareSocialOutline } from "react-icons/io5";
+import { LikeButton } from "@/components/ui/LikeButton";
 import { useMockLibrary, useMockSession } from "@/lib/mockSession";
 
 const iconButton =
@@ -46,6 +47,7 @@ export function ReaderActions({ uuid, title, episode }: { uuid: string; title: s
 
   return (
     <div className="relative flex shrink-0 items-center gap-1.5">
+      <LikeButton uuid={uuid} title={title} variant="icon" />
       <button
         type="button"
         data-tour="library"

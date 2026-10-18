@@ -1,12 +1,10 @@
 import Link from "next/link";
-import { FaRegEye } from "react-icons/fa6";
-import { IoHeartOutline } from "react-icons/io5";
 import { VscNotebook } from "react-icons/vsc";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
-import { LibraryCTA } from "@/components/ui/LibraryCTA";
 import type { Comic } from "@/lib/api/types";
-import { cloudinary, creatorHref, formatCount, genreHref, readerHref, scheduleLabel, timeAgo } from "@/lib/format";
+import { cloudinary, creatorHref, genreHref, readerHref, scheduleLabel, timeAgo } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
+import { StatBar } from "./StatBar";
 import { Synopsis } from "./Synopsis";
 
 export { readerHref } from "@/lib/format";
@@ -61,8 +59,6 @@ export function ComicHeader({ comic }: { comic: Comic }) {
           </Link>
 
           <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-300">
-            <span className="flex items-center gap-1.5"><FaRegEye /> {formatCount(comic.views)} reads</span>
-            <span className="flex items-center gap-1.5"><IoHeartOutline /> {formatCount(comic.likes)} likes</span>
             {comic.episodes != null && (
               <span className="flex items-center gap-1.5"><VscNotebook /> {comic.episodes} {comic.episodes === 1 ? "chapter" : "chapters"}</span>
             )}
@@ -71,10 +67,10 @@ export function ComicHeader({ comic }: { comic: Comic }) {
 
           {comic.description && <Synopsis text={comic.description} />}
 
-          <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Link href={readerHref(comic.uuid)} className="btn btn-primary px-6 py-3 text-base">Start reading</Link>
-            <LibraryCTA uuid={comic.uuid} />
-            <a href="#episodes" className="text-sm font-semibold text-slate-300 hover:text-mint">Episodes ↓</a>
+          <div className="mt-7 flex flex-wrap items-stretch gap-3">
+            <Link href={readerHref(comic.uuid)} className="btn btn-primary w-full px-6 py-3 text-base sm:w-auto">Start reading</Link>
+            <StatBar uuid={comic.uuid} title={comic.title} views={comic.views} likes={comic.likes} />
+            <a href="#episodes" className="hidden items-center text-sm font-semibold text-slate-300 hover:text-mint sm:flex">Episodes ↓</a>
           </div>
         </div>
       </div>

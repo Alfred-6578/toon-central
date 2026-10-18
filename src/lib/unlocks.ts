@@ -1,6 +1,7 @@
 "use client";
 
 import { spendCredits } from "@/lib/mockSession";
+import { notifyFirstUnlock } from "@/lib/notifications";
 import { PAGE_UNLOCK_MS, UNLOCK_PRICES } from "@/lib/reader";
 import { episodeKey, pageKey, parseUnlocks, UNLOCKS_COOKIE, type Unlocks } from "@/lib/session";
 
@@ -19,4 +20,5 @@ export function unlock(uuid: string, episode: number, what: { page: number } | "
   else kept[pageKey(uuid, episode, what.page)] = now + PAGE_UNLOCK_MS;
   document.cookie = `${UNLOCKS_COOKIE}=${encodeURIComponent(JSON.stringify(kept))}; path=/; max-age=31536000; samesite=lax`;
   spendCredits(what === "episode" ? UNLOCK_PRICES.episode : UNLOCK_PRICES.page);
+  notifyFirstUnlock();
 }

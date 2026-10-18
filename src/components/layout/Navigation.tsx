@@ -4,7 +4,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { authHref } from "@/lib/auth";
-import { useMockNotifications, useMockSession } from "@/lib/mockSession";
+import { useMockSession } from "@/lib/mockSession";
+import { useMockNotifications } from "@/lib/notifications";
+import { NotificationToast } from "@/components/notifications/NotificationToast";
 import { Header, navItems, type DesktopMenu } from "./Header";
 import { MobileNav, type MobileSheet } from "./MobileNav";
 import { AccountMenu, Sheet } from "./nav/Menus";
@@ -164,6 +166,7 @@ export function Navigation() {
       </Sheet>
 
       <SearchPanel open={searchOpen} onClose={closeSearch} />
+      <NotificationToast />
     </>
   );
 }

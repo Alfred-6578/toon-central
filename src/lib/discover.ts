@@ -1,6 +1,5 @@
-import { getCatalogue, getCreatorsDirectory, getGenres, getHomeFeed, getShorts, linkShortsToComics } from "@/lib/api/client";
+import { getCatalogue, getCreatorsDirectory, getGenres, getHomeFeed, getShorts, getTopCarousel, linkShortsToComics } from "@/lib/api/client";
 import type { Comic, CreatorPageData, Genre, Short } from "@/lib/api/types";
-import { creatorHref, genreHref } from "@/lib/format";
 import { interleaveByCreator } from "@/lib/shortsFeed";
 
 // Mood collections built from genre tags. Action is left out on purpose: almost every comic has it.
@@ -15,6 +14,8 @@ export type Vibe = (typeof VIBES)[number];
 
 // A section needs at least this many items to show; thinner ones hide until the catalogue fills them.
 export const MIN_ITEMS = 3;
+// Comics in Discover's banner (alongside its promo slides).
+const BANNER_COMICS = 6;
 const SECTION_SIZE = 5;
 
 export const inVibe = (vibe: Vibe, comic: Comic) => comic.genres.some((g) => (vibe.genres as readonly string[]).includes(g));
@@ -34,8 +35,11 @@ export type DiscoverData = {
   completed: Comic[];
   genres: Genre[];
   creators: CreatorPageData[];
-  quickLinks: { label: string; href: string }[];
   everything: string[];
+  // The live site's main-menu strip (its top carousel), and one Original to feature in the banners.
+  carousel: Comic[];
+  // Comics to feature in the banner: the live site's "Popular by ToonCentral" picks, with banner art.
+  featured: Comic[];
 };
 
 export async function getDiscoverData(): Promise<DiscoverData> {
@@ -46,6 +50,7 @@ export async function getDiscoverData(): Promise<DiscoverData> {
     getGenres(),
     getCreatorsDirectory("active"),
   ]);
+  const top = await getTopCarousel();
   const topTen = new Set(feed.trending.slice(0, 10).map((c) => c.uuid));
 
   // Each comic appears in at most one list section. Scarce lists claim first, so they still fill.
@@ -73,11 +78,6 @@ export async function getDiscoverData(): Promise<DiscoverData> {
 
 
   const people = creators.filter((c) => !c.isOfficial).slice(0, 3);
-  // Search shortcuts: a few genres plus the most recently active creators.
-  const quickLinks = [
-    ...["Fantasy", "Romance", "Supernatural", "Sports"].map((g) => ({ label: g, href: genreHref(g) })),
-    ...people.slice(0, 2).map((c) => ({ label: c.creator.username, href: creatorHref(c.creator.username) })),
-  ];
 
   return {
     vibes,
@@ -87,7 +87,10 @@ export async function getDiscoverData(): Promise<DiscoverData> {
     completed,
     genres,
     creators: people,
-    quickLinks,
     everything: catalogue.map((c) => c.uuid),
+    carousel: top.length ? top : [...catalogue].sort((a, b) => b.views - a.views).slice(0, 10),
+    featured: [...new Map([...feed.popularByToonCentral, ...catalogue.filter((c) => c.isOriginal)].map((c) => [c.uuid, c])).values()]
+      .filter((c) => c.backgroundImage)
+      .slice(0, BANNER_COMICS),
   };
 }

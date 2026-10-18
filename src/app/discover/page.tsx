@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { CreatorCard } from "@/components/creator/CreatorCard";
-import { DiscoverSearch, SurpriseMe } from "@/components/discover/DiscoverControls";
+import { SurpriseMe } from "@/components/discover/DiscoverControls";
+import { DiscoverCarousel } from "@/components/discover/DiscoverCarousel";
 import { NowShowing } from "@/components/discover/NowShowing";
+import { PromoBanners } from "@/components/discover/PromoBanners";
 import { VibeTiles } from "@/components/discover/VibeTiles";
 import { GenreStrip } from "@/components/genre/GenreStrip";
 import { Footer } from "@/components/layout/Footer";
@@ -23,7 +24,7 @@ function Note({ children }: { children: React.ReactNode }) {
 
 export default async function DiscoverPage() {
   const [data, stats] = await Promise.all([getDiscoverData(), getSiteStats()]);
-  const { vibes, gems, nowShowing, newest, completed, genres, creators, quickLinks, everything } = data;
+  const { vibes, gems, nowShowing, newest, completed, genres, creators, everything, carousel, featured } = data;
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -32,26 +33,13 @@ export default async function DiscoverPage() {
         <Navigation />
         <div className="h-[66px]" />
 
+        {/* The live site's main-menu strip, first thing on the page. */}
+        <DiscoverCarousel comics={carousel} />
+
         <div className="mx-auto px-6 md:px-8 lg:px-10">
-          {/* 1. Header + search */}
-          <header className="mx-auto max-w-3xl pt-12 text-center">
-            <h1 className="font-display text-6xl uppercase leading-[0.9] text-white sm:text-8xl">Discover</h1>
-            <p className="mt-3 text-slate-300">Find something you haven&apos;t read yet.</p>
-            <div className="mt-8">
-              <DiscoverSearch />
-            </div>
-            <div className="mt-5 flex flex-wrap justify-center gap-2">
-              {quickLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="border-2 border-line px-3 py-1.5 text-sm font-semibold text-slate-300 hover:border-mint hover:text-white"
-                >
-                  {link.label}
-                </Link>
-              ))}
-            </div>
-          </header>
+          {/* The nav already has search, so the page opens on its banner. */}
+          <h1 className="sr-only">Discover</h1>
+          <PromoBanners featured={featured} />
 
           {/* 2. Pick a vibe */}
           {vibes.length > 0 && (

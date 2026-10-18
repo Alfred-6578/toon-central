@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { ReaderDock } from "@/components/reader/ReaderDock";
 import { ReaderProgress } from "@/components/reader/ReaderProgress";
 import { MtnPayFlow } from "@/components/mtn/MtnPayFlow";
+import { NotificationToast } from "@/components/notifications/NotificationToast";
 import { PassBanner } from "@/components/mtn/PassBanner";
 import { LockedPage } from "@/components/reader/LockedPage";
 import { ReaderGate } from "@/components/reader/ReaderGate";
@@ -123,6 +124,7 @@ export default async function ReaderPage({ params }: Params) {
       />
       <UnlockDialog uuid={comic.uuid} episode={episode} lockedCount={lockedCount} />
       <MtnPayFlow />
+      <NotificationToast />
       <ReaderDock />
       <ReaderTour />
     </div>

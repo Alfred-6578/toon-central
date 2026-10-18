@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { notifyFirstEpisode } from "@/lib/notifications";
 import { removeProgress, saveProgress } from "@/lib/readingProgress";
 
 type ReaderProgressProps = {
@@ -41,6 +42,8 @@ export function ReaderProgress({ uuid, title, coverImage, episode, pagesInEpisod
       if (finished && totalEpisodes != null && !hasNext) return removeProgress(uuid);
       // Episode count unknown (snapshot data): we can't promise a next episode, so keep them on this one.
       saveProgress({ uuid, title, coverImage, episode, page, pagesInEpisode, totalEpisodes, finished: finished && hasNext });
+      // Congratulate the first episode ever finished (once; signed-in readers only).
+      if (finished) notifyFirstEpisode(title, hasNext ? `/comics/${uuid}/read/${episode + 1}` : `/comics/${uuid}`);
     };
 
     const onScroll = () => {

@@ -16,7 +16,9 @@ import {
   IoVideocamOutline,
   IoWalletOutline,
 } from "react-icons/io5";
-import type { MockNotification, MockUser } from "@/lib/mockSession";
+import type { MockUser } from "@/lib/mockSession";
+import type { MockNotification } from "@/lib/notifications";
+import { notificationHref } from "@/components/notifications/kinds";
 
 export function MenuPanel({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
@@ -66,7 +68,7 @@ const publishItems = [
   { href: "/creator/comics/new", icon: IoCloudUploadOutline, label: "Upload comic" },
   { href: "/shorts/upload", icon: IoVideocamOutline, label: "Upload short" },
   { href: "/creator/dashboard", icon: IoGridOutline, label: "Creator dashboard" },
-  { href: "/creator101", icon: IoSchoolOutline, label: "Creator101", hint: "Guide" },
+  { href: "/milestones", icon: IoSchoolOutline, label: "Milestones", hint: "Guide" },
 ];
 
 export function PublishMenu({ onNavigate }: { onNavigate?: () => void }) {
@@ -164,7 +166,7 @@ export function NotificationsMenu({
       <ul className="max-h-96 overflow-y-auto">
         {items.map((item) => (
           <li key={item.id} className="border-b-2 border-line last:border-b-0">
-            <Link href={item.href} onClick={() => onOpen(item.id)} className="flex gap-3 px-4 py-3 hover:bg-panel">
+            <Link href={notificationHref(item.id)} onClick={() => onOpen(item.id)} className="flex gap-3 px-4 py-3 hover:bg-panel">
               <span className={`mt-1.5 h-2 w-2 shrink-0 ${unreadIds.has(item.id) ? "bg-mint" : "bg-transparent"}`} />
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-white">{item.title}</p>
