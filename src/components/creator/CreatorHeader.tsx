@@ -2,6 +2,7 @@ import type { CSSProperties } from "react";
 import Link from "next/link";
 import { FaAt, FaInstagram, FaTiktok, FaXTwitter } from "react-icons/fa6";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
+import { FollowButton } from "@/components/ui/FollowButton";
 import { dateParts } from "@/components/home/latest/releaseLogData";
 import type { CreatorPageData } from "@/lib/api/types";
 import { cloudinary, formatCount, genreHref } from "@/lib/format";
@@ -73,6 +74,9 @@ export function CreatorHeader({ data }: { data: CreatorPageData }) {
                 ))}
               </div>
             )}
+            <div className="mt-5">
+              <FollowButton username={creator.username} />
+            </div>
           </div>
         </div>
 

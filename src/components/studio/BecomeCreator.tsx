@@ -44,7 +44,12 @@ export function BecomeCreator() {
       <span className="tag -rotate-2 bg-sun text-sm">For creators</span>
       <h1 className="mt-4 font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Publish on Toon Central</h1>
       <p className="mt-3 text-sm leading-6 text-slate-300">
-        Set up your creator profile to publish comics and shorts. It&apos;s free, and you can change all of this later.
+        Set up your creator profile to publish comics and shorts. It&apos;s free, and you can change all of this later. New to
+        publishing?{" "}
+        <Link href="/creator101" className="font-semibold text-mint underline-offset-4 hover:underline">
+          Read the creator guide first
+        </Link>
+        .
       </p>
 
       <form onSubmit={onSubmit} noValidate className="mt-8 grid gap-5 border-2 border-line bg-panel p-5 sm:p-6">

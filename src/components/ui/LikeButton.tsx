@@ -42,7 +42,7 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
           aria-pressed={isLiked}
           aria-label={`${isLiked ? "Unlike" : "Like"} ${title}${count == null ? "" : `, ${count} likes`}`}
           title={user ? undefined : "Signs you in and likes this comic"}
-          className="flex items-center gap-2 px-4 font-display text-base uppercase tracking-[0.03em] text-white transition-colors hover:bg-white/10"
+          className="flex items-center gap-2 px-3 font-display text-[15px] uppercase tracking-[0.03em] text-white transition-colors hover:bg-white/10"
         >
           <Icon key={popKey} className={`text-lg ${isLiked ? "like-pop text-mint" : ""}`} />
           {count == null ? (isLiked ? "Liked" : "Like") : formatCount(count)}

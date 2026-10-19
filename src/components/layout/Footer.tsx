@@ -21,7 +21,7 @@ const columns = [
       { label: "Upload a comic", href: "/creator/comics/new" },
       { label: "Upload a short", href: "/shorts/upload" },
       { label: "Creator dashboard", href: "/creator/dashboard" },
-      { label: "Milestones", href: "/milestones" },
+      { label: "Creator 101", href: "/creator101" },
     ],
   },
   {

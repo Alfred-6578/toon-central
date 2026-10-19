@@ -1,22 +1,22 @@
 import type { Metadata } from "next";
 import { IoCheckmark, IoClose, IoSwapVertical } from "react-icons/io5";
-import { MilestonesShell } from "@/components/milestones/MilestonesShell";
+import { Creator101Shell } from "@/components/creator101/Creator101Shell";
 import { GUIDE, GUIDE_INTRO, SIZE_TABLE, type GuideExample } from "@/data/uploadGuide";
 import { getSiteStats } from "@/lib/api/client";
 
 export const metadata: Metadata = {
-  title: "Uploading · Milestones | Toon Central",
+  title: "Uploading · Creator 101 | Toon Central",
   description: "Before you upload: readability, clarity and pacing for vertical-scroll Mafiki, with do and don't examples.",
 };
 
 const partLabel = (n: number, i: number) => `${n}${String.fromCharCode(97 + i)}`;
 
-// Milestones → Uploading: the "Before you upload" guide, section by section with do/don't examples.
+// Creator 101 → Uploading: the "Before you upload" guide, section by section with do/don't examples.
 export default async function UploadingGuidePage() {
   const stats = await getSiteStats();
 
   return (
-    <MilestonesShell tab="uploading" stats={stats}>
+    <Creator101Shell tab="uploading" stats={stats}>
       <section className="relative overflow-hidden border-b-2 border-line">
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-96" />
         <div className="relative mx-auto max-w-7xl px-6 py-14 md:px-8 lg:px-10 lg:py-20">
@@ -105,7 +105,7 @@ export default async function UploadingGuidePage() {
           ))}
         </div>
       </div>
-    </MilestonesShell>
+    </Creator101Shell>
   );
 }
 

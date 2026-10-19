@@ -68,7 +68,7 @@ const publishItems = [
   { href: "/creator/comics/new", icon: IoCloudUploadOutline, label: "Upload comic" },
   { href: "/shorts/upload", icon: IoVideocamOutline, label: "Upload short" },
   { href: "/creator/dashboard", icon: IoGridOutline, label: "Creator dashboard" },
-  { href: "/milestones", icon: IoSchoolOutline, label: "Milestones", hint: "Guide" },
+  { href: "/creator101", icon: IoSchoolOutline, label: "Creator 101", hint: "Guide" },
 ];
 
 export function PublishMenu({ onNavigate }: { onNavigate?: () => void }) {

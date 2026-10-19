@@ -1,5 +1,5 @@
 // "Before you upload": the creators' guide to vertical storytelling, transcribed from the client's Figma
-// (Milestones → Uploading). Example art is cropped from the Figma export at screenshot resolution; swap in
+// (Creator 101 → Uploading). Example art is cropped from the Figma export at screenshot resolution; swap in
 // the original exports when the client sends them (same file names, in /public/creator-guide/uploading).
 
 export type GuideExample = {
@@ -53,7 +53,7 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "Lay your panels out vertically, so each panel can be seen on its own.",
-            examples: [art("01-panel-placement-bad", 299, 592, "dont"), art("02-panel-placement-good", 301, 1208, "do")],
+            examples: [art("01-panel-placement-bad", 446, 887, "dont"), art("02-panel-placement-good", 430, 1813, "do")],
           },
         ],
       },
@@ -63,7 +63,7 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "The less effort it takes to follow the text, the better. Keep the reader's eyes moving in a straight line, top to bottom.",
-            examples: [art("03-speech-bubble-placement-bad", 429, 592, "dont"), art("04-speech-bubble-placement-good", 341, 590, "do")],
+            examples: [art("03-speech-bubble-placement-bad", 666, 888, "dont"), art("04-speech-bubble-placement-good", 474, 876, "do")],
           },
         ],
       },

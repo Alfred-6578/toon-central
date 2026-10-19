@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { IoAnalyticsOutline, IoBookOutline, IoFilmOutline, IoPersonCircleOutline, IoWalletOutline } from "react-icons/io5";
+import { IoAnalyticsOutline, IoBookOutline, IoFilmOutline, IoPersonCircleOutline, IoSchoolOutline, IoWalletOutline } from "react-icons/io5";
 import type { IconType } from "react-icons";
 import { Navigation } from "@/components/layout/Navigation";
 import { STUDIO_PAGES, type StudioPageId } from "@/lib/studio";
@@ -59,6 +59,15 @@ export function StudioShell({ active, query = "", children }: Props) {
                     </li>
                   );
                 })}
+                {/* Out of Studio, into the creators' guide. */}
+                <li className="lg:mt-4 lg:border-t-2 lg:border-line lg:pt-4">
+                  <Link
+                    href="/creator101"
+                    className="flex items-center gap-3 whitespace-nowrap border-2 border-transparent px-3 py-2 text-sm font-semibold text-slate-300 hover:border-line hover:text-white"
+                  >
+                    <IoSchoolOutline className="text-lg" /> Creator guide
+                  </Link>
+                </li>
               </ul>
               <ScrollIntoStrip />
             </nav>

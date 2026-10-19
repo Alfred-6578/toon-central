@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IoArrowForward, IoPhonePortraitOutline, IoEarthOutline, IoLayersOutline, IoSwapVerticalOutline } from "react-icons/io5";
-import { MilestonesShell, PUBLISH_HREF, SectionTitle } from "@/components/milestones/MilestonesShell";
+import { Creator101Shell, PUBLISH_HREF, SectionTitle } from "@/components/creator101/Creator101Shell";
 import { getOriginalsPageData, getSiteStats } from "@/lib/api/client";
 import { cloudinary, comicHref, formatCount } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "Mafiki · Milestones | Toon Central",
+  title: "Mafiki · Creator 101 | Toon Central",
   description: "The Mafiki format: vertical-scroll comics made for phones, told in episodes, rooted in African stories.",
 };
 
@@ -18,13 +18,13 @@ const TRAITS = [
   { icon: IoEarthOutline, title: "Rooted in Africa", body: "Our cities, myths, languages and humour, from creators across the continent, for readers everywhere." },
 ];
 
-// Milestones → Mafiki: what the format asks of a creator, with Toon Central Originals as the examples.
+// Creator 101 → Mafiki: what the format asks of a creator, with Toon Central Originals as the examples.
 export default async function MafikiPage() {
   const [originals, stats] = await Promise.all([getOriginalsPageData("popular"), getSiteStats()]);
   const examples = originals.comics.slice(0, 6);
 
   return (
-    <MilestonesShell tab="mafiki" stats={stats}>
+    <Creator101Shell tab="mafiki" stats={stats}>
       <section className="relative overflow-hidden border-b-2 border-line">
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-96" />
         <div className="relative mx-auto max-w-7xl px-6 py-14 md:px-8 lg:px-10 lg:py-20">
@@ -81,13 +81,13 @@ export default async function MafikiPage() {
             <p className="mt-2 font-medium text-ink/80">The uploading guide covers panel placement, speech bubbles, fonts, sizes and pacing, with examples.</p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/milestones/uploading" className="btn gap-2 border-black bg-ink px-6 py-3 text-base text-white shadow-[4px_4px_0_#000]">
+            <Link href="/creator101/uploading" className="btn gap-2 border-black bg-ink px-6 py-3 text-base text-white shadow-[4px_4px_0_#000]">
               Uploading guide <IoArrowForward />
             </Link>
             <Link href={PUBLISH_HREF} className="btn border-black bg-paper px-6 py-3 text-base text-ink shadow-[4px_4px_0_#000]">Publish</Link>
           </div>
         </div>
       </section>
-    </MilestonesShell>
+    </Creator101Shell>
   );
 }

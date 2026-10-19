@@ -109,6 +109,8 @@ export function createIdSetStore(key: string) {
 export const useMockLibrary = createIdSetStore("tc-mock-library");
 export const useMockLikes = createIdSetStore("tc-mock-likes");
 export const useMockComicLikes = createIdSetStore("tc-mock-comic-likes");
+// Comics the reader subscribed to: told when a new episode drops (separate from saving to the library).
+export const useMockSubscriptions = createIdSetStore("tc-mock-subscriptions");
 export const useMockFollows = createIdSetStore("tc-mock-follows");
 export const useMockSavedShorts = createIdSetStore("tc-mock-saved-shorts");
 

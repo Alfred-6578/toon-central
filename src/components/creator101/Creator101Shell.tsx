@@ -4,29 +4,29 @@ import { Footer, type FooterStats } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { authHref } from "@/lib/auth";
 
-export const MILESTONE_TABS = [
-  { href: "/milestones", label: "Introduction", id: "intro" },
-  { href: "/milestones/uploading", label: "Uploading", id: "uploading" },
-  { href: "/milestones/mafiki", label: "Mafiki", id: "mafiki" },
-  { href: "/milestones/making-money", label: "Making money", id: "money" },
+export const CREATOR101_TABS = [
+  { href: "/creator101", label: "Introduction", id: "intro" },
+  { href: "/creator101/uploading", label: "Uploading", id: "uploading" },
+  { href: "/creator101/mafiki", label: "Mafiki", id: "mafiki" },
+  { href: "/creator101/making-money", label: "Making money", id: "money" },
 ] as const;
 
-export type MilestoneTab = (typeof MILESTONE_TABS)[number]["id"];
+export type Creator101Tab = (typeof CREATOR101_TABS)[number]["id"];
 
 export const PUBLISH_HREF = "/creator/comics/new";
 
-// Milestones, the creators' guide (the live site's Creator101): four tabs, each its own URL, sharing this
+// Creator 101, the creators' guide (as on the live site): four tabs, each its own URL, sharing this
 // tab strip and the "start creating" sign-off.
-export function MilestonesShell({ tab, stats, children }: { tab: MilestoneTab; stats: FooterStats; children: ReactNode }) {
+export function Creator101Shell({ tab, stats, children }: { tab: Creator101Tab; stats: FooterStats; children: ReactNode }) {
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
         <div className="h-[66px]" />
 
-        <nav aria-label="Milestones" className="hide-scrollbar sticky top-[66px] z-30 overflow-x-auto border-b-2 border-line bg-ink/95 backdrop-blur">
+        <nav aria-label="Creator 101" className="hide-scrollbar sticky top-[66px] z-30 overflow-x-auto border-b-2 border-line bg-ink/95 backdrop-blur">
           <div className="mx-auto flex max-w-7xl justify-between px-4 sm:justify-start sm:gap-1 sm:px-6 md:px-8 lg:px-10">
-            {MILESTONE_TABS.map(({ href, label, id }) => {
+            {CREATOR101_TABS.map(({ href, label, id }) => {
               const active = id === tab;
               return (
                 <Link
@@ -73,7 +73,7 @@ function StartCreating() {
         </div>
         <div className="flex flex-wrap gap-3">
           <Link href={PUBLISH_HREF} className="btn btn-primary px-6 py-3 text-base">Start publishing</Link>
-          <Link href={authHref("signup", "/milestones")} className="btn btn-ghost px-6 py-3 text-base">Create account</Link>
+          <Link href={authHref("signup", "/creator101")} className="btn btn-ghost px-6 py-3 text-base">Create account</Link>
         </div>
       </div>
     </section>

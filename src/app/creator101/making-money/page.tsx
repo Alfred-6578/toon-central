@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { IoWarningOutline } from "react-icons/io5";
-import { MilestonesShell, PUBLISH_HREF, SectionTitle, StepCard } from "@/components/milestones/MilestonesShell";
+import { Creator101Shell, PUBLISH_HREF, SectionTitle, StepCard } from "@/components/creator101/Creator101Shell";
 import { getSiteStats } from "@/lib/api/client";
 
 export const metadata: Metadata = {
-  title: "Making money · Milestones | Toon Central",
+  title: "Making money · Creator 101 | Toon Central",
   description: "How creators earn on Toon Central: the Creator Rewards program, ad revenue sharing, Reader Ads and Reward Ads.",
 };
 
@@ -30,12 +30,12 @@ const AD_STEPS = [
 // Wrapped: the global img { display: block } rule would override `hidden` on the img itself.
 const coinArt = "pointer-events-none absolute bottom-0 hidden w-56 select-none sm:block lg:w-72";
 
-// Milestones → Making money: the ways creators earn, and what each one needs.
+// Creator 101 → Making money: the ways creators earn, and what each one needs.
 export default async function MakingMoneyPage() {
   const stats = await getSiteStats();
 
   return (
-    <MilestonesShell tab="money" stats={stats}>
+    <Creator101Shell tab="money" stats={stats}>
       <section className="relative overflow-hidden border-b-[3px] border-black bg-[#5146e5]">
         <div className="dot-field absolute inset-0 opacity-25 [--dot-color:#fff]" aria-hidden="true" />
         <div className={`${coinArt} -left-4`}><img src="/creator-guide/coins-left.webp" alt="" /></div>
@@ -141,6 +141,6 @@ export default async function MakingMoneyPage() {
           </div>
         </section>
       </div>
-    </MilestonesShell>
+    </Creator101Shell>
   );
 }

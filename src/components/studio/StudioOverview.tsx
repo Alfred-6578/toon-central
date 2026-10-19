@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { IoAdd, IoCheckmark, IoEyeOutline, IoHeartOutline, IoPeopleOutline, IoWalletOutline } from "react-icons/io5";
+import { IoAdd, IoArrowForward, IoCheckmark, IoEyeOutline, IoHeartOutline, IoPeopleOutline, IoSchoolOutline, IoWalletOutline } from "react-icons/io5";
 import type { IconType } from "react-icons";
 import { SignInPrompt } from "@/components/auth/SignInPrompt";
 import type { Comic, Short } from "@/lib/api/types";
@@ -83,6 +83,20 @@ function Overview({ name, handle, comics, shorts, sample }: OverviewProps) {
       </div>
 
       {isNew && <Checklist />}
+
+      <Link
+        href="/creator101"
+        className="group mt-6 flex items-center gap-4 border-2 border-line bg-panel px-4 py-3 transition-colors hover:border-mint"
+      >
+        <span className="flex h-10 w-10 shrink-0 items-center justify-center border-2 border-black bg-sun text-xl text-ink">
+          <IoSchoolOutline />
+        </span>
+        <span className="min-w-0 flex-1 text-sm text-slate-300">
+          <span className="block font-semibold text-white">{isNew ? "New to publishing? Start with Creator 101" : "Creator 101: the creator guide"}</span>
+          Uploading tips, the Mafiki format, and how creators make money.
+        </span>
+        <IoArrowForward className="shrink-0 text-lg text-slate-400 group-hover:text-mint" />
+      </Link>
 
       <ul className="mt-8 grid grid-cols-2 gap-3 xl:grid-cols-4">
         <Stat icon={IoEyeOutline} label="Total reads" value={formatCount(reads)} />

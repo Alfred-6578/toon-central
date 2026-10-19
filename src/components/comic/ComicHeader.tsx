@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { VscNotebook } from "react-icons/vsc";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
+import { FollowButton } from "@/components/ui/FollowButton";
+import { SubscribeButton } from "@/components/ui/SubscribeButton";
 import type { Comic } from "@/lib/api/types";
 import { cloudinary, creatorHref, genreHref, readerHref, scheduleLabel, timeAgo } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
@@ -51,14 +53,18 @@ export function ComicHeader({ comic }: { comic: Comic }) {
 
           <h1 className="mt-4 font-display text-5xl uppercase leading-[0.95] text-white sm:text-6xl xl:text-7xl">{comic.title}</h1>
 
-          <Link href={creatorHref(comic.creator.username)} className="group mt-4 inline-flex items-center gap-3">
-            <CreatorAvatar creator={comic.creator} genre={comic.genres[0]} className="h-9 w-9 text-sm" />
-            <span className="text-sm text-slate-300">
-              by <span className="font-semibold text-white group-hover:text-mint">{comic.creator.username}</span>
-            </span>
-          </Link>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <Link href={creatorHref(comic.creator.username)} className="group inline-flex items-center gap-3">
+              <CreatorAvatar creator={comic.creator} genre={comic.genres[0]} className="h-9 w-9 text-sm" />
+              <span className="text-sm text-slate-300">
+                by <span className="font-semibold text-white group-hover:text-mint">{comic.creator.username}</span>
+              </span>
+            </Link>
+            <FollowButton username={comic.creator.username} small />
+          </div>
 
-          <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-slate-300">
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-slate-300">
+            <StatBar uuid={comic.uuid} title={comic.title} views={comic.views} likes={comic.likes} />
             {comic.episodes != null && (
               <span className="flex items-center gap-1.5"><VscNotebook /> {comic.episodes} {comic.episodes === 1 ? "chapter" : "chapters"}</span>
             )}
@@ -67,10 +73,10 @@ export function ComicHeader({ comic }: { comic: Comic }) {
 
           {comic.description && <Synopsis text={comic.description} />}
 
-          <div className="mt-7 flex flex-wrap items-stretch gap-3">
-            <Link href={readerHref(comic.uuid)} className="btn btn-primary w-full px-6 py-3 text-base sm:w-auto">Start reading</Link>
-            <StatBar uuid={comic.uuid} title={comic.title} views={comic.views} likes={comic.likes} />
-            <a href="#episodes" className="hidden items-center text-sm font-semibold text-slate-300 hover:text-mint sm:flex">Episodes ↓</a>
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Link href={readerHref(comic.uuid)} className="btn btn-primary flex-1 px-6 py-3 text-base sm:flex-none">Start reading</Link>
+            <SubscribeButton uuid={comic.uuid} title={comic.title} className="flex-1 sm:flex-none" />
+            <a href="#episodes" className="hidden text-sm font-semibold text-slate-300 hover:text-mint sm:block">Episodes ↓</a>
           </div>
         </div>
       </div>
