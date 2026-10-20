@@ -1,6 +1,5 @@
 // "Before you upload": the creators' guide to vertical storytelling, transcribed from the client's Figma
-// (Creator 101 → Uploading). Example art is cropped from the Figma export at screenshot resolution; swap in
-// the original exports when the client sends them (same file names, in /public/creator-guide/uploading).
+// (Creator 101 → Uploading). Example art is the client's Figma export, in /public/creator-guide/uploading.
 
 export type GuideExample = {
   src: string;
@@ -73,11 +72,11 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "Use legible fonts: fonts that are easy to read.",
-            examples: [art("05-legible-font-bad", 294, 257, "dont"), art("06-legible-font-good", 297, 259, "do")],
+            examples: [art("05-legible-font-bad", 427, 373, "dont"), art("06-legible-font-good", 431, 378, "do")],
           },
           {
             text: "Stick to a single font as much as you can, and use 2–3 at most in one comic.",
-            examples: [art("07-single-font-bad", 317, 464, "dont"), art("08-single-font-good", 321, 467, "do")],
+            examples: [art("07-single-font-bad", 465, 699, "dont"), art("08-single-font-good", 451, 678, "do")],
           },
         ],
       },
@@ -87,11 +86,11 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "Make your text big enough to read with ease.",
-            examples: [art("09-font-size-bad", 419, 382, "dont"), art("10-font-size-good", 424, 382, "do")],
+            examples: [art("09-font-size-bad", 608, 561, "dont"), art("10-font-size-good", 607, 553, "do")],
           },
           {
             text: "Keep the font size the same throughout.",
-            examples: [art("11-consistent-font-size-bad", 329, 260, "dont"), art("12-consistent-font-size-good", 327, 257, "do")],
+            examples: [art("11-consistent-font-size-bad", 459, 359, "dont"), art("12-consistent-font-size-good", 464, 364, "do")],
           },
         ],
       },
@@ -101,7 +100,7 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "Panel sizes vary, but a good rule of thumb: the top of one panel and the bottom of the next should be about 1280 pixels apart, on a canvas 800 pixels wide. Feel free to work at a higher resolution and scale down when you export. Set text about 18 pixels tall or more.",
-            examples: [art("13-size-chart", 453, 649, null, "800 px wide, 1280 px from panel to panel")],
+            examples: [art("13-size-chart", 646, 949, null, "800 px wide, 1280 px from panel to panel")],
           },
         ],
       },
@@ -119,7 +118,7 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "Keep things easy to digest by limiting what's on screen at once: 1–3 panels per screen, and 0–3 speech bubbles per panel.",
-            examples: [art("15-amount-of-information-bad", 339, 676, "dont"), art("16-amount-of-information-good", 339, 678, "do")],
+            examples: [art("15-amount-of-information-bad", 498, 1024, "dont"), art("16-amount-of-information-good", 495, 1024, "do")],
           },
         ],
       },
@@ -130,8 +129,8 @@ export const GUIDE: GuideSection[] = [
           {
             text: "Keep the object of focus clear at all times.",
             examples: [
-              art("17-object-of-focus-bad", 331, 701, "dont", "Here we want the king to be the object of focus"),
-              art("18-object-of-focus-good", 334, 698, "do"),
+              art("17-object-of-focus-bad", 471, 1021, "dont", "Here we want the king to be the object of focus"),
+              art("18-object-of-focus-good", 467, 1014, "do"),
             ],
           },
         ],
@@ -142,21 +141,21 @@ export const GUIDE: GuideSection[] = [
         rules: [
           {
             text: "Use time and location stamps whenever they're needed.",
-            examples: [art("19-time-location-stamp-bad", 316, 629, "dont"), art("20-time-location-stamp-good", 321, 641, "do")],
+            examples: [art("19-time-location-stamp-bad", 500, 1024, "dont"), art("20-time-location-stamp-good", 508, 1024, "do")],
           },
           {
             text: "Use a gradient or grayscale to show a flashback.",
-            examples: [art("21-flashback-grayscale-good", 335, 642, "do"), art("22-flashback-gradient-good", 339, 680, "do")],
+            examples: [art("21-flashback-grayscale-good", 466, 960, "do"), art("22-flashback-gradient-good", 490, 949, "do")],
           },
           {
             text: "Use an establishing shot when the setting changes.",
-            examples: [art("23-establishing-shot-bad", 368, 618, "dont", "Where are they?"), art("24-establishing-shot-good", 412, 931, "do")],
+            examples: [art("23-establishing-shot-bad", 522, 895, "dont", "Where are they?"), art("24-establishing-shot-good", 573, 1361, "do")],
           },
           {
             text: "Keep action and combat clear at all times. Characters' moves should be easy to follow, so the reader knows what's going on.",
             examples: [
-              art("25-action-clarity-bad", 292, 943, "dont", "What happened?"),
-              art("26-action-clarity-good", 318, 1163, "do", "The sequence makes much more sense now"),
+              art("25-action-clarity-bad", 434, 1356, "dont", "What happened?"),
+              art("26-action-clarity-good", 439, 1689, "do", "The sequence makes much more sense now"),
             ],
           },
         ],
@@ -176,8 +175,8 @@ export const GUIDE: GuideSection[] = [
           {
             text: "Publish fuller episodes, even if that means uploading less often, instead of short, incomplete episodes every day.",
             examples: [
-              art("27-release-pacing-bad", 561, 546, "dont", "Three short drops: 5, 6 and 4 panels"),
-              art("28-release-pacing-good", 530, 958, "do", "One full episode: 20+ panels"),
+              art("27-release-pacing-bad", 794, 815, "dont", "Three short drops: 5, 6 and 4 panels"),
+              art("28-release-pacing-good", 754, 1401, "do", "One full episode: 20+ panels"),
             ],
           },
         ],
@@ -189,15 +188,15 @@ export const GUIDE: GuideSection[] = [
           {
             text: "Use gutter space (the gap between panels) to control how fast the reader scrolls.",
             examples: [
-              art("29-gutter-space-lacking", 447, 1441, null, "Little gutter space"),
-              art("30-gutter-space-used", 445, 3229, null, "With gutter space, the sequence feels more emotional"),
+              art("29-gutter-space-lacking", 734, 4019, null, "Little gutter space"),
+              art("30-gutter-space-used", 800, 5523, null, "With gutter space, the sequence feels more emotional"),
             ],
           },
           {
             text: "Use repetition and zoom to control intensity and build up to the moments that matter.",
             examples: [
-              art("31-build-up-fewer-panels", 450, 1683, null, "Fewer build-up panels: it feels sudden, without much impact"),
-              art("32-build-up-more-panels", 454, 4322, null, "More build-up panels"),
+              art("31-build-up-fewer-panels", 800, 2427, null, "Fewer build-up panels: it feels sudden, without much impact"),
+              art("32-build-up-more-panels", 800, 6904, null, "More build-up panels"),
             ],
           },
         ],
