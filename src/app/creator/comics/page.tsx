@@ -6,7 +6,7 @@ import { DesignOptions } from "@/components/ui/DesignOptions";
 import { studioHref } from "@/lib/studioModel";
 import { getStudioContext } from "@/lib/studioServer";
 
-export const metadata: Metadata = { title: "Comics · Creator Studio | Toon Central", robots: { index: false } };
+export const metadata: Metadata = { title: "Mafiki · Creator Studio | Toon Central", robots: { index: false } };
 
 export default async function StudioComicsPage({ searchParams }: PageProps<"/creator/comics">) {
   const { design, mode, seeds } = await getStudioContext(await searchParams);

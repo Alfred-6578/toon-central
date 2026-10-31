@@ -33,7 +33,7 @@ export const PLANS: Plan[] = [
     name: "Standard",
     price: 1550,
     period: "month",
-    features: ["Everything in Basic", "310 free credits monthly", "Download comics to read offline"],
+    features: ["Everything in Basic", "310 free credits monthly", "Download Mafiki to read offline"],
   },
   {
     id: "premium",
@@ -58,7 +58,7 @@ export const YEARLY_SAVING = "2 months free";
 
 // "Special offers": short passes that unlock everything. (The live site says "All comics & series
 // included"; written "every comic" here because Series isn't a medium on the site yet.)
-const PASS_FEATURES = ["Access to all locked panels and chapters", "Every comic included", "Ad-free reading"];
+const PASS_FEATURES = ["Access to all locked panels and chapters", "Every Mafiki included", "Ad-free reading"];
 
 export const PASSES: Plan[] = [
   { id: "daily", name: "Daily Access", price: 100, period: "day", blurb: "Daily access to Toon Central content", features: PASS_FEATURES, badge: "Best value" },

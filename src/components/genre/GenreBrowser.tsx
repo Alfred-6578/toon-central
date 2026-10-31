@@ -103,11 +103,11 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
               </div>
 
               <ComicGrid comics={result.items} limit={result.items.length} mobile="grid" />
-              <Pagination result={result} baseHref={baseHref} noun="comics" />
+              <Pagination result={result} baseHref={baseHref} noun="Mafiki" />
 
               {source === "page" && (
                 <p className="mt-8 text-xs text-slate-500">
-                  Showing the comics in this preview. The full {genre.name} catalogue loads once the live API is connected.
+                  Showing the Mafiki in this preview. The full {genre.name} catalogue loads once the live API is connected.
                 </p>
               )}
             </section>
@@ -117,7 +117,7 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
                 <p className="font-display text-4xl uppercase leading-none text-white">No {genre.name} Mafiki yet</p>
                 <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-slate-400">
                   {source === "page"
-                    ? "None of the comics in this preview are tagged with this genre. The full catalogue may have some once the live API is connected."
+                    ? "None of the Mafiki in this preview are tagged with this genre. The full catalogue may have some once the live API is connected."
                     : "Be the first to publish one."}
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">

@@ -284,26 +284,7 @@ img {
   }
 }
 
-/* Shorts player: double-tap heart, spinning disc, tie-in card */
-@keyframes heartBurst {
-  0% {
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.4) rotate(-12deg);
-  }
-  25% {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1.15) rotate(-12deg);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(-50%, -110%) scale(1) rotate(-12deg);
-  }
-}
-
-.heart-burst {
-  animation: heartBurst 0.8s ease-out forwards;
-}
-
+/* Shorts player: spinning disc, tie-in card */
 @keyframes discSpin {
   to {
     transform: rotate(360deg);

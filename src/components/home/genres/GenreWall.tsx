@@ -119,7 +119,7 @@ export function GenreWall({ genres, comics, counts, countSource }: GenreWallProp
       </ul>
 
       {countSource === "page" && (
-        <p className="mt-4 text-xs text-slate-500">Counts cover the {comics.length} comics featured on this page.</p>
+        <p className="mt-4 text-xs text-slate-500">Counts cover the {comics.length} Mafiki featured on this page.</p>
       )}
     </>
   );

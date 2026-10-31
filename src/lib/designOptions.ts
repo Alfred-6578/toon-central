@@ -4,7 +4,7 @@ export const designOptions = {
   hero: {
     label: "Hero",
     defaultChoice: "panel",
-    choices: { panel: "Comic panel", bleed: "Full bleed" },
+    choices: { panel: "Mafiki panel", bleed: "Full bleed" },
   },
   trending: {
     label: "Trending",
@@ -44,8 +44,8 @@ export const designOptions = {
   // First-visit welcome. Choosing one replays it (adds ?intro=1), since it otherwise shows only once.
   welcome: {
     label: "Welcome screen",
-    defaultChoice: "page",
-    choices: { page: "Comic page", voices: "Many voices", zoom: "Pull back", wall: "Cover wall" },
+    defaultChoice: "zoom",
+    choices: { page: "Mafiki page", voices: "Many voices", zoom: "Pull back", wall: "Cover wall" },
   },
   // Not a design: which creator the Studio demo shows (no creator-side data exists yet).
   studio: {

@@ -3,7 +3,7 @@ const compact = new Intl.NumberFormat("en", { notation: "compact", maximumFracti
 export const formatCount = (n: number) => compact.format(n);
 
 // "1 comic", "18 comics". Comics are never called "series": Series is planned as a separate medium.
-export const comicCount = (n: number) => `${n} ${n === 1 ? "comic" : "comics"}`;
+export const comicCount = (n: number) => `${n} Mafiki`;
 
 const relative = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
 const UNITS: [Intl.RelativeTimeFormatUnit, number][] = [
@@ -25,13 +25,19 @@ export function timeAgo(date: string | null) {
 }
 
 // Ask Cloudinary for a resized, auto-format/quality version of an upload.
+// Shown when a comic has no cover or banner (some creators skip it): an empty src would make the
+// browser fetch the page itself.
+export const PLACEHOLDER_ART = "/placeholder-art.svg";
+
 export function cloudinary(url: string, width: number) {
+  if (!url) return PLACEHOLDER_ART;
   if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
   return url.replace("/upload/", `/upload/w_${width},q_auto,f_auto/`);
 }
 
 // Any Cloudinary transformation chain, e.g. "c_fill,w_720,h_960,g_north".
 export function cloudinaryTransform(url: string, transform: string) {
+  if (!url) return PLACEHOLDER_ART;
   if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
   return url.replace("/upload/", `/upload/${transform}/`);
 }

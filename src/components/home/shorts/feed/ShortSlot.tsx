@@ -2,13 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
-import { IoClose, IoHeart, IoPlay, IoRefresh } from "react-icons/io5";
+import { IoClose, IoPlay, IoRefresh } from "react-icons/io5";
 import type { Short } from "@/lib/api/types";
 import { cloudinary, cloudinaryVideo, comicHref, creatorHref, formatCount, genreSlug, readerHref } from "@/lib/format";
 import { useMockComments, useMockFollows, useMockLikes, useMockSavedShorts, useMockSession } from "@/lib/mockSession";
+import { useHeartBursts } from "@/components/ui/HeartBurst";
+import { BubbleDots } from "@/components/ui/Loaders";
 import { ActionRail } from "./ActionRail";
 
 const DOUBLE_TAP_MS = 260;
+// How long the video must be stalled before the loader shows.
+const BUFFER_DELAY_MS = 300;
 const TIE_IN_AFTER_S = 3;
 const END_CARD_SECONDS = 5;
 
@@ -54,7 +58,7 @@ function Caption({ short, showTieIn, onDismissTieIn }: { short: Short; showTieIn
           >
             <img src={cloudinary(comic.coverImage, 80)} alt="" className="aspect-[3/4] w-8 shrink-0 border-2 border-ink object-cover" />
             <div className="min-w-0">
-              <span className="tag bg-sun px-1 text-[9px]">From the comic</span>
+              <span className="tag bg-sun px-1 text-[9px]">From the Mafiki</span>
               {comic.demo && <span className="tag ml-1 border border-dashed border-ink bg-transparent px-1 text-[9px]">Demo link</span>}
               <p className="truncate text-sm font-bold leading-tight">
                 {comic.title} <span className="font-normal text-ink/60">· Ep 1 free</span>
@@ -65,7 +69,7 @@ function Caption({ short, showTieIn, onDismissTieIn }: { short: Short; showTieIn
             type="button"
             onClick={onDismissTieIn}
             tabIndex={showTieIn ? undefined : -1}
-            aria-label="Hide comic card"
+            aria-label="Hide Mafiki card"
             className="absolute right-0 top-0 flex h-full w-9 items-center justify-center border-l-2 border-black/15 text-lg text-ink/60 hover:text-ink"
           >
             <IoClose />
@@ -118,7 +122,15 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
   // The reader closed the comic card; it stays closed until they come back to this short.
   const [tieInDismissed, setTieInDismissed] = useState(false);
   const [endCard, setEndCard] = useState<number | null>(null);
-  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
+  const { burst, burstAt, hearts } = useHeartBursts();
+  // The video stalled mid-play waiting for data (shown after a short delay, so quick hiccups don't flash).
+  const [buffering, setBuffering] = useState(false);
+  const bufferTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const stopBuffering = () => {
+    if (bufferTimer.current) clearTimeout(bufferTimer.current);
+    bufferTimer.current = null;
+    setBuffering(false);
+  };
 
   const { user, signIn } = useMockSession();
   const likes = useMockLikes();
@@ -141,6 +153,7 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
       setTieInDismissed(false);
       setEndCard(null);
       setProgress(0);
+      setBuffering(false);
     }
   }
 
@@ -176,10 +189,7 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
       tapTimer.current = null;
       requireUser();
       if (!liked) likes.toggle(short.uuid);
-      const box = event.currentTarget.getBoundingClientRect();
-      const id = Date.now();
-      setBursts((all) => [...all, { id, x: event.clientX - box.left, y: event.clientY - box.top }]);
-      setTimeout(() => setBursts((all) => all.filter((b) => b.id !== id)), 800);
+      burst(event.clientX, event.clientY);
       return;
     }
     tapTimer.current = setTimeout(() => {
@@ -205,8 +215,9 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
       playing={isActive && !paused}
       muted={muted}
       onToggleMute={onToggleMute}
-      onLike={() => {
+      onLike={(event) => {
         requireUser();
+        if (!liked) burstAt(event.currentTarget);
         likes.toggle(short.uuid);
       }}
       onSave={() => {
@@ -245,10 +256,22 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
               playsInline
               preload={isNext ? "auto" : "metadata"}
               onPlay={() => setPaused(false)}
-              onPause={() => setPaused(true)}
+              onPause={() => {
+                setPaused(true);
+                stopBuffering();
+              }}
+              onWaiting={() => {
+                if (!isActive || bufferTimer.current) return;
+                bufferTimer.current = setTimeout(() => setBuffering(true), BUFFER_DELAY_MS);
+              }}
+              onPlaying={stopBuffering}
+              onCanPlay={stopBuffering}
+              onSeeked={stopBuffering}
               onTimeUpdate={(event) => {
                 if (!isActive) return;
                 const video = event.currentTarget;
+                // Time moving again means it's playing, even if the browser never sent "playing".
+                if (bufferTimer.current || buffering) stopBuffering();
                 setProgress(video.duration ? video.currentTime / video.duration : 0);
                 if (video.currentTime > TIE_IN_AFTER_S) setShowTieIn(true);
               }}
@@ -261,15 +284,13 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
           )}
 
           {/* Tap layer */}
-          <div onClick={onStageClick} className="absolute inset-0 cursor-pointer" aria-hidden="true">
-            {bursts.map((burst) => (
-              <IoHeart
-                key={burst.id}
-                className="heart-burst pointer-events-none absolute text-8xl text-mint drop-shadow-[4px_4px_0_#000]"
-                style={{ left: burst.x, top: burst.y }}
-              />
-            ))}
-          </div>
+          <div onClick={onStageClick} className="absolute inset-0 cursor-pointer" aria-hidden="true" />
+          {hearts}
+          {isActive && buffering && !paused && endCard === null && (
+            <span className="pointer-events-none absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center justify-center border-2 border-black bg-ink px-4 pb-4 pt-3 shadow-[4px_4px_0_var(--color-mint-deep)]">
+              <BubbleDots label="Loading video" className="text-mint" />
+            </span>
+          )}
           {isActive && paused && endCard === null && (
             <span className="pointer-events-none absolute left-1/2 top-1/2 flex h-20 w-20 -translate-x-1/2 -translate-y-1/2 items-center justify-center border-2 border-black bg-mint/90 text-5xl text-ink">
               <IoPlay />

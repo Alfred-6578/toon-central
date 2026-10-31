@@ -1,32 +1,82 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { FaRegEye } from "react-icons/fa6";
-import { IoChevronBack, IoChevronForward, IoHeartOutline } from "react-icons/io5";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { IoChevronBack, IoChevronForward, IoFilm, IoVolumeHigh, IoVolumeMute } from "react-icons/io5";
 import type { Comic } from "@/lib/api/types";
 import { cloudinary, comicHref, formatCount } from "@/lib/format";
+import { useImageUrl } from "@/lib/imageStore";
+import { useLocalValue } from "@/lib/localValue";
 
 const AUTO_MS = 5000;
+// A card playing its trailer moves on when the trailer ends, or after this at most.
+const TRAILER_MAX_MS = 60_000;
 
-// The live site's main-menu strip: wide banner cards sliding sideways over a blurred copy of the
-// current one. Swipe or scroll on phones, arrows on desktop; it moves on by itself until touched.
-export function DiscoverCarousel({ comics }: { comics: Comic[] }) {
+const reducedMotion = {
+  subscribe: (onChange: () => void) => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    query.addEventListener("change", onChange);
+    return () => query.removeEventListener("change", onChange);
+  },
+  read: () => window.matchMedia("(prefers-reduced-motion: reduce)").matches,
+};
+
+// Trailers creators uploaded in Creator Studio (this browser), by comic id. In the "established" demo
+// a creator's comics are the live ones, so their trailers land on the real cards here.
+function useStudioTrailers() {
+  const [established] = useLocalValue("tc-studio-comics-established", "{}");
+  const [fresh] = useLocalValue("tc-studio-comics-new", "{}");
+  const trailers: Record<string, string> = {};
+  for (const raw of [fresh, established]) {
+    try {
+      for (const [id, item] of Object.entries(JSON.parse(raw) as Record<string, { trailer?: string | null }>)) {
+        if (item?.trailer) trailers[id] = item.trailer;
+      }
+    } catch {
+      // A damaged save just means no trailers from it.
+    }
+  }
+  return trailers;
+}
+
+// The live site's main-menu strip, as the client's mock draws it: tall cover cards, the one in front
+// centred on phones with its neighbours peeking. Swipe or scroll on phones, arrows on desktop; it moves
+// on by itself until touched (a card with a trailer moves on when the trailer ends).
+type Props = {
+  comics: Comic[];
+  // Comic uuid → trailer video (the comic's linked animated short).
+  trailers?: Record<string, string>;
+  // Comics a Studio upload can give a trailer to; one that has one joins the front of the strip.
+  studioComics?: Comic[];
+};
+
+export function DiscoverCarousel({ comics: strip, trailers: linked = {}, studioComics = [] }: Props) {
   const track = useRef<HTMLUListElement>(null);
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [sound, setSound] = useState(false);
+  const reduced = useSyncExternalStore(reducedMotion.subscribe, reducedMotion.read, () => true);
+  const trailers = { ...linked, ...useStudioTrailers() };
+  const promoted = studioComics.filter((c) => trailers[c.uuid] && !strip.some((s) => s.uuid === c.uuid));
+  const comics = promoted.length ? [...promoted, ...strip] : strip;
 
   const cards = () => [...(track.current?.children ?? [])] as HTMLElement[];
+
+  // Where the strip must scroll to for a card to be "in front": centred on phones (the mock), lined up
+  // on the left from desktop (centring can't reach the first cards on wide screens).
+  const restingLeft = (list: HTMLElement, card: HTMLElement) =>
+    getComputedStyle(card).scrollSnapAlign.includes("center")
+      ? card.offsetLeft - list.offsetLeft - (list.clientWidth - card.offsetWidth) / 2
+      : card.offsetLeft - list.offsetLeft - parseFloat(getComputedStyle(list).paddingLeft);
 
   const goTo = useCallback((index: number) => {
     const list = track.current;
     const card = list?.children[index] as HTMLElement | undefined;
     if (!list || !card) return;
-    // Left-aligned like the live site (centring can't reach the first cards on wide screens).
-    list.scrollTo({ left: card.offsetLeft - list.offsetLeft - parseFloat(getComputedStyle(list).paddingLeft), behavior: "smooth" });
+    list.scrollTo({ left: restingLeft(list, card), behavior: "smooth" });
   }, []);
 
-  // Which card sits at the left edge, as the reader scrolls.
+  // Which card is in front, as the reader scrolls.
   useEffect(() => {
     const list = track.current;
     if (!list) return;
@@ -34,11 +84,11 @@ export function DiscoverCarousel({ comics }: { comics: Comic[] }) {
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
-        const start = list.scrollLeft + parseFloat(getComputedStyle(list).paddingLeft);
         const atEnd = list.scrollLeft + list.clientWidth >= list.scrollWidth - 4;
-        const distances = cards().map((c) => Math.abs(c.offsetLeft - list.offsetLeft - start));
-        // Scrolled to the end: the last cards can't reach the left edge, so count the last one as current.
-        setActive(atEnd ? cards().length - 1 : distances.indexOf(Math.min(...distances)));
+        const distances = cards().map((c) => Math.abs(restingLeft(list, c) - list.scrollLeft));
+        // Scrolled to the end on desktop: the last cards can't reach the left edge, so the last one counts.
+        const nearest = distances.indexOf(Math.min(...distances));
+        setActive(atEnd && distances[nearest] > 4 ? cards().length - 1 : nearest);
       });
     };
     list.addEventListener("scroll", onScroll, { passive: true });
@@ -48,19 +98,20 @@ export function DiscoverCarousel({ comics }: { comics: Comic[] }) {
     };
   }, []);
 
+  const activeTrailer = !reduced && !!trailers[comics[active]?.uuid];
+  const next = useCallback(() => goTo((active + 1) % comics.length), [active, comics.length, goTo]);
+
   useEffect(() => {
-    if (paused || comics.length < 2) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = setTimeout(() => goTo((active + 1) % comics.length), AUTO_MS);
+    if (paused || comics.length < 2 || reduced) return;
+    const timer = setTimeout(next, activeTrailer ? TRAILER_MAX_MS : AUTO_MS);
     return () => clearTimeout(timer);
-  }, [active, paused, comics.length, goTo]);
+  }, [active, paused, comics.length, reduced, activeTrailer, next]);
 
   if (!comics.length) return null;
-  const current = comics[active] ?? comics[0];
 
   return (
     <section
-      aria-label="Featured comics"
+      aria-label="Featured Mafiki"
       aria-roledescription="carousel"
       className="relative overflow-hidden border-b-2 border-line"
       onMouseEnter={() => setPaused(true)}
@@ -68,48 +119,51 @@ export function DiscoverCarousel({ comics }: { comics: Comic[] }) {
       onTouchStart={() => setPaused(true)}
       onFocus={() => setPaused(true)}
     >
-      {/* Blurred backdrop of the current card, like the live site. */}
-      <div className="absolute inset-0" aria-hidden="true">
-        <img
-          key={current.uuid}
-          src={cloudinary(current.backgroundImage || current.coverImage, 600)}
-          alt=""
-          className="h-full w-full scale-110 object-cover opacity-40 blur-2xl transition-opacity duration-700"
-        />
-        <div className="halftone-overlay absolute inset-0" />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/30 via-ink/40 to-ink" />
-      </div>
-
+      {/* Tall cover cards: the one in front at full strength, its neighbours peeking either side. */}
       <ul
         ref={track}
-        className="hide-scrollbar relative flex snap-x snap-mandatory scroll-px-6 gap-5 overflow-x-auto px-6 py-8 md:scroll-px-8 md:px-8 lg:scroll-px-10 lg:px-10 lg:py-10"
+        className="hide-scrollbar relative flex snap-x snap-mandatory gap-3 overflow-x-auto px-[11%] py-6 sm:gap-4 lg:scroll-px-10 lg:px-10 lg:py-8"
       >
-        {comics.map((comic, i) => (
-          <li key={comic.uuid} className="w-[88%] shrink-0 snap-start sm:w-[58%] lg:w-[40%] xl:w-[32%]">
-            <Link
-              href={comicHref(comic.uuid)}
-              aria-current={i === active ? "true" : undefined}
-              className={`group relative block aspect-[16/10] overflow-hidden border-2 bg-panel transition-[transform,box-shadow,border-color] duration-300 ${
-                i === active ? "border-black shadow-[6px_6px_0_#000]" : "border-black/60 opacity-80 hover:opacity-100"
-              }`}
-            >
-              <img
-                src={cloudinary(comic.backgroundImage || comic.coverImage, 720)}
-                alt=""
-                loading={i < 4 ? "eager" : "lazy"}
-                className="h-full w-full object-cover object-[50%_25%] transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-4 pb-4 pt-16">
-                <p className="truncate font-display text-3xl uppercase leading-none text-white sm:text-4xl">{comic.title}</p>
-                <p className="mt-2 flex items-center gap-3 text-sm font-semibold text-slate-200">
-                  <span className="flex items-center gap-1"><FaRegEye /> {formatCount(comic.views)}</span>
-                  <span className="flex items-center gap-1"><IoHeartOutline /> {formatCount(comic.likes)}</span>
-                  {comic.genres[0] && <span className="text-slate-400">{comic.genres[0]}</span>}
-                </p>
-              </div>
-            </Link>
-          </li>
-        ))}
+        {comics.map((comic, i) => {
+          const front = i === active;
+          const trailer = trailers[comic.uuid];
+          return (
+            <li key={comic.uuid} className="relative w-[78%] shrink-0 snap-center sm:w-[42%] lg:w-[23%] lg:snap-start xl:w-[19%]">
+              <Link
+                href={comicHref(comic.uuid)}
+                aria-current={front ? "true" : undefined}
+                aria-label={`${comic.title}: ${formatCount(comic.views)} reads`}
+                className={`group relative block aspect-[3/4] overflow-hidden border-2 bg-panel transition-[opacity,transform,box-shadow] duration-300 ${
+                  front ? "border-black shadow-[6px_6px_0_#000]" : "scale-[0.96] border-black/60 opacity-60 hover:opacity-100"
+                }`}
+              >
+                <img
+                  src={cloudinary(comic.coverImage, 700)}
+                  alt=""
+                  loading={i < 4 ? "eager" : "lazy"}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                {/* The trailer plays on the card in front; the others show their cover. */}
+                {trailer && front && !reduced && <TrailerVideo src={trailer} muted={!sound} onEnded={paused ? undefined : next} />}
+                {trailer && (
+                  <span className="tag absolute left-3 top-3 gap-1 bg-sun">
+                    <IoFilm /> Trailer
+                  </span>
+                )}
+              </Link>
+              {trailer && front && !reduced && (
+                <button
+                  type="button"
+                  onClick={() => setSound((on) => !on)}
+                  aria-label={sound ? "Mute trailer" : "Play trailer sound"}
+                  className="absolute right-3 top-3 flex h-9 w-9 items-center justify-center border-2 border-black bg-ink/85 text-lg text-white hover:bg-mint hover:text-ink"
+                >
+                  {sound ? <IoVolumeHigh /> : <IoVolumeMute />}
+                </button>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <button
@@ -123,18 +177,36 @@ export function DiscoverCarousel({ comics }: { comics: Comic[] }) {
       </button>
       <button
         type="button"
-        onClick={() => goTo((active + 1) % comics.length)}
+        onClick={next}
         aria-label="Next"
         className="absolute right-3 top-1/2 hidden h-11 w-11 -translate-y-1/2 items-center justify-center border-2 border-black bg-mint text-xl text-ink shadow-[3px_3px_0_#000] lg:flex"
       >
         <IoChevronForward />
       </button>
 
-      <div className="relative flex justify-center gap-1.5 pb-4" aria-hidden="true">
+      <div className="relative flex justify-center gap-1.5 pb-5" aria-hidden="true">
         {comics.map((c, i) => (
           <span key={c.uuid} className={`h-1.5 transition-all ${i === active ? "w-6 bg-mint" : "w-1.5 bg-white/30"}`} />
         ))}
       </div>
     </section>
+  );
+}
+
+// A trailer playing over its card: muted by default (browsers only autoplay muted), filling the card.
+function TrailerVideo({ src, muted, onEnded }: { src: string; muted: boolean; onEnded?: () => void }) {
+  const url = useImageUrl(src);
+  if (!url) return null;
+  return (
+    <video
+      src={url}
+      autoPlay
+      muted={muted}
+      playsInline
+      onEnded={onEnded}
+      loop={!onEnded}
+      className="absolute inset-0 h-full w-full bg-black object-cover"
+      aria-hidden="true"
+    />
   );
 }

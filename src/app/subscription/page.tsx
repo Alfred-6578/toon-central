@@ -6,7 +6,7 @@ import { getSiteStats } from "@/lib/api/client";
 
 export const metadata: Metadata = {
   title: "Subscription | Toon Central",
-  description: "Toon Central plans and passes: monthly plans with free credits, credit packs, and day or week passes that unlock every comic.",
+  description: "Toon Central plans and passes: monthly plans with free credits, credit packs, and day or week passes that unlock every Mafiki.",
 };
 
 export default async function SubscriptionPage() {

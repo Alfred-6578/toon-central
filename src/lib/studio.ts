@@ -3,7 +3,7 @@ import type { Comic, Short } from "@/lib/api/types";
 // Studio sections. `ready: false` ones show in the sidebar as coming next instead of linking to a 404.
 export const STUDIO_PAGES = [
   { id: "overview", label: "Overview", href: "/creator/dashboard", ready: true },
-  { id: "comics", label: "Comics", href: "/creator/comics", ready: true },
+  { id: "comics", label: "Mafiki", href: "/creator/comics", ready: true },
   { id: "shorts", label: "Shorts", href: "/creator/shorts", ready: true },
   { id: "earnings", label: "Earnings", href: "/creator/earnings", ready: true },
   { id: "profile", label: "Profile", href: "/creator/profile", ready: true },

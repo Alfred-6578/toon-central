@@ -45,7 +45,7 @@ export function ShortsList({ mode, seeds, comicSeeds }: { mode: StudioMode; seed
         <div className="mt-8 border-2 border-dashed border-line px-6 py-14 text-center">
           <p className="font-display text-3xl uppercase leading-none text-white">No shorts yet</p>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-slate-400">
-            A trailer or animated scene from your comic is the quickest way to bring new readers in.
+            A trailer or animated scene from your Mafiki is the quickest way to bring new readers in.
           </p>
           <Link href={studioHref("/creator/shorts/new", mode)} className="btn btn-primary mt-6 hidden gap-2 px-6 py-3 lg:inline-flex">
             <IoAdd /> Upload your first short

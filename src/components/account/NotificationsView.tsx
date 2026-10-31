@@ -21,7 +21,7 @@ export function NotificationsView() {
     return (
       <SignInPrompt
         title="Your notifications"
-        body="Sign in to hear when comics in your library get new episodes and when creators reply to you."
+        body="Sign in to hear when Mafiki in your library get new episodes and when creators reply to you."
         next="/notifications"
       />
     );

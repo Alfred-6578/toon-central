@@ -9,8 +9,9 @@ import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { ComicGrid } from "@/components/ui/ComicGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
+import { TabLinks } from "@/components/ui/TabLinks";
 import { getCreatorPageData, getSiteStats } from "@/lib/api/client";
-import { cloudinary, comicCount, creatorSlug } from "@/lib/format";
+import { cloudinary, comicCount, creatorHref, creatorSlug } from "@/lib/format";
 
 type Params = PageProps<"/creators/[slug]">;
 
@@ -27,8 +28,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   };
 }
 
-export default async function CreatorPage({ params }: Params) {
-  const { slug: raw } = await params;
+export default async function CreatorPage({ params, searchParams }: Params) {
+  const [{ slug: raw }, query] = await Promise.all([params, searchParams]);
   // "/creators/Sanmi%20crown" and other variants go to the clean URL.
   const slug = creatorSlug(decodeURIComponent(raw));
   if (slug !== raw) permanentRedirect(`/creators/${slug}`);
@@ -38,6 +39,9 @@ export default async function CreatorPage({ params }: Params) {
 
   const { creator, comics, shorts } = data;
   const activity = buildReleaseLog(comics, shorts, 6);
+  // Comics | Shorts tabs when they make both; otherwise just the one they make.
+  const tab = shorts.length > 0 && (query.tab === "shorts" || comics.length === 0) ? "shorts" : "comics";
+  const href = creatorHref(creator.username);
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -48,21 +52,31 @@ export default async function CreatorPage({ params }: Params) {
         <CreatorHeader data={data} />
 
         <div className="mx-auto px-6 pb-16 md:px-8 lg:px-10">
-          {comics.length > 0 && (
-            <section className="mt-12">
-              <SectionHeader title="Comics" action={null}>
-                <span className="pb-0.5 text-sm text-slate-400">Most read first</span>
-              </SectionHeader>
-              <ComicGrid comics={comics} limit={comics.length} mobile="grid" />
-            </section>
-          )}
-
-          {shorts.length > 0 && (
-            <section className="mt-14">
-              <SectionHeader title="Shorts" action={null}>
-                <span className="pb-0.5 text-sm text-slate-400">Animated by {creator.username}</span>
-              </SectionHeader>
-              <ShortsRail shorts={shorts} />
+          {(comics.length > 0 || shorts.length > 0) && (
+            <section id="work" className="mt-12 scroll-mt-24">
+              {comics.length > 0 && shorts.length > 0 ? (
+                <TabLinks
+                  label={`${creator.username}'s work`}
+                  current={tab}
+                  items={[
+                    { value: "comics", label: "Mafiki", count: comics.length, href: `${href}#work` },
+                    { value: "shorts", label: "Shorts", count: shorts.length, href: `${href}?tab=shorts#work` },
+                  ]}
+                />
+              ) : (
+                <SectionHeader title={tab === "shorts" ? "Shorts" : "Mafiki"} action={null} />
+              )}
+              {tab === "comics" ? (
+                <>
+                  <p className="-mt-1 mb-4 text-sm text-slate-400">Most read first</p>
+                  <ComicGrid comics={comics} limit={comics.length} mobile="grid" />
+                </>
+              ) : (
+                <>
+                  <p className="-mt-1 mb-4 text-sm text-slate-400">Animated by {creator.username}</p>
+                  <ShortsRail shorts={shorts} />
+                </>
+              )}
             </section>
           )}
 

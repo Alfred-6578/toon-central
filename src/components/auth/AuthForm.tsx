@@ -16,8 +16,8 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const RESEND_SECONDS = 30;
 
 const COPY: Record<AuthMode, { title: string; lede: string; submit: string }> = {
-  signin: { title: "Welcome back", lede: "Sign in to pick up your library, your place in every comic and your Premium.", submit: "Sign in" },
-  signup: { title: "Join Toon Central", lede: "Free to join. Save comics, follow creators and get told when new episodes drop.", submit: "Create account" },
+  signin: { title: "Welcome back", lede: "Sign in to pick up your library, your place in every Mafiki and your Premium.", submit: "Sign in" },
+  signup: { title: "Join Toon Central", lede: "Free to join. Save Mafiki, follow creators and get told when new episodes drop.", submit: "Create account" },
   forgot: { title: "Reset password", lede: "Enter the email on your account and we'll send you a link to set a new password.", submit: "Send reset link" },
 };
 

@@ -49,7 +49,7 @@ export function EpisodeList({ comic, episodes, episodesSource, page, heading }: 
       {episodesSource === "unknown" ? (
         <div className="flex flex-col items-start gap-4 border-2 border-line bg-panel p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-sm leading-6 text-slate-300">
-            The episode list for this comic comes from the live API, which isn&apos;t connected in this preview. You can still start
+            The episode list for this Mafiki comes from the live API, which isn&apos;t connected in this preview. You can still start
             from the first episode.
           </p>
           <Link href={readerHref(comic.uuid)} className="btn btn-primary px-5 py-3">Read episode 1</Link>

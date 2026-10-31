@@ -17,7 +17,7 @@ export function StudioGate({ mode, next, children }: { mode: StudioMode; next: s
 
   if (!hydrated) return <div className="min-h-[50vh]" />;
   if (!user) {
-    return <SignInPrompt title="Creator Studio" body="Sign in to publish your comics and shorts and see how readers respond." next={next} />;
+    return <SignInPrompt title="Creator Studio" body="Sign in to publish your Mafiki and shorts and see how readers respond." next={next} />;
   }
   if (mode === "new" && !profile) return <BecomeCreator />;
   return <>{children}</>;

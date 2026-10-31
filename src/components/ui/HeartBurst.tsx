@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type CSSProperties } from "react";
+import { useCallback, useState, type CSSProperties } from "react";
 import { createPortal } from "react-dom";
 import { IoHeart } from "react-icons/io5";
 
@@ -82,4 +82,28 @@ export function HeartBurst({ x, y }: { x: number; y: number }) {
     </div>,
     document.body
   );
+}
+
+// Heart bursts for a like control: `burst(x, y)` at a point on screen, `burstAt(element)` from its
+// centre; render `hearts` anywhere (they draw over the page). Skipped for reduced motion.
+export function useHeartBursts() {
+  const [bursts, setBursts] = useState<{ id: number; x: number; y: number }[]>([]);
+
+  const burst = useCallback((x: number, y: number) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = performance.now();
+    setBursts((all) => [...all, { id, x, y }]);
+    setTimeout(() => setBursts((all) => all.filter((b) => b.id !== id)), HEART_BURST_MS);
+  }, []);
+
+  const burstAt = useCallback(
+    (element: Element) => {
+      const box = element.getBoundingClientRect();
+      burst(box.left + box.width / 2, box.top + box.height / 2);
+    },
+    [burst]
+  );
+
+  const hearts = bursts.map((b) => <HeartBurst key={b.id} x={b.x} y={b.y} />);
+  return { burst, burstAt, hearts };
 }

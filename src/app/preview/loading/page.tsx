@@ -14,10 +14,10 @@ export default function LoadingPreviewPage() {
         <section>
           <h2 className="font-display text-3xl uppercase text-white">Welcome screen</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-            Shown once, on a reader&apos;s first visit to the homepage. Links straight to a comic or short skip it. Four styles to compare; on the homepage, Design options → Welcome screen switches between them.
+            Shown once, on a reader&apos;s first visit to the homepage. Links straight to a Mafiki or short skip it. Four styles to compare; on the homepage, Design options → Welcome screen switches between them.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
-            <Link href="/?intro=1" className="btn btn-primary px-5 py-3">A · Comic page</Link>
+            <Link href="/?intro=1" className="btn btn-primary px-5 py-3">A · Mafiki page</Link>
             <Link href="/?welcome=voices&intro=1" className="btn btn-primary px-5 py-3">B · Many voices</Link>
             <Link href="/?welcome=zoom&intro=1" className="btn btn-primary px-5 py-3">C · Pull back</Link>
             <Link href="/?welcome=wall&intro=1" className="btn btn-primary px-5 py-3">D · Cover wall</Link>
@@ -28,7 +28,7 @@ export default function LoadingPreviewPage() {
           <h2 className="font-display text-3xl uppercase text-white">Notification pop-ups</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
             Real moments send these: joining (welcome), finishing your first episode or first unlock (congratulations), and new
-            episodes of comics in your library. Each pops up wherever the reader is and opens to a full message.
+            episodes of Mafiki in your library. Each pops up wherever the reader is and opens to a full message.
           </p>
           <DemoNotifications />
         </section>
@@ -57,7 +57,7 @@ export default function LoadingPreviewPage() {
         <section>
           <h2 className="font-display text-3xl uppercase text-white">Card placeholders</h2>
           <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-            Every comic and short card shows this behind its cover until the image arrives.
+            Every Mafiki and short card shows this behind its cover until the image arrives.
           </p>
           <div className="mt-4">
             <ComicGridSkeleton count={5} />

@@ -3,6 +3,7 @@ import { CreatorCard } from "@/components/creator/CreatorCard";
 import { SurpriseMe } from "@/components/discover/DiscoverControls";
 import { DiscoverCarousel } from "@/components/discover/DiscoverCarousel";
 import { NowShowing } from "@/components/discover/NowShowing";
+import { PopularStrip } from "@/components/discover/PopularStrip";
 import { PromoBanners } from "@/components/discover/PromoBanners";
 import { VibeTiles } from "@/components/discover/VibeTiles";
 import { GenreStrip } from "@/components/genre/GenreStrip";
@@ -15,7 +16,7 @@ import { getDiscoverData } from "@/lib/discover";
 
 export const metadata: Metadata = {
   title: "Discover Mafiki | Toon Central",
-  description: "Find your next read: hidden gems, new comics, finished stories and animated shorts from African creators.",
+  description: "Find your next read: hidden gems, new Mafiki, finished stories and animated shorts from African creators.",
 };
 
 function Note({ children }: { children: React.ReactNode }) {
@@ -24,7 +25,7 @@ function Note({ children }: { children: React.ReactNode }) {
 
 export default async function DiscoverPage() {
   const [data, stats] = await Promise.all([getDiscoverData(), getSiteStats()]);
-  const { vibes, gems, nowShowing, newest, completed, genres, creators, everything, carousel, featured } = data;
+  const { vibes, gems, nowShowing, newest, completed, genres, creators, everything, carousel, trailers, studioComics, popular, featured } = data;
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -33,21 +34,25 @@ export default async function DiscoverPage() {
         <Navigation />
         <div className="h-[66px]" />
 
-        {/* The live site's main-menu strip, first thing on the page. */}
-        <DiscoverCarousel comics={carousel} />
+        <div className="px-6 pt-8 md:px-8 lg:px-10 lg:pt-10">
+          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Discover</h1>
+        </div>
+
+        {/* The live site's main-menu strip, right under the title. */}
+        <DiscoverCarousel comics={carousel} trailers={trailers} studioComics={studioComics} />
 
         <div className="mx-auto px-6 md:px-8 lg:px-10">
-          {/* The nav already has search, so the page opens on its banner. */}
-          <h1 className="sr-only">Discover</h1>
-          <PromoBanners featured={featured} />
+          {/* The nav already has search; the client's mock opens on the vibes, then the banner. */}
 
           {/* 2. Pick a vibe */}
           {vibes.length > 0 && (
-            <section className="mt-16">
+            <section className="mt-10">
               <SectionHeader title="Pick a vibe" action={null} />
               <VibeTiles vibes={vibes} />
             </section>
           )}
+
+          <PromoBanners featured={featured} />
 
 
           {/* 3. Hidden gems */}
@@ -60,6 +65,9 @@ export default async function DiscoverPage() {
             </section>
           )}
 
+          {/* Popular by Indies: the most-read independent Mafiki, in the live site's wide banner cards. */}
+          {popular.length > 0 && <PopularStrip comics={popular} />}
+
           {/* 4. Now Showing (shorts) */}
           {nowShowing.length > 0 && <NowShowing shorts={nowShowing} />}
 
@@ -67,7 +75,7 @@ export default async function DiscoverPage() {
           {newest.length > 0 && (
             <section className="mt-16">
               <SectionHeader title="New on Toon Central" action={null}>
-                <Note>The newest comics, not just new episodes</Note>
+                <Note>The newest Mafiki, not just new episodes</Note>
               </SectionHeader>
               <ComicGrid comics={newest} />
             </section>
@@ -106,7 +114,7 @@ export default async function DiscoverPage() {
           {/* 9. Surprise me */}
           <section className="mb-20 mt-20 border-2 border-dashed border-line px-6 py-12 text-center">
             <p className="font-display text-4xl uppercase leading-none text-white sm:text-5xl">Still can&apos;t decide?</p>
-            <p className="mt-3 text-sm text-slate-400">Let us pick one of {everything.length} comics for you.</p>
+            <p className="mt-3 text-sm text-slate-400">Let us pick one of {everything.length} Mafiki for you.</p>
             <div className="mt-7">
               <SurpriseMe uuids={everything} />
             </div>

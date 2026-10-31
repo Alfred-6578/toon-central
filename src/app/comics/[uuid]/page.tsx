@@ -15,7 +15,7 @@ import { pageParam } from "@/lib/pagination";
 export async function generateMetadata({ params }: PageProps<"/comics/[uuid]">): Promise<Metadata> {
   const { uuid } = await params;
   const data = await getComicPageData(uuid);
-  if (!data) return { title: "Comic not found | Toon Central" };
+  if (!data) return { title: "Mafiki not found | Toon Central" };
   const { comic } = data;
   return {
     title: `${comic.title} · ${comic.genres[0] ? `${comic.genres[0]} ` : ""}Mafiki by ${comic.creator.username} | Toon Central`,

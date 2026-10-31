@@ -1,17 +1,34 @@
 import type { Comic, Short } from "@/lib/api/types";
-import { FREE_EPISODES } from "@/lib/rules";
+import { FREE_EPISODES, PREVIEW_PAGES } from "@/lib/rules";
 
 // The Studio's comic and episode model, shared by server pages and the browser store.
-// Live-site monetization: episodes 1–3 are always free; from episode 4 a creator can opt in to earn
-// with ads shown alongside the episode, or with credits (readers unlock it; passes and plans unlock it too).
+// Monetization (client's creator-tutorial spec): a creator unlocks it once one of their Mafiki has
+// MILESTONE_EPISODES published episodes, and it applies to Mafiki they create after that (never
+// switched on for work that already exists). A monetized Mafiki earns with ads or credits from
+// episode 4 (1–3 stay free so new readers get hooked); with credits, each episode opens with free
+// preview pages and the creator picks the page where paid access begins (the key on a page thumbnail).
 export type EpisodeAccess = "free" | "ads" | "credits";
+export type Monetization = "none" | "ads" | "credits";
 
+export const MILESTONE_EPISODES = 4;
 export const MONETIZE_FROM = FREE_EPISODES + 1;
 export const canMonetize = (number: number) => number >= MONETIZE_FROM;
 
-// Older saves used "locked" before ads/credits existed; read those as credits.
-export const accessOf = (episode: { access: string }, number: number): EpisodeAccess =>
-  !canMonetize(number) ? "free" : episode.access === "locked" ? "credits" : (episode.access as EpisodeAccess);
+// A comic saved before monetization was per-Mafiki has no setting: it never earns.
+export const monetizationOf = (comic: Pick<StudioComic, "monetization">): Monetization => comic.monetization ?? "none";
+
+// How one episode is read: the opening episodes are always free, the rest follow the Mafiki's choice.
+export const accessOf = (comic: Pick<StudioComic, "monetization">, number: number): EpisodeAccess => {
+  const method = monetizationOf(comic);
+  return !canMonetize(number) || method === "none" ? "free" : method;
+};
+
+// The page where paid access starts in a credits episode: the creator's pick, else after the free preview.
+export const paidFromOf = (episode: Pick<StudioEpisode, "paidFrom">) => episode.paidFrom ?? PREVIEW_PAGES + 1;
+
+// The milestone: any Mafiki with this many episodes out.
+export const reachedMilestone = (comics: StudioComic[], now = Date.now()) =>
+  comics.some((c) => c.episodes.filter((e) => episodeState(e, now) === "published").length >= MILESTONE_EPISODES);
 
 export const ACCESS_LABEL: Record<EpisodeAccess, string> = { free: "Free", ads: "Ads", credits: "Credits" };
 
@@ -20,7 +37,10 @@ export type StudioEpisode = {
   title: string;
   // Image refs: "idb:…" for uploads in this browser, URLs for the demo's real comics.
   pages: string[];
-  access: EpisodeAccess;
+  // Kept on older saves only; how an episode is read now comes from its Mafiki (accessOf).
+  access?: string;
+  // Credits episodes: the 1-based page where paid access begins (null: after the free preview).
+  paidFrom?: number | null;
   // "scheduled" with a publishAt in the past counts as published (see episodeState).
   status: "draft" | "scheduled" | "published";
   publishAt: string | null;
@@ -34,10 +54,16 @@ export type StudioComic = {
   synopsis: string;
   cover: string | null;
   banner: string | null;
+  // A short video ("idb:…" upload) shown on the Discover main-menu carousel.
+  trailer?: string | null;
   genres: string[];
   schedule: string | null;
   status: "draft" | "published" | "completed";
   episodes: StudioEpisode[];
+  // Chosen when the Mafiki is created, if the creator had reached the milestone (see monetizationOf).
+  monetization?: Monetization;
+  // Created after the milestone, so its monetization can be set and changed.
+  monetizable?: boolean;
   reads: number;
   likes: number;
   updatedAt: string;
@@ -52,10 +78,6 @@ export const MAX_GENRES = 3;
 export const SYNOPSIS_MAX = 600;
 
 export const newId = () => `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
-
-// The live-site rule as the default for a new episode: the first few free, the rest locked.
-// New episodes start free (monetization is opt-in, as on the live site).
-export const defaultAccess = (): EpisodeAccess => "free";
 
 export function episodeState(episode: StudioEpisode, now = Date.now()) {
   if (episode.status === "scheduled" && episode.publishAt && Date.parse(episode.publishAt) <= now) return "published";
@@ -74,12 +96,13 @@ export function fromLiveComic(comic: Comic): StudioComic {
     genres: comic.genres.slice(0, MAX_GENRES),
     schedule: comic.updateDays,
     status: comic.status === "COMPLETED" ? "completed" : "published",
+    // Live comics lock episodes past the free ones behind credits/passes.
+    monetization: "credits",
+    monetizable: true,
     episodes: Array.from({ length: count }, (_, i) => ({
       id: `${comic.uuid}-ep${i + 1}`,
       title: `Episode ${i + 1}`,
       pages: [],
-      // Live comics lock episodes past the free ones behind credits/passes.
-      access: canMonetize(i + 1) ? "credits" : "free",
       status: "published",
       publishAt: null,
       pagesKnown: false,

@@ -1,4 +1,5 @@
 import { getCatalogue, getCreatorsDirectory, getGenres, getHomeFeed, getShorts, getTopCarousel, linkShortsToComics } from "@/lib/api/client";
+import { DEMO_CREATOR } from "@/lib/studioServer";
 import type { Comic, CreatorPageData, Genre, Short } from "@/lib/api/types";
 import { interleaveByCreator } from "@/lib/shortsFeed";
 
@@ -16,6 +17,7 @@ export type Vibe = (typeof VIBES)[number];
 export const MIN_ITEMS = 3;
 // Comics in Discover's banner (alongside its promo slides).
 const BANNER_COMICS = 6;
+const POPULAR_INDIES = 10;
 const SECTION_SIZE = 5;
 
 export const inVibe = (vibe: Vibe, comic: Comic) => comic.genres.some((g) => (vibe.genres as readonly string[]).includes(g));
@@ -38,6 +40,14 @@ export type DiscoverData = {
   everything: string[];
   // The live site's main-menu strip (its top carousel), and one Original to feature in the banners.
   carousel: Comic[];
+  // Trailers for carousel comics (comic uuid → video URL): the animated short linked to the comic.
+  // Creators' own trailer uploads join these in the browser (DiscoverCarousel).
+  trailers: Record<string, string>;
+  // The Studio demo creator's comics: a trailer uploaded in Creator Studio (stored in the browser)
+  // brings its comic to the front of the strip.
+  studioComics: Comic[];
+  // Popular by Indies: the most-read Mafiki from independent creators (not Originals) with banner art.
+  popular: Comic[];
   // Comics to feature in the banner: the live site's "Popular by ToonCentral" picks, with banner art.
   featured: Comic[];
 };
@@ -79,6 +89,15 @@ export async function getDiscoverData(): Promise<DiscoverData> {
 
   const people = creators.filter((c) => !c.isOfficial).slice(0, 3);
 
+  // A comic with an animated short linked to it (real links only) uses the short as its trailer, and
+  // comics with trailers lead the main-menu strip so they're seen.
+  const trailers = Object.fromEntries(
+    linkShortsToComics(shorts, catalogue).flatMap((s) => (s.linkedComic && !s.linkedComic.demo && s.video ? [[s.linkedComic.uuid, s.video]] : []))
+  );
+  const strip = top.length ? top : [...catalogue].sort((a, b) => b.views - a.views).slice(0, 10);
+  const withTrailers = catalogue.filter((c) => trailers[c.uuid]);
+  const carousel = [...withTrailers, ...strip.filter((c) => !trailers[c.uuid])];
+
   return {
     vibes,
     gems,
@@ -88,7 +107,13 @@ export async function getDiscoverData(): Promise<DiscoverData> {
     genres,
     creators: people,
     everything: catalogue.map((c) => c.uuid),
-    carousel: top.length ? top : [...catalogue].sort((a, b) => b.views - a.views).slice(0, 10),
+    carousel,
+    trailers,
+    popular: catalogue
+      .filter((c) => !c.isOriginal && c.backgroundImage)
+      .sort((a, b) => b.views - a.views)
+      .slice(0, POPULAR_INDIES),
+    studioComics: catalogue.filter((c) => c.creator.username.toLowerCase() === DEMO_CREATOR),
     featured: [...new Map([...feed.popularByToonCentral, ...catalogue.filter((c) => c.isOriginal)].map((c) => [c.uuid, c])).values()]
       .filter((c) => c.backgroundImage)
       .slice(0, BANNER_COMICS),

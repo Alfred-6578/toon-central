@@ -1,146 +1,243 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { IoWarningOutline } from "react-icons/io5";
-import { Creator101Shell, PUBLISH_HREF, SectionTitle, StepCard } from "@/components/creator101/Creator101Shell";
+import { IoArrowForward, IoNotificationsOutline, IoTrophyOutline } from "react-icons/io5";
+import { Creator101Shell, SectionTitle } from "@/components/creator101/Creator101Shell";
 import { getSiteStats } from "@/lib/api/client";
 
 export const metadata: Metadata = {
   title: "Making money · Creator 101 | Toon Central",
-  description: "How creators earn on Toon Central: the Creator Rewards program, ad revenue sharing, Reader Ads and Reward Ads.",
+  description: "How creators earn on Toon Central: on-site ads, panel unlocks, ad offers, credit points, Creator Rewards and Creator of the Month.",
 };
 
-// Copy follows the live Creator101 → Making money tab, with "series" said as "comic".
-const REWARD_STEPS = [
-  { title: "Earn from every 200 likes", body: "Once your comic reaches 1,000 likes in total, it becomes eligible for earnings." },
+// Copy and layout from the client's "How to Make Money on Toon Central" guide (doc + PDF, Oct 2026).
+// Rates and rules marked "proposed" or still open in that guide are shown as the guide shows them.
+
+const WAYS = [
   {
-    title: "Follow the creator guidelines",
-    body: "Keep your content in line with our community and uploading rules, so Toon Central stays a safe and creative space.",
+    title: "On-site ads",
+    body: "Earn per click when readers interact with the ads on your Mafiki. The more people interact, the more you stand to make.",
+    chip: "Unlocks at 4 chapters",
   },
-  { title: "Be 18 or older", body: "Creators must be at least 18 (or the legal age in your country) to take part." },
-  { title: "Apply for the Creator Rewards program", body: "Sign up through your creator dashboard and send in your application." },
-  { title: "Switch on earnings for your comic", body: "Once you're approved, turn on earnings and start receiving rewards from your fans." },
+  {
+    title: "Panel by panel",
+    body: "Lock any panel of your work. Fans can pay for the complete work or unlock it one panel at a time, through small micro-transactions.",
+    chip: "Micro-transactions",
+  },
+  {
+    title: "Ad offers",
+    body: "From your Creator Studio, place ad offers in chosen spots on a Mafiki you've already uploaded. Advertisers click an offer, see the price and pay to run their ad there.",
+    chip: "You choose the spots",
+  },
+  {
+    title: "Credit points",
+    body: "Lock the full Mafiki and let readers unlock it with credit points. Every Mafiki unlocks for a flat 1,500 credits. This option replaces ads and micro-transactions on that Mafiki.",
+    chip: "Unlocks at 4 chapters, from chapter 5",
+  },
 ];
 
-const AD_STEPS = [
-  { title: "Sign up as a creator", body: "Join the Ad Revenue Sharing program from your Toon Central creator dashboard." },
-  { title: "Meet the minimum views", body: "Reach the monthly global page-view goal for Reader Ads or Reward Ads." },
-  { title: "Apply for review", body: "Our team checks your eligibility and approves your account." },
+const AD_OFFER_STEPS = [
+  { title: "Place your offer.", body: "In your Creator Studio, mark the spots on an uploaded Mafiki where ads can go." },
+  { title: "An advertiser clicks it.", body: "They go to a payment flow that shows exactly what it costs to put their ad there. You get a notification." },
+  { title: "They pay.", body: "You get a second notification when the payment goes through, and the ad goes live on your Mafiki." },
 ];
 
-// Wrapped: the global img { display: block } rule would override `hidden` on the img itself.
+// $0.50 per 10,000 eligible views (the guide's proposed rate).
+const RATE_PER_10K = 0.5;
+const usd = (views: number) => `$${((views / 10_000) * RATE_PER_10K).toFixed(2)}`;
+const RATE_ROWS = [10_000, 50_000, 100_000, 500_000, 1_000_000];
+const EXAMPLE_VIDEOS = [100_000, 200_000, 50_000, 500_000, 150_000];
+
 const coinArt = "pointer-events-none absolute bottom-0 hidden w-56 select-none sm:block lg:w-72";
 
-// Creator 101 → Making money: the ways creators earn, and what each one needs.
+// Creator 101 → Making money: the four ways to earn on a comic, then Creator Rewards and Creator of the Month.
 export default async function MakingMoneyPage() {
   const stats = await getSiteStats();
+  const exampleTotal = EXAMPLE_VIDEOS.reduce((sum, v) => sum + v, 0);
 
   return (
-    <Creator101Shell tab="money" stats={stats}>
+    <Creator101Shell tab="money" stats={stats} signOff={false}>
       <section className="relative overflow-hidden border-b-[3px] border-black bg-[#5146e5]">
         <div className="dot-field absolute inset-0 opacity-25 [--dot-color:#fff]" aria-hidden="true" />
+        {/* Wrapped: the global img { display: block } rule would override `hidden` on the img itself. */}
         <div className={`${coinArt} -left-4`}><img src="/creator-guide/coins-left.webp" alt="" /></div>
         <div className={`${coinArt} -right-4`}><img src="/creator-guide/coins-right.webp" alt="" /></div>
         <div className="relative mx-auto max-w-3xl px-6 py-14 text-center sm:py-16 lg:py-20">
           <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl lg:text-7xl">
-            <span className="text-mint">Make money</span> with Toon Central
+            Make money with <span className="text-sun">Toon Central</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl leading-7 text-white/85">
-            Earn by sharing your story with a global audience. Creators can earn through the Creator Rewards program, the Ad Revenue
-            Sharing program, and Patreon.
+            Earn from the stories you tell. Choose how you want to be paid: ads, panel unlocks, credit points or Creator Rewards.
           </p>
         </div>
       </section>
 
-      <div className="mx-auto grid max-w-5xl gap-20 px-6 py-14 md:px-8 lg:py-20">
+      <div className="mx-auto grid max-w-5xl gap-24 px-6 py-14 md:px-8 lg:py-20">
+        {/* Four ways to earn */}
         <section>
-          <SectionTitle className="text-center">Creator Rewards: how to join</SectionTitle>
-          <ol className="mt-12 grid gap-x-5 gap-y-9 sm:grid-cols-2 lg:grid-cols-3">
-            {REWARD_STEPS.map((step, i) => (
-              <StepCard key={step.title} n={i + 1} title={step.title}>{step.body}</StepCard>
-            ))}
-          </ol>
-        </section>
-
-        <section className="border-[3px] border-black bg-panel p-6 shadow-[8px_8px_0_#000] sm:p-10">
           <div className="text-center">
-            <span className="tag -rotate-2 bg-sun text-sm">Ad Revenue Sharing</span>
-            <h2 className="mt-4 font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">
-              Earn <span className="text-mint">50%</span> of the ads on your comics
-            </h2>
-            <p className="mx-auto mt-4 max-w-xl text-slate-300">Turn your views into income while your stories stay free for fans.</p>
+            <SectionTitle>Four ways to earn on your Mafiki</SectionTitle>
+            <p className="mt-3 text-slate-300">Pick what suits your story. Some options unlock as your Mafiki grows.</p>
           </div>
-          <h3 className="mt-12 text-center font-bold uppercase tracking-[0.12em] text-slate-400">How to join</h3>
-          <ol className="mt-8 grid gap-x-5 gap-y-9 sm:grid-cols-3">
-            {AD_STEPS.map((step, i) => (
-              <StepCard key={step.title} n={i + 1} title={step.title}>{step.body}</StepCard>
+          <ol className="mt-10 grid gap-5 sm:grid-cols-2">
+            {WAYS.map((way, i) => (
+              <li key={way.title} className="flex flex-col border-2 border-black bg-panel p-5 shadow-[5px_5px_0_#000] sm:p-6">
+                <h3 className="flex items-center gap-3 font-display text-3xl uppercase leading-none text-white">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-mint text-xl text-ink">{i + 1}</span>
+                  {way.title}
+                </h3>
+                <p className="mt-3 flex-1 text-sm leading-6 text-slate-300">{way.body}</p>
+                <span className="mt-4 w-fit border border-mint/60 px-2.5 py-1 text-xs font-semibold text-mint">{way.chip}</span>
+              </li>
             ))}
           </ol>
         </section>
 
-        <section className="grid gap-10 md:grid-cols-2">
-          <div>
-            <SectionTitle>Reader Ads</SectionTitle>
-            <p className="mt-4 leading-7 text-slate-300">
-              Banner ads shown at the bottom of your episodes. Creators earn based on their comic&apos;s share of the total ad pool.
-            </p>
-            <h3 className="mt-8 font-bold uppercase tracking-[0.12em] text-slate-400">To qualify</h3>
-            <ol className="mt-7 grid gap-y-8">
-              <StepCard n={1}>Your comic has 1,000 subscribers or more.</StepCard>
-              <StepCard n={2}>It reaches 40,000 global page views a month or more.</StepCard>
+        {/* How ad offers work */}
+        <section>
+          <SectionTitle className="text-center">How ad offers work</SectionTitle>
+          <div className="mt-10 grid items-center gap-10 md:grid-cols-2">
+            <figure className="border-2 border-line bg-panel p-4" aria-label="A reader's view of a Mafiki with an ad offer between two panels">
+              <figcaption className="mb-3 text-xs text-slate-400">Reader view of your Mafiki</figcaption>
+              <div className="flex aspect-[5/2] items-center justify-center bg-[#1e2a44] text-sm text-slate-400">Mafiki panel</div>
+              <div className="my-3 border-2 border-dashed border-sun bg-sun/10 px-4 py-4 text-center font-display text-xl uppercase tracking-wide text-sun">
+                Place your ads here
+              </div>
+              <div className="flex aspect-[5/2] items-center justify-center bg-[#1e2a44] text-sm text-slate-400">Mafiki panel</div>
+            </figure>
+            <ol className="grid gap-5">
+              {AD_OFFER_STEPS.map((step, i) => (
+                <li key={step.title} className="flex gap-4">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center border-2 border-black bg-mint font-display text-xl text-ink">{i + 1}</span>
+                  <p className="leading-7 text-slate-300">
+                    <span className="font-bold text-white">{step.title}</span> {step.body}
+                  </p>
+                </li>
+              ))}
+              <li className="flex items-start gap-2 border-l-2 border-mint pl-4 text-sm text-slate-400">
+                <IoNotificationsOutline className="mt-0.5 shrink-0 text-base text-mint" />
+                You&apos;re notified at both stages, so you always know when there&apos;s interest in a spot and when it&apos;s been paid for.
+              </li>
             </ol>
-          </div>
-          <div>
-            <SectionTitle>Reward Ads</SectionTitle>
-            <div className="mt-4 grid gap-3 leading-7 text-slate-300">
-              <p>15–30 second video ads that readers can watch to unlock locked episodes of your comic.</p>
-              <p>
-                Because they&apos;re so engaging, they can earn 3–5× more than regular banner ads, depending on the advertiser and how your
-                readers interact with the ad.
-              </p>
-              <p>If approved, you can lock up to three episodes behind Reward Ads at any one time.</p>
-            </div>
-            <h3 className="mt-8 font-bold uppercase tracking-[0.12em] text-slate-400">To qualify</h3>
-            <ol className="mt-7 grid gap-y-8">
-              <StepCard n={1}>You already qualify for Reader Ads.</StepCard>
-              <StepCard n={2}>Your comic reaches 100,000 global page views a month or more.</StepCard>
-            </ol>
-            <p className="mt-6 flex gap-2 border-2 border-sun/60 bg-sun/10 p-3 text-sm text-sun">
-              <IoWarningOutline className="mt-0.5 shrink-0 text-base" />
-              Every episode using Reward Ads is reviewed and must be approved before it goes live.
-            </p>
           </div>
         </section>
 
-        <section className="mx-auto max-w-3xl">
-          <SectionTitle className="text-center">How Reward Ads earn</SectionTitle>
-          <p className="mt-5 text-center leading-7 text-slate-300">
-            Reward Ads pay you when readers choose to watch a 15–30 second video to unlock a locked episode. Earnings are based on ad
-            impressions, not just on how many people read your comic.
-          </p>
-          <dl className="mt-8 grid gap-4 sm:grid-cols-2">
-            <div className="border-2 border-line bg-panel p-5">
-              <dt className="font-display text-2xl uppercase text-white">Page views</dt>
-              <dd className="mt-1 text-sm text-slate-300">How many times your comic is read.</dd>
+        {/* Creator Rewards */}
+        <section>
+          <div className="mx-auto max-w-3xl text-center">
+            <SectionTitle>Toon Central Creator Rewards</SectionTitle>
+            <p className="mt-3 font-display text-2xl uppercase text-sun">Your stories. Your audience. Your earnings.</p>
+            <p className="mt-4 leading-7 text-slate-300">
+              African Mafiki artists and animators should earn from the stories they create and the audiences they build. Creator Rewards
+              pays you for the eligible views on your Mafiki, chapters and animated videos.
+            </p>
+          </div>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-2">
+            <div className="border-2 border-black bg-panel p-5 shadow-[5px_5px_0_#000] sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Proposed reward rate</p>
+              <p className="mt-1 flex items-baseline gap-2">
+                <span className="font-display text-6xl leading-none text-white">$0.50</span>
+                <span className="text-sm font-semibold text-slate-300">per 10,000 eligible views</span>
+              </p>
+              <table className="mt-5 w-full text-sm">
+                <caption className="sr-only">Rewards by eligible views</caption>
+                <tbody className="divide-y-2 divide-line border-t-2 border-line">
+                  {RATE_ROWS.map((views) => (
+                    <tr key={views}>
+                      <th scope="row" className="py-2.5 text-left font-normal text-slate-200">{views.toLocaleString("en-US")} views</th>
+                      <td className="py-2.5 text-right font-bold text-mint">{usd(views)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p className="mt-3 text-xs text-slate-500">Figures assume every view qualifies under the programme rules.</p>
             </div>
-            <div className="border-2 border-black bg-mint p-5 text-ink shadow-[4px_4px_0_#000]">
-              <dt className="font-display text-2xl uppercase">Ad impressions</dt>
-              <dd className="mt-1 text-sm font-medium text-ink/80">How many times an ad is actually shown to a reader. This is what pays.</dd>
+
+            <div className="border-2 border-black bg-panel p-5 shadow-[5px_5px_0_#000] sm:p-6">
+              <p className="text-xs font-semibold uppercase tracking-wide text-slate-400">Example: five animated videos</p>
+              <table className="mt-3 w-full text-sm">
+                <caption className="sr-only">Rewards for five example videos</caption>
+                <tbody className="divide-y-2 divide-line border-t-2 border-line">
+                  {EXAMPLE_VIDEOS.map((views, i) => (
+                    <tr key={i}>
+                      <th scope="row" className="py-2.5 text-left font-normal text-slate-200">
+                        Video {i + 1} · {views.toLocaleString("en-US")} views
+                      </th>
+                      <td className="py-2.5 text-right font-bold text-mint">{usd(views)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+                <tfoot>
+                  <tr className="border-t-[3px] border-line">
+                    <th scope="row" className="py-3 text-left font-bold text-white">Total · {exampleTotal.toLocaleString("en-US")} views</th>
+                    <td className="py-3 text-right font-display text-2xl text-sun">{usd(exampleTotal)}</td>
+                  </tr>
+                </tfoot>
+              </table>
+              <p className="mt-1 text-xs text-slate-500">Rewards from all your eligible content add up in one earnings balance on your creator dashboard.</p>
             </div>
-          </dl>
-          <p className="mt-8 leading-7 text-slate-300">
-            The more readers who watch the ad all the way through, the more you earn. On average, video ads are worth 3–5× more than
-            banner ads, depending on advertiser demand and engagement. Your monthly earnings depend on:
-          </p>
-          <ul className="mt-3 grid gap-2 text-slate-300">
-            <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-mint" />How many completed ad views your episodes get.</li>
-            <li className="flex gap-3"><span className="mt-2.5 h-1.5 w-1.5 shrink-0 bg-mint" />Advertiser spending and the global ad market.</li>
-          </ul>
-          <p className="mt-6 text-sm text-slate-400">For the details, see the program terms and FAQ in your creator dashboard.</p>
-          <div className="mt-10 flex justify-center">
-            <Link href={PUBLISH_HREF} className="btn btn-primary px-6 py-3 text-base">Start sharing your story</Link>
+
+            <div className="border-2 border-line bg-panel p-5 sm:p-6">
+              <h3 className="font-display text-2xl uppercase text-white">How you qualify</h3>
+              <p className="mt-2 leading-7 text-slate-300">
+                Consistent Mafiki creators with at least <strong className="text-white">100 subscribers</strong> and{" "}
+                <strong className="text-white">10,000 views</strong> become eligible automatically. It&apos;s a one-time milestone: no
+                need to re-apply.
+              </p>
+              <p className="mt-2 leading-7 text-slate-300">To keep earning, post consistently on a set day and time. Miss it, and you lose that month&apos;s reward.</p>
+            </div>
+            <div className="border-2 border-line bg-panel p-5 sm:p-6">
+              <h3 className="font-display text-2xl uppercase text-white">What counts as an eligible view</h3>
+              <p className="mt-2 leading-7 text-slate-300">
+                Real readers only. Bots, artificial traffic and fraudulent engagement never count. Toon Central will publish how views are
+                counted, when rewards are calculated and when payouts are made.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Creator of the Month */}
+        <section>
+          <div className="mx-auto max-w-2xl text-center">
+            <SectionTitle>Creator of the Month</SectionTitle>
+            <p className="mt-4 leading-7 text-slate-300">
+              At Toon Central we reward consistency and commitment. Creators who upload steadily all month appear on the leaderboard and
+              receive rewards, courtesy of Toon Central. It&apos;s open to everyone who keeps a steady schedule, not just the biggest
+              audiences.
+            </p>
+          </div>
+          <div className="mx-auto mt-8 max-w-2xl border-2 border-black bg-panel shadow-[5px_5px_0_#000]">
+            <p className="flex items-center gap-2 border-b-2 border-line px-5 py-3 text-xs font-bold uppercase tracking-[0.12em] text-slate-400">
+              <IoTrophyOutline className="text-base text-sun" /> This month&apos;s leaderboard
+              <span className="ml-auto hidden sm:inline">Uploads</span>
+              <span className="w-14 text-right">Reward</span>
+            </p>
+            <ol className="divide-y-2 divide-line">
+              {[1, 2, 3].map((place) => (
+                <li key={place} className="flex items-center gap-4 px-5 py-4">
+                  <span className={`w-6 font-display text-3xl leading-none ${place === 1 ? "text-sun" : "text-slate-300"}`}>{place}</span>
+                  <span className="h-3 flex-1 bg-line" aria-hidden="true" />
+                  <span className="hidden h-3 w-10 bg-line sm:block" aria-hidden="true" />
+                  <span className="h-3 w-14 bg-mint/25" aria-hidden="true" />
+                </li>
+              ))}
+            </ol>
+            <p className="border-t-2 border-line px-5 py-3 text-xs text-slate-500">The first leaderboard is published at the end of the month.</p>
           </div>
         </section>
       </div>
+
+      <section className="border-t-2 border-line">
+        <div className="mx-auto max-w-4xl px-6 py-16 text-center md:px-8">
+          <h2 className="font-display text-4xl uppercase leading-[0.95] text-white sm:text-5xl">
+            Create your stories. Grow your audience. <span className="text-mint">Earn from your work.</span>
+          </h2>
+          <Link href="/creator/dashboard" className="btn btn-primary mt-8 gap-2 px-6 py-3 text-base">
+            Open Creator Studio <IoArrowForward />
+          </Link>
+          <p className="mt-5 text-sm text-slate-400">Toon Central, giving Africa a voice.</p>
+        </div>
+      </section>
     </Creator101Shell>
   );
 }

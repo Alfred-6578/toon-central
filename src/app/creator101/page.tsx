@@ -51,7 +51,7 @@ export default async function Creator101IntroPage() {
         <div className="relative mx-auto max-w-7xl px-6 pt-12 text-center md:px-8 lg:px-10 lg:pt-16">
           <span className="tag -rotate-2 bg-sun text-sm">Share without limits</span>
           <h1 className="mx-auto mt-4 max-w-4xl font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">
-            Endless comics, endless stories
+            Endless Mafiki, endless stories
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-slate-300">Read anywhere. Create anytime. Start here to bring your Mafiki to readers everywhere.</p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
@@ -59,7 +59,7 @@ export default async function Creator101IntroPage() {
             <Link href={PUBLISH_HREF} className="btn btn-ghost px-6 py-3 text-base">Publish</Link>
           </div>
 
-          <ul className="mx-auto mt-12 flex max-w-5xl items-end justify-center gap-2 overflow-hidden pb-10 sm:gap-4" aria-label="Comics on Toon Central">
+          <ul className="mx-auto mt-12 flex max-w-5xl items-end justify-center gap-2 overflow-hidden pb-10 sm:gap-4" aria-label="Mafiki on Toon Central">
             {covers.map((comic, i) => (
               <li key={comic.uuid} className={`shrink-0 ${i === 0 || i === FAN.length - 1 ? "hidden sm:block" : ""}`}>
                 <Link

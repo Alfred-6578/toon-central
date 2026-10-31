@@ -91,7 +91,7 @@ export function PublishCard({ className = "md:col-span-2 lg:col-span-3" }: { cla
       <div className="relative">
         <p className="font-display text-3xl uppercase leading-none text-white sm:text-4xl">Yours could be here too</p>
         <p className="mt-2 max-w-xl text-sm leading-6 text-slate-300">
-          Publish your comic or animated short on Toon Central and reach readers across Africa.
+          Publish your Mafiki or animated short on Toon Central and reach readers across Africa.
         </p>
       </div>
       <div className="relative flex flex-wrap gap-3">

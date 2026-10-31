@@ -347,7 +347,7 @@ function PullBackWelcome({ covers, catalogue, onClose }: { covers: Comic[]; cata
           <h2 id="welcome-title" className="mt-6 font-display text-4xl uppercase leading-[0.95] text-white">
             Every story here is African
           </h2>
-          <p className="mt-2 text-sm text-slate-400">Comics and animated shorts from creators across the continent.</p>
+          <p className="mt-2 text-sm text-slate-400">Mafiki and animated shorts from creators across the continent.</p>
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
             <button ref={startRef} type="button" onClick={onClose} className="btn btn-primary px-6 py-3 text-base">
               Start reading

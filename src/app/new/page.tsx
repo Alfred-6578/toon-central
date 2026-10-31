@@ -38,12 +38,12 @@ export default async function MostReadPage({ searchParams }: PageProps<"/new">) 
   return (
     <NewAndPopularShell
       tab="top"
-      lede="Every comic, ranked by total reads."
+      lede="Every Mafiki, ranked by total reads."
       controls={<FilterGroup options={FILTERS} current={filter} hrefFor={hrefFor} counts={counts} />}
       stats={stats}
     >
       <MostReadChart comics={result.items} startRank={result.from} />
-      <Pagination result={result} baseHref={hrefFor(filter)} noun="comics" />
+      <Pagination result={result} baseHref={hrefFor(filter)} noun="Mafiki" />
       <p className="mt-8 text-xs text-slate-500">All-time reads. Weekly charts need read counts over time from the live API.</p>
     </NewAndPopularShell>
   );

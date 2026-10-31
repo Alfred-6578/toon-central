@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type DragEvent } from "react";
-import { IoAdd, IoArrowBack, IoArrowDown, IoArrowUp, IoReorderTwo } from "react-icons/io5";
+import { IoAdd, IoArrowBack, IoArrowDown, IoArrowUp, IoCheckmark, IoLinkOutline, IoReorderTwo } from "react-icons/io5";
 import { comicHref, formatCount } from "@/lib/format";
 import { FREE_EPISODES } from "@/lib/rules";
 import {
@@ -11,12 +11,15 @@ import {
   accessOf,
   canMonetize,
   episodeState,
+  monetizationOf,
+  paidFromOf,
   studioHref,
   type EpisodeAccess,
   type StudioComic,
   type StudioEpisode,
   type StudioMode,
 } from "@/lib/studioModel";
+import { useMilestoneWatch } from "@/lib/creatorTutorial";
 import { useStudioComics } from "@/lib/studioStore";
 import { DesktopOnly } from "../StudioGate";
 import { StudioImage } from "../StudioImage";
@@ -29,17 +32,18 @@ const when = (iso: string) => new Date(iso).toLocaleString("en-GB", { day: "nume
 
 export function ComicEditor({ id, mode, seeds, genres }: Props) {
   const router = useRouter();
-  const { get, save, remove } = useStudioComics(mode, seeds);
+  const { get, save, remove, comics } = useStudioComics(mode, seeds);
   const comic = get(id);
   const [editing, setEditing] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  useMilestoneWatch(mode, comics);
 
   if (!comic) {
     return (
       <div className="border-2 border-dashed border-line px-6 py-12 text-center">
-        <p className="font-display text-3xl uppercase text-white">Comic not found</p>
+        <p className="font-display text-3xl uppercase text-white">Mafiki not found</p>
         <p className="mt-2 text-sm text-slate-400">It may have been deleted, or created in another browser.</p>
-        <Link href={studioHref("/creator/comics", mode)} className="btn btn-primary mt-6 px-6 py-3">Back to comics</Link>
+        <Link href={studioHref("/creator/comics", mode)} className="btn btn-primary mt-6 px-6 py-3">Back to Mafiki</Link>
       </div>
     );
   }
@@ -54,14 +58,13 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
     const next = [...comic.episodes];
     const [item] = next.splice(from, 1);
     next.splice(to, 0, item);
-    // An episode moved into the always-free opening (1–3) can't stay monetized.
-    setEpisodes(next.map((e, i) => ({ ...e, access: accessOf(e, i + 1) })));
+    setEpisodes(next);
   };
 
   return (
     <>
       <Link href={studioHref("/creator/comics", mode)} className="flex w-fit items-center gap-2 text-sm text-slate-400 hover:text-mint">
-        <IoArrowBack /> Comics
+        <IoArrowBack /> Mafiki
       </Link>
 
       {editing ? (
@@ -70,6 +73,7 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
           <ComicForm
             initial={comic}
             genres={genres}
+            monetizable={!!comic.monetizable}
             submitLabel="Save changes"
             onSubmit={(details) => {
               update(details);
@@ -93,6 +97,8 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
               <p className="mt-3 line-clamp-3 max-w-2xl text-sm leading-6 text-slate-300">{comic.synopsis}</p>
               <p className="mt-3 text-xs text-slate-500">
                 {formatCount(comic.reads)} reads · {formatCount(comic.likes)} likes{comic.schedule && ` · updates ${comic.schedule}s`}
+                {" · "}
+                <span className={monetizationOf(comic) === "none" ? "" : "font-semibold text-mint"}>{MONETIZATION_NOTE[monetizationOf(comic)]}</span>
               </p>
 
               <div className="mt-5 hidden flex-wrap gap-3 lg:flex">
@@ -105,7 +111,7 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                     title={live === 0 ? "Publish or schedule an episode first" : undefined}
                     className="btn btn-primary px-4 py-2 text-sm disabled:cursor-not-allowed disabled:opacity-40"
                   >
-                    Publish comic
+                    Publish Mafiki
                   </button>
                 ) : comic.status === "published" ? (
                   <button type="button" onClick={() => update({ status: "completed" })} className="btn btn-ghost px-4 py-2 text-sm">Mark completed</button>
@@ -115,9 +121,10 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                 {comic.live && (
                   <Link href={comicHref(comic.id)} className="btn btn-ghost px-4 py-2 text-sm">View public page</Link>
                 )}
+                <ShareLink comic={comic} />
               </div>
               {comic.status === "draft" && live === 0 && (
-                <p className="mt-3 hidden text-xs text-slate-500 lg:block">Add an episode and publish or schedule it, then publish the comic.</p>
+                <p className="mt-3 hidden text-xs text-slate-500 lg:block">Add an episode and publish or schedule it, then publish the Mafiki.</p>
               )}
             </div>
           </header>
@@ -127,11 +134,15 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
               <div>
                 <h2 id="episodes-title" className="font-display text-3xl uppercase leading-none text-white">Episodes</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  Episodes 1–{FREE_EPISODES} are always free. From episode {FREE_EPISODES + 1} you can earn with ads or credits. Drag to reorder.
+                  {monetizationOf(comic) === "none"
+                    ? "Every episode is free to read."
+                    : `Episodes 1–${FREE_EPISODES} are always free; from episode ${FREE_EPISODES + 1} they earn with ${monetizationOf(comic)}.`}{" "}
+                  Drag to reorder.
                 </p>
               </div>
               <Link
                 href={studioHref(`/creator/comics/${comic.id}/episodes/new`, mode)}
+                data-tour="upload-chapter"
                 className="btn btn-primary hidden gap-2 px-4 py-2 text-sm lg:inline-flex"
               >
                 <IoAdd /> Add episode
@@ -150,7 +161,6 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                 comic={comic}
                 mode={mode}
                 onMove={move}
-                onSetAccess={(index, access) => setEpisodes(comic.episodes.map((e, i) => (i === index ? { ...e, access } : e)))}
                 confirmDelete={confirmDelete}
                 onAskDelete={setConfirmDelete}
                 onDelete={(episodeId) => {
@@ -181,7 +191,7 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                 </div>
               ) : (
                 <button type="button" onClick={() => setConfirmDelete("comic")} className="mt-3 text-sm font-semibold text-sun hover:underline">
-                  Delete this comic…
+                  Delete this Mafiki…
                 </button>
               )}
             </section>
@@ -192,19 +202,46 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
   );
 }
 
+const MONETIZATION_NOTE = { none: "not monetized", ads: "earns with ads", credits: "earns with credits" } as const;
+
+// Copies the Mafiki's public link, to share on social media (Step 5 of the creator tutorial).
+function ShareLink({ comic }: { comic: StudioComic }) {
+  const [copied, setCopied] = useState<"yes" | "no" | null>(null);
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(`${window.location.origin}${comicHref(comic.id)}`);
+      setCopied("yes");
+    } catch {
+      setCopied("no");
+    }
+    setTimeout(() => setCopied(null), 2000);
+  };
+  return (
+    <button
+      type="button"
+      onClick={copy}
+      data-tour="share"
+      title={comic.status === "draft" ? "The link works for readers once the Mafiki is published" : undefined}
+      className="btn btn-ghost gap-2 px-4 py-2 text-sm"
+    >
+      {copied === "yes" ? <IoCheckmark /> : <IoLinkOutline />}
+      {copied === "yes" ? "Link copied" : copied === "no" ? "Couldn't copy" : "Copy link"}
+    </button>
+  );
+}
+
 const ACCESS_TAG: Record<EpisodeAccess, string> = { free: "bg-mint", ads: "bg-paper", credits: "bg-sun" };
 
 type ListProps = {
   comic: StudioComic;
   mode: StudioMode;
   onMove: (from: number, to: number) => void;
-  onSetAccess: (index: number, access: EpisodeAccess) => void;
   confirmDelete: string | null;
   onAskDelete: (id: string | null) => void;
   onDelete: (id: string) => void;
 };
 
-function EpisodeList({ comic, mode, onMove, onSetAccess, confirmDelete, onAskDelete, onDelete }: ListProps) {
+function EpisodeList({ comic, mode, onMove, confirmDelete, onAskDelete, onDelete }: ListProps) {
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
 
@@ -219,7 +256,7 @@ function EpisodeList({ comic, mode, onMove, onSetAccess, confirmDelete, onAskDel
     <ol className="grid gap-2">
       {comic.episodes.map((episode, i) => {
         const state = episodeState(episode);
-        const access = accessOf(episode, i + 1);
+        const access = accessOf(comic, i + 1);
         const deleting = confirmDelete === episode.id;
         return (
           <li
@@ -253,22 +290,14 @@ function EpisodeList({ comic, mode, onMove, onSetAccess, confirmDelete, onAskDel
               </p>
             </div>
 
-            {/* Changeable on desktop from episode 4; a label otherwise (phones are view-only). */}
-            {canMonetize(i + 1) ? (
-              <select
-                value={access}
-                onChange={(e) => onSetAccess(i, e.target.value as EpisodeAccess)}
-                aria-label={`Monetization for episode ${i + 1}`}
-                className={`hidden h-7 shrink-0 border-2 border-black px-1.5 font-display text-xs uppercase text-ink outline-none lg:block ${ACCESS_TAG[access]}`}
-              >
-                <option value="free">Free</option>
-                <option value="ads">Ads</option>
-                <option value="credits">Credits</option>
-              </select>
-            ) : (
-              <span className={`tag hidden shrink-0 lg:inline-flex ${ACCESS_TAG.free}`} title={`Episodes 1–${FREE_EPISODES} are always free`}>Free</span>
-            )}
-            <span className={`tag shrink-0 lg:hidden ${ACCESS_TAG[access]}`}>{ACCESS_LABEL[access]}</span>
+            {/* Set by the Mafiki's monetization; credits episodes say where paid access begins. */}
+            <span
+              className={`tag shrink-0 ${ACCESS_TAG[access]}`}
+              title={canMonetize(i + 1) ? undefined : `Episodes 1–${FREE_EPISODES} are always free`}
+            >
+              {ACCESS_LABEL[access]}
+              {access === "credits" && episode.pagesKnown && ` · from p.${paidFromOf(episode)}`}
+            </span>
 
             <div className="hidden shrink-0 items-center gap-1 lg:flex">
               <button type="button" onClick={() => onMove(i, i - 1)} disabled={i === 0} aria-label="Move up" className="p-1.5 text-slate-400 hover:text-white disabled:opacity-30">

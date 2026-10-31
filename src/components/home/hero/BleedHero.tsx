@@ -17,7 +17,7 @@ export function BleedHero({ slides }: { slides: Comic[] }) {
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="Featured comics"
+      aria-label="Featured Mafiki"
       {...rootHandlers}
       className="relative flex min-h-[min(82vh,720px)] flex-col overflow-hidden border-b-2 border-line bg-ink lg:min-h-[min(88vh,780px)]"
     >

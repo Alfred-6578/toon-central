@@ -2,7 +2,7 @@ import type { Creator, CreatorPageData } from "@/lib/api/types";
 
 // Shared by the /library page (server) and its view (client).
 export const LIBRARY_TABS = [
-  { value: "saved", label: "Saved comics" },
+  { value: "saved", label: "Saved Mafiki" },
   { value: "history", label: "History" },
   { value: "shorts", label: "Saved shorts" },
   { value: "following", label: "Following" },

@@ -41,7 +41,7 @@ function useStudioItems<T extends Item>(key: string, seeds: T[], files: (item: T
 }
 
 export function useStudioComics(mode: StudioMode, seeds: StudioComic[]) {
-  const store = useStudioItems(`tc-studio-comics-${mode}`, seeds, (c) => [c.cover, c.banner, ...c.episodes.flatMap((e) => e.pages)]);
+  const store = useStudioItems(`tc-studio-comics-${mode}`, seeds, (c) => [c.cover, c.banner, c.trailer ?? null, ...c.episodes.flatMap((e) => e.pages)]);
   return { ...store, comics: store.items };
 }
 

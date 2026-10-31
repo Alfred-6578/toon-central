@@ -1,32 +1,26 @@
 import snapshot from "@/data/snapshot.json";
+import { isLive } from "./config";
+import { apiRequest, isEmpty } from "./http";
 import { camelize, toComic, toGenre, toShort } from "./normalize";
 import { creatorSlug, genreSlug } from "@/lib/format";
 import type { Comic, ComicPageData, CreatorPageData, Episode, Genre, HomeFeed, Short, SocialLink } from "./types";
 
-// Same endpoints the live tooncentralhub.com home page uses. Set TOON_API_BASE_URL
-// (the backend's BASE_URL) to go live; without it, or if a request fails, we serve
-// a sanitized snapshot of real production data from src/data/snapshot.json.
-const BASE_URL = process.env.TOON_API_BASE_URL?.replace(/\/$/, "");
+// Public reading data (Phase 1 area "reading"). Same endpoints the live tooncentralhub.com home page
+// uses. While the area isn't live, or if a request fails, we serve a sanitized snapshot of real
+// production data from src/data/snapshot.json.
 const REVALIDATE_SECONDS = 300;
 
-type Envelope<T> = { success: boolean; message: string; data: T };
 type Raw = Record<string, unknown>;
 
-// Returns the camelized `data` payload, or null when the API isn't configured or the request fails.
+// Returns the camelized `data` payload, or null when reading isn't live or the request fails.
 async function fetchApi<T>(path: string, revalidate = REVALIDATE_SECONDS): Promise<T | null> {
-  if (!BASE_URL) return null;
-  try {
-    const res = await fetch(`${BASE_URL}/${path.replace(/^\//, "")}`, {
-      headers: { Accept: "application/json" },
-      next: { revalidate },
-    });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    const body = (await res.json()) as Envelope<unknown>;
-    return camelize<T>(body.data);
-  } catch (error) {
-    console.error(`[api] GET ${path} failed:`, error);
+  if (!isLive("reading")) return null;
+  const result = await apiRequest<T>(path, { revalidate });
+  if (!result.ok) {
+    if (!isEmpty(result)) console.error(`[api] GET ${path} failed: ${result.status} ${result.message}`);
     return null;
   }
+  return result.data;
 }
 
 async function apiGet<T>(path: string, fallback: unknown): Promise<T> {
@@ -101,9 +95,6 @@ export async function getHomeFeed(): Promise<HomeFeed> {
   const data = await apiGet<Record<string, Raw[]>>("/home", snapshot.home);
   const list = (key: string) => (data[key] ?? []).map(toComic);
 
-  console.log(data);
-  
-
   return {
     carousel: list("carousel"),
     popularByToonCentral: list("popularByToonCentral"),
@@ -123,16 +114,23 @@ export async function getShorts(): Promise<Short[]> {
   return (data.shorts ?? []).map(toShort);
 }
 
+// Every short, not just the homepage's first 10 (for creator pages and the Shorts page).
+export async function getAllShorts(): Promise<Short[]> {
+  const live = await fetchAllRaw("/home/shorts-carousel", "shorts");
+  return live ? live.map(toShort) : getShorts();
+}
+
 // Real catalogue size per genre, read from each genre listing's pagination total. Needs the live API
 // (one small request per genre, cached for an hour); returns null offline so callers can fall back.
 export async function getGenreCounts(genres: Genre[]): Promise<Map<number, number> | null> {
-  if (!BASE_URL) return null;
+  if (!isLive("reading")) return null;
   const totals = await Promise.all(
-    genres.map((genre) =>
-      fetchApi<{ pagination?: { total?: number } }>(`/genres/comic/${genre.id}/all?page=1&limit=1`, 3600).then(
-        (data) => [genre.id, data?.pagination?.total] as const
-      )
-    )
+    genres.map(async (genre) => {
+      const result = await apiRequest<{ pagination?: { total?: number } }>(`/genres/comic/${genre.id}/all?page=1&limit=1`, { revalidate: 3600 });
+      // An empty genre comes back as "no record found": that's a count of 0, not an error.
+      const total = result.ok ? result.data.pagination?.total : isEmpty(result) ? 0 : undefined;
+      return [genre.id, total] as const;
+    })
   );
   const counts = new Map(totals.filter((t): t is readonly [number, number] => typeof t[1] === "number"));
   return counts.size ? counts : null;
@@ -145,8 +143,10 @@ export async function getGenres(): Promise<Genre[]> {
 
 // Every comic we know about across the home lists, de-duplicated, with episode counts shared.
 export async function getCatalogue(): Promise<Comic[]> {
-  const [feed, carousel] = await Promise.all([getHomeFeed(), getTopCarousel()]);
+  // Live, "new and trending" lists every published comic; the home lists add episode counts.
+  const [feed, carousel, everything] = await Promise.all([getHomeFeed(), getTopCarousel(), fetchAllComics("/trending/new-and-trending?filter=all")]);
   const lists = shareEpisodeCounts([
+    ...(everything ? [everything] : []),
     feed.trending,
     feed.popularByToonCentral,
     feed.indieComics,
@@ -172,32 +172,17 @@ function placeholderEpisodes(comic: Comic): Episode[] {
   }));
 }
 
-function liveEpisodes(raw: Raw | null): Episode[] | null {
-  const list = raw && Array.isArray(raw.episodes) ? (raw.episodes as Raw[]) : null;
-  if (!list?.length) return null;
-  return list.map((e, i) => ({
-    number: Number(e.episodeNumber ?? e.number ?? i + 1),
-    title: typeof e.title === "string" && e.title ? e.title : `Episode ${i + 1}`,
-    publishedAt: typeof e.createdAt === "string" ? e.createdAt : null,
-    locked: i + 1 > FREE_EPISODES,
-  }));
-}
-
 export async function getComicPageData(uuid: string): Promise<ComicPageData | null> {
-  const [catalogue, shorts, live] = await Promise.all([
-    getCatalogue(),
-    getShorts(),
-    fetchApi<Raw>(`/comics/${encodeURIComponent(uuid)}`),
-  ]);
+  // The API's comic details (comics/:uuid/view) also count a view, so the server can't use them to
+  // build pages: every refresh would add a fake view. Until the backend adds a read-only version, the
+  // comic comes from the catalogue and its episode list is built from the episode count.
+  const [catalogue, shorts] = await Promise.all([getCatalogue(), getAllShorts()]);
 
-  const known = catalogue.find((c) => c.uuid === uuid);
-  const fromLive = live && typeof live.uuid === "string" ? toComic(live) : null;
-  const comic = fromLive ? { ...fromLive, episodes: fromLive.episodes ?? known?.episodes ?? null } : known;
+  const comic = catalogue.find((c) => c.uuid === uuid);
   if (!comic) return null;
 
-  const fromApi = liveEpisodes(live);
-  const episodes = fromApi ?? placeholderEpisodes(comic);
-  const episodesSource = fromApi ? "live" : episodes.length ? "placeholder" : "unknown";
+  const episodes = placeholderEpisodes(comic);
+  const episodesSource = episodes.length ? "placeholder" : "unknown";
 
   const others = catalogue.filter((c) => c.uuid !== comic.uuid);
   const moreFromCreator = others.filter((c) => c.creator.username === comic.creator.username);
@@ -222,7 +207,7 @@ export async function getComicPageData(uuid: string): Promise<ComicPageData | nu
 
 // Numbers for the footer's credits box, shared by every page.
 export async function getSiteStats() {
-  const [catalogue, feed, shorts, genres] = await Promise.all([getCatalogue(), getHomeFeed(), getShorts(), getGenres()]);
+  const [catalogue, feed, shorts, genres] = await Promise.all([getCatalogue(), getHomeFeed(), getAllShorts(), getGenres()]);
   return {
     originals: catalogue.filter((c) => c.isOriginal).length,
     creators: new Set(feed.indieComics.map((c) => c.creator.username)).size,
@@ -307,7 +292,7 @@ function parseSocial(raw: string): SocialLink | null {
 }
 
 export async function getCreatorPageData(slug: string): Promise<CreatorPageData | null> {
-  const [catalogue, shorts] = await Promise.all([getCatalogue(), getShorts()]);
+  const [catalogue, shorts] = await Promise.all([getCatalogue(), getAllShorts()]);
   const comics = catalogue.filter((c) => creatorSlug(c.creator.username) === slug).sort((a, b) => b.views - a.views);
   const theirShorts = shorts.filter((s) => !s.isSponsored && creatorSlug(s.creator.username) === slug);
   const creator = comics[0]?.creator ?? theirShorts[0]?.creator;
@@ -361,7 +346,7 @@ export type CreatorSort = "popular" | "active" | "az";
 
 // Everyone who publishes: built from the same per-creator data as the profile pages.
 export async function getCreatorsDirectory(sort: CreatorSort): Promise<CreatorPageData[]> {
-  const [catalogue, shorts] = await Promise.all([getCatalogue(), getShorts()]);
+  const [catalogue, shorts] = await Promise.all([getCatalogue(), getAllShorts()]);
   const slugs = new Set([
     ...catalogue.map((c) => creatorSlug(c.creator.username)),
     ...shorts.filter((s) => !s.isSponsored).map((s) => creatorSlug(s.creator.username)),
@@ -414,8 +399,7 @@ export type ShortsPageData = {
 
 export async function getShortsPageData(genre: string | null, sort: ShortSort): Promise<ShortsPageData> {
   // Live: the full shorts listing (the homepage only shows the first 10). Offline: the snapshot.
-  const [live, catalogue] = await Promise.all([fetchAllRaw("/home/shorts-carousel", "shorts"), getCatalogue()]);
-  const all = live ? live.map(toShort) : await getShorts();
+  const [all, catalogue] = await Promise.all([getAllShorts(), getCatalogue()]);
 
   const linked = linkShortsToComics(all, catalogue);
 
@@ -438,6 +422,6 @@ export async function getShortsPageData(genre: string | null, sort: ShortSort): 
       views: stories.reduce((sum, s) => sum + s.views, 0),
       animators: new Set(stories.map((s) => s.creator.username)).size,
     },
-    source: live ? "live" : "page",
+    source: isLive("reading") ? "live" : "page",
   };
 }

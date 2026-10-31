@@ -18,7 +18,7 @@ const columns = [
     title: "Create",
     desktopOnly: true, // publishing is desktop-only
     links: [
-      { label: "Upload a comic", href: "/creator/comics/new" },
+      { label: "Upload a Mafiki", href: "/creator/comics/new" },
       { label: "Upload a short", href: "/shorts/upload" },
       { label: "Creator dashboard", href: "/creator/dashboard" },
       { label: "Creator 101", href: "/creator101" },

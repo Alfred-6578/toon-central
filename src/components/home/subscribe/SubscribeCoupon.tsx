@@ -8,7 +8,7 @@ import { useMockSession, type MockUser } from "@/lib/mockSession";
 // (the old "from ₦500/month" line didn't match any plan: ₦500 is the weekly pass).
 const benefits = [
   { icon: IoLockOpenOutline, label: "Every locked chapter" },
-  { icon: IoLibraryOutline, label: "Every comic" },
+  { icon: IoLibraryOutline, label: "Every Mafiki" },
   { icon: IoBanOutline, label: "Ad-free reading" },
 ];
 

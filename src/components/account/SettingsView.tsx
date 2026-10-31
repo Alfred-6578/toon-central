@@ -7,6 +7,7 @@ import { IoCheckmarkCircle } from "react-icons/io5";
 import { SignInPrompt } from "@/components/auth/SignInPrompt";
 import { Avatar } from "@/components/layout/nav/Menus";
 import { authHref, USERNAME_PATTERN } from "@/lib/auth";
+import { timeAgo } from "@/lib/format";
 import { useLocalValue } from "@/lib/localValue";
 import { updateProfile, useMockSession, useHydrated } from "@/lib/mockSession";
 import { clearProgress, useReadingProgress } from "@/lib/readingProgress";
@@ -31,8 +32,8 @@ const TOUR_KEY = "tc-reader-tour-seen";
 const NOTIFY_KEY = "tc-settings-notify";
 
 const NOTIFY_OPTIONS = [
-  { key: "episodes", label: "New episodes", hint: "When a comic in your library gets a new episode.", fallback: true },
-  { key: "creators", label: "Creators you follow", hint: "New comics and shorts from them.", fallback: true },
+  { key: "episodes", label: "New episodes", hint: "When a Mafiki in your library gets a new episode.", fallback: true },
+  { key: "creators", label: "Creators you follow", hint: "New Mafiki and shorts from them.", fallback: true },
   { key: "replies", label: "Replies", hint: "When someone replies to your comment.", fallback: true },
   { key: "email", label: "Email newsletter", hint: "Occasional picks and news from Toon Central.", fallback: false },
 ] as const;
@@ -227,8 +228,9 @@ function ReferralLink() {
   };
 
   return (
-    <div className="mt-8 border-t-2 border-line pt-6">
-      <p className="text-sm font-semibold text-slate-200">Referral link</p>
+    <div id="referrals" className="mt-8 scroll-mt-24 border-t-2 border-line pt-6">
+      <ReferralStats referrals={user!.referrals} />
+      <p className="mt-6 text-sm font-semibold text-slate-200">Referral link</p>
       <p className="mt-1 text-sm text-slate-400">
         Invite friends to Toon Central. Anyone who joins with your link is credited to you.
       </p>
@@ -245,10 +247,54 @@ function ReferralLink() {
           <button type="button" onClick={share} className="btn btn-ghost flex-1 px-5 py-2.5 text-sm sm:flex-none">Share</button>
         </div>
       </div>
-      <p className="mt-2 text-xs text-slate-500" role="status">
-        {status ?? `${user!.referrals} ${user!.referrals === 1 ? "friend has" : "friends have"} joined with your link.`}
+      <p className="mt-2 min-h-4 text-xs font-semibold text-mint" role="status">
+        {status}
       </p>
     </div>
+  );
+}
+
+const SHOWN_REFERRALS = 5;
+
+// How many people this reader has brought in: the total, this month, and the latest to join.
+function ReferralStats({ referrals }: { referrals: { name: string; joined: string }[] }) {
+  // The current calendar month, read once (render must stay pure).
+  const [month] = useState(() => new Date().toISOString().slice(0, 7));
+  const thisMonth = referrals.filter((r) => r.joined.startsWith(month)).length;
+
+  return (
+    <section aria-labelledby="referral-stats-title">
+      <div className="flex items-center justify-between gap-3">
+        <h3 id="referral-stats-title" className="text-sm font-semibold text-slate-200">People you&apos;ve brought in</h3>
+        <span className="border border-dashed border-slate-500 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-slate-400">Sample</span>
+      </div>
+      <div className="mt-3 grid grid-cols-2 gap-3">
+        <div className="border-2 border-black bg-mint p-4 text-ink shadow-[4px_4px_0_#000]">
+          <p className="font-display text-5xl leading-none">{referrals.length}</p>
+          <p className="mt-1 text-xs font-bold uppercase tracking-wide">{referrals.length === 1 ? "Person joined" : "People joined"}</p>
+        </div>
+        <div className="border-2 border-line bg-panel p-4">
+          <p className="font-display text-5xl leading-none text-white">{thisMonth}</p>
+          <p className="mt-1 text-xs font-bold uppercase tracking-wide text-slate-400">This month</p>
+        </div>
+      </div>
+      {referrals.length > 0 ? (
+        <ul className="mt-3 divide-y-2 divide-line border-2 border-line">
+          {referrals.slice(0, SHOWN_REFERRALS).map((r) => (
+            <li key={r.name + r.joined} className="flex items-center gap-3 px-3 py-2.5">
+              <span className="flex h-8 w-8 shrink-0 items-center justify-center border-2 border-black bg-sun font-display text-sm text-ink">{initials(r.name)}</span>
+              <span className="min-w-0 flex-1 truncate text-sm font-semibold text-white">{r.name}</span>
+              <span className="shrink-0 text-xs text-slate-400">Joined {timeAgo(r.joined)}</span>
+            </li>
+          ))}
+          {referrals.length > SHOWN_REFERRALS && (
+            <li className="px-3 py-2 text-xs text-slate-400">and {referrals.length - SHOWN_REFERRALS} more</li>
+          )}
+        </ul>
+      ) : (
+        <p className="mt-3 text-sm text-slate-400">Nobody yet. Share your link below and they&apos;ll show up here.</p>
+      )}
+    </section>
   );
 }
 
@@ -385,7 +431,7 @@ function ReadingSection() {
         <div>
           <p className="text-sm font-semibold text-slate-200">Reading history</p>
           <p className="mt-1 text-sm text-slate-400">
-            {history.length ? `${history.length} comics, used for Continue reading.` : "Nothing yet."}
+            {history.length ? `${history.length} Mafiki, used for Continue reading.` : "Nothing yet."}
           </p>
           {history.length > 0 &&
             (confirmClear ? (
