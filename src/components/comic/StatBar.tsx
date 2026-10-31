@@ -28,7 +28,7 @@ export function StatBar({ uuid, title, views, likes }: { uuid: string; title: st
         }}
         aria-pressed={saved}
         aria-label={saved ? `Remove ${title} from library` : `Save ${title} to library`}
-        title={saved ? "In your library" : user ? "Save to library" : "Signs you in and saves this comic"}
+        title={saved ? "In your library" : user ? "Save to library" : "Signs you in and saves this Mafiki"}
         className={`flex w-10 items-center justify-center text-lg transition-colors ${saved ? "bg-mint text-ink" : "text-white hover:bg-white/10"}`}
       >
         {saved ? <IoBookmark /> : <IoBookmarkOutline />}

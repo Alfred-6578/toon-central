@@ -62,12 +62,12 @@ export default async function VibePage({ params, searchParams }: Params) {
           {comics.length ? (
             <>
               <ComicGrid comics={result.items} limit={result.items.length} mobile="grid" />
-              <Pagination result={result} baseHref={baseHref} noun="comics" />
+              <Pagination result={result} baseHref={baseHref} noun="Mafiki" />
             </>
           ) : (
             <div className="border-2 border-dashed border-line p-8 text-center">
               <p className="font-display text-4xl uppercase leading-none text-white">Nothing here yet</p>
-              <p className="mt-3 text-sm text-slate-400">No comics in this preview carry these genres.</p>
+              <p className="mt-3 text-sm text-slate-400">No Mafiki in this preview carry these genres.</p>
               <Link href="/discover" className="btn btn-ghost mt-6 px-5 py-3">Back to Discover</Link>
             </div>
           )}

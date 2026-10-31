@@ -20,7 +20,7 @@ function Poster({ short, onWatch }: { short: Short; onWatch: () => void }) {
         {preview.video}
         <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
         {short.linkedComic && (
-          <span className="tag absolute left-2 top-2 gap-1 bg-paper"><IoBookOutline /> Has a comic</span>
+          <span className="tag absolute left-2 top-2 gap-1 bg-paper"><IoBookOutline /> Has a Mafiki</span>
         )}
       </div>
 

@@ -17,7 +17,15 @@ export const PUBLISH_HREF = "/creator/comics/new";
 
 // Creator 101, the creators' guide (as on the live site): four tabs, each its own URL, sharing this
 // tab strip and the "start creating" sign-off.
-export function Creator101Shell({ tab, stats, children }: { tab: Creator101Tab; stats: FooterStats; children: ReactNode }) {
+type ShellProps = {
+  tab: Creator101Tab;
+  stats: FooterStats;
+  // The "start creating" sign-off; off for a tab that ends on its own call to action.
+  signOff?: boolean;
+  children: ReactNode;
+};
+
+export function Creator101Shell({ tab, stats, signOff = true, children }: ShellProps) {
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
@@ -47,7 +55,7 @@ export function Creator101Shell({ tab, stats, children }: { tab: Creator101Tab; 
 
         {children}
 
-        <StartCreating />
+        {signOff && <StartCreating />}
         <Footer stats={stats} />
       </main>
     </div>

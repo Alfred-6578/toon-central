@@ -69,6 +69,9 @@ export function ProfileView({ comics, creators }: { comics: Comic[]; creators: F
                 <Link href="/library?tab=following" className="hover:text-mint">
                   <span className="font-bold text-white">{followed.length}</span> following
                 </Link>
+                <Link href="/settings#referrals" className="hover:text-mint">
+                  <span className="font-bold text-white">{user.referrals.length}</span> brought in
+                </Link>
               </p>
             </div>
           </div>
@@ -120,7 +123,7 @@ export function ProfileView({ comics, creators }: { comics: Comic[]; creators: F
           <ComicGrid comics={saved} limit={5} />
         ) : (
           <p className="text-sm text-slate-400">
-            Nothing saved yet. Tap the bookmark on any comic, or{" "}
+            Nothing saved yet. Tap the bookmark on any Mafiki, or{" "}
             <Link href="/discover" className="font-semibold text-mint underline-offset-4 hover:underline">find something to read</Link>.
           </p>
         )}

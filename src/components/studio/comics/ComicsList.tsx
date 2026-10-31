@@ -5,6 +5,7 @@ import { useState } from "react";
 import { IoAdd } from "react-icons/io5";
 import { comicCount, formatCount, timeAgo } from "@/lib/format";
 import { episodeState, studioHref, type StudioComic, type StudioMode } from "@/lib/studioModel";
+import { useMilestoneWatch } from "@/lib/creatorTutorial";
 import { useStudioComics } from "@/lib/studioStore";
 import { StudioImage } from "../StudioImage";
 
@@ -25,6 +26,7 @@ export const STATUS_TAG: Record<StudioComic["status"], { label: string; classNam
 
 export function ComicsList({ mode, seeds }: { mode: StudioMode; seeds: StudioComic[] }) {
   const { comics } = useStudioComics(mode, seeds);
+  useMilestoneWatch(mode, comics);
   const [filter, setFilter] = useState<Filter>("all");
   const shown = comics.filter(matches(filter));
 
@@ -32,20 +34,20 @@ export function ComicsList({ mode, seeds }: { mode: StudioMode; seeds: StudioCom
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Comics</h1>
+          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Mafiki</h1>
           <p className="mt-2 text-sm text-slate-400">{comics.length ? comicCount(comics.length) : "Your Mafiki, episode by episode."}</p>
         </div>
-        <Link href={studioHref("/creator/comics/new", mode)} className="btn btn-primary hidden gap-2 px-5 py-2.5 text-sm lg:inline-flex">
-          <IoAdd /> New comic
+        <Link href={studioHref("/creator/comics/new", mode)} data-tour="new-mafiki" className="btn btn-primary hidden gap-2 px-5 py-2.5 text-sm lg:inline-flex">
+          <IoAdd /> New Mafiki
         </Link>
       </div>
 
       {comics.length === 0 ? (
         <div className="mt-8 border-2 border-dashed border-line px-6 py-14 text-center">
-          <p className="font-display text-3xl uppercase leading-none text-white">No comics yet</p>
-          <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-slate-400">Create a comic, add a cover and synopsis, then upload your first episode.</p>
+          <p className="font-display text-3xl uppercase leading-none text-white">No Mafiki yet</p>
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-6 text-slate-400">Create a Mafiki, add a cover and synopsis, then upload your first episode.</p>
           <Link href={studioHref("/creator/comics/new", mode)} className="btn btn-primary mt-6 hidden gap-2 px-6 py-3 lg:inline-flex">
-            <IoAdd /> Create your first comic
+            <IoAdd /> Create your first Mafiki
           </Link>
           <p className="mt-6 text-xs text-slate-500 lg:hidden">Open Studio on a computer to create one.</p>
         </div>

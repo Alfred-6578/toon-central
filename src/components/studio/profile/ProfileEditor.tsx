@@ -149,7 +149,7 @@ function ProfileForm({ profile, genres, onSave }: { profile: CreatorProfile; gen
                   value={draft.tagline ?? ""}
                   maxLength={TAGLINE_MAX}
                   onChange={(e) => set("tagline", e.target.value)}
-                  placeholder="One line under your name, e.g. “Afrofuturist comics from Lagos”"
+                  placeholder="One line under your name, e.g. “Afrofuturist Mafiki from Lagos”"
                   className={`${input} h-11 border-line placeholder:text-slate-600`}
                 />
               </label>

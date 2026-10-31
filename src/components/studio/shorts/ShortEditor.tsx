@@ -382,9 +382,9 @@ function ShortForm({ existing, comics, genres, handle, onSave, onCancel }: FormP
 
         <div>
           <label className="block max-w-md">
-            <span className="mb-1.5 block text-sm font-semibold text-slate-200">Link to a comic</span>
+            <span className="mb-1.5 block text-sm font-semibold text-slate-200">Link to a Mafiki</span>
             <select value={linkedComicId ?? ""} onChange={(e) => setLinkedComicId(e.target.value || null)} className={`${input} h-11`}>
-              <option value="">No comic</option>
+              <option value="">No Mafiki</option>
               {comics.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.title}
@@ -395,9 +395,9 @@ function ShortForm({ existing, comics, genres, handle, onSave, onCancel }: FormP
           </label>
           <p className="mt-1.5 text-xs text-slate-500">
             {comics.length === 0
-              ? "Create a comic first to link it here."
-              : "Viewers get a “From the comic” card and a link to read it, and an end card when the short finishes."}
-            {linked?.status === "draft" && " The link appears once the comic is published."}
+              ? "Create a Mafiki first to link it here."
+              : "Viewers get a “From the Mafiki” card and a link to read it, and an end card when the short finishes."}
+            {linked?.status === "draft" && " The link appears once the Mafiki is published."}
           </p>
         </div>
 
@@ -431,7 +431,7 @@ function ShortForm({ existing, comics, genres, handle, onSave, onCancel }: FormP
             <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 to-transparent px-3 pb-2 pt-10">
               {linked && (
                 <span className="mb-2 flex w-fit items-center gap-1.5 border-2 border-black bg-paper px-2 py-1 text-[11px] font-bold text-ink">
-                  <IoBookOutline /> From the comic · {linked.title}
+                  <IoBookOutline /> From the Mafiki · {linked.title}
                 </span>
               )}
               <p className="text-xs font-bold text-white">@{handle}</p>

@@ -24,7 +24,7 @@ export function StudioOverviewGate({ demo }: { demo: StudioDemo | null }) {
     return (
       <SignInPrompt
         title="Creator Studio"
-        body="Sign in to publish your comics and shorts and see how readers respond."
+        body="Sign in to publish your Mafiki and shorts and see how readers respond."
         next="/creator/dashboard"
       />
     );
@@ -64,7 +64,7 @@ function Overview({ name, handle, comics, shorts, sample }: OverviewProps) {
           <p className="mt-2 text-sm text-slate-400">
             @{handle} ·{" "}
             {isNew ? (
-              "Your public page goes live with your first comic or short"
+              "Your public page goes live with your first Mafiki or short"
             ) : (
               <Link href={creatorHref(handle)} className="text-slate-300 underline-offset-4 hover:text-mint hover:underline">
                 View your public page
@@ -75,7 +75,7 @@ function Overview({ name, handle, comics, shorts, sample }: OverviewProps) {
         {/* Publishing is desktop-only; phones can still check how things are going. */}
         <div className="hidden gap-3 lg:flex">
           <StudioAction pageId="shorts" label="Upload short" ghost />
-          <StudioAction pageId="comics" label="New comic" />
+          <StudioAction pageId="comics" label="New Mafiki" />
         </div>
         <p className="w-full border-2 border-dashed border-line px-4 py-3 text-xs text-slate-400 lg:hidden">
           Open Studio on a computer to publish or edit. Your stats are all here.
@@ -115,7 +115,7 @@ function Overview({ name, handle, comics, shorts, sample }: OverviewProps) {
       {!isNew && (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {topComic && (
-            <Highlight title="Top comic" href={comicHref(topComic.uuid)} image={topComic.coverImage} name={topComic.title}>
+            <Highlight title="Top Mafiki" href={comicHref(topComic.uuid)} image={topComic.coverImage} name={topComic.title}>
               {formatCount(topComic.views)} reads · {formatCount(topComic.likes)} likes
             </Highlight>
           )}
@@ -140,7 +140,7 @@ function StudioAction({ pageId, label, ghost = false }: { pageId: Parameters<typ
   const page = { ...studioPage(pageId), href: CREATE_PATH[pageId] ?? studioPage(pageId).href };
   const className = `btn ${ghost ? "btn-ghost" : "btn-primary"} gap-2 px-5 py-2.5 text-sm`;
   return page.ready ? (
-    <Link href={page.href} className={className}><IoAdd /> {label}</Link>
+    <Link href={page.href} data-tour={pageId === "comics" ? "new-mafiki" : undefined} className={className}><IoAdd /> {label}</Link>
   ) : (
     <span className={`${className} cursor-not-allowed opacity-50`} title="Being built next"><IoAdd /> {label}</span>
   );
@@ -160,15 +160,15 @@ function Checklist() {
       done: Boolean(profile?.bio && profile.avatar),
     },
     {
-      label: "Publish your first comic",
+      label: "Publish your first Mafiki",
       body: "Upload a cover, write a synopsis and add your first episode.",
       page: "comics" as const,
-      cta: "New comic",
+      cta: "New Mafiki",
       done: comics.some((c) => c.status !== "draft"),
     },
     {
       label: "Upload a short",
-      body: "A short trailer or animation brings readers to your comic.",
+      body: "A short trailer or animation brings readers to your Mafiki.",
       page: "shorts" as const,
       cta: "Upload short",
       done: shorts.some((s) => s.status !== "draft"),
@@ -284,14 +284,14 @@ function ComicsTable({ comics }: { comics: Comic[] }) {
   return (
     <section aria-labelledby="your-comics" className="mt-10">
       <div className="mb-4 flex items-end justify-between gap-4 border-b-2 border-line pb-3">
-        <h2 id="your-comics" className="font-display text-3xl uppercase leading-none text-white">Your comics</h2>
+        <h2 id="your-comics" className="font-display text-3xl uppercase leading-none text-white">Your Mafiki</h2>
         <span className="pb-0.5 text-sm text-slate-400">{comicCount(comics.length)}</span>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full min-w-[36rem] text-left text-sm">
           <thead className="text-xs uppercase tracking-wide text-slate-500">
             <tr>
-              <th className="pb-2 font-semibold">Comic</th>
+              <th className="pb-2 font-semibold">Mafiki</th>
               <th className="pb-2 font-semibold">Status</th>
               <th className="pb-2 text-right font-semibold">Episodes</th>
               <th className="pb-2 text-right font-semibold">Reads</th>

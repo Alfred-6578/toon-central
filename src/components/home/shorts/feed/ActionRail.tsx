@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
 import {
   IoAdd,
   IoBookmark,
@@ -27,7 +27,7 @@ type ActionRailProps = {
   playing: boolean;
   muted: boolean;
   onToggleMute: () => void;
-  onLike: () => void;
+  onLike: (event: MouseEvent<HTMLButtonElement>) => void;
   onSave: () => void;
   onFollow: () => void;
   onComments: () => void;
@@ -45,7 +45,7 @@ function RailButton({
   label: string;
   count?: string;
   active?: boolean;
-  onClick: () => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   children: ReactNode;
 }) {
   return (
@@ -112,8 +112,8 @@ export function ActionRail({ short, liked, saved, following, comments, playing, 
       {/* The disc: the comic's cover on tie-in shorts, otherwise the creator ("original audio") */}
       <Link
         href={comic ? comicHref(comic.uuid) : creatorHref(short.creator.username)}
-        aria-label={comic ? `Read the comic ${comic.title}` : `More from ${short.creator.username}`}
-        title={comic ? `From the comic: ${comic.title}` : "Original audio"}
+        aria-label={comic ? `Read the Mafiki ${comic.title}` : `More from ${short.creator.username}`}
+        title={comic ? `From the Mafiki: ${comic.title}` : "Original audio"}
         className="relative mt-1 block h-12 w-12"
       >
         <span
@@ -122,7 +122,7 @@ export function ActionRail({ short, liked, saved, following, comments, playing, 
         >
           <img src={cloudinary(comic ? comic.coverImage : short.coverImage, 120)} alt="" className="h-full w-full rounded-full object-cover" />
         </span>
-        {comic && <span className="tag absolute -bottom-2 left-1/2 -translate-x-1/2 bg-sun px-1 text-[9px]">Comic</span>}
+        {comic && <span className="tag absolute -bottom-2 left-1/2 -translate-x-1/2 bg-sun px-1 text-[9px]">Mafiki</span>}
       </Link>
     </div>
   );

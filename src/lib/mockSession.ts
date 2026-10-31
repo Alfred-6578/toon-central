@@ -17,8 +17,9 @@ export type MockUser = {
   plan: { tier: "Premium" | "Free"; renews: string | null };
   credits: number;
   followers: number;
-  // Friends who joined with this reader's referral link.
-  referrals: number;
+  // Friends who joined with this reader's referral link, newest first. Sample: the API has no
+  // referral data yet.
+  referrals: { name: string; joined: string }[];
 };
 
 export const mockUser: MockUser = {
@@ -31,7 +32,15 @@ export const mockUser: MockUser = {
   plan: { tier: "Premium", renews: "12 Nov" },
   credits: 1250,
   followers: 24,
-  referrals: 2,
+  referrals: [
+    { name: "Chiamaka Obi", joined: "2026-10-17" },
+    { name: "Tunde Bakare", joined: "2026-10-09" },
+    { name: "Amara Nwosu", joined: "2026-10-02" },
+    { name: "Kwame Mensah", joined: "2026-09-21" },
+    { name: "Zainab Bello", joined: "2026-09-04" },
+    { name: "Ifeoma Eze", joined: "2026-08-15" },
+    { name: "Seun Adeyemi", joined: "2026-07-28" },
+  ],
 };
 
 

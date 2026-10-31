@@ -1,4 +1,4 @@
-import { FREE_EPISODES } from "@/lib/rules";
+import { FREE_EPISODES, PREVIEW_PAGES } from "@/lib/rules";
 import type { Comic } from "@/lib/api/types";
 import { cloudinaryTransform } from "@/lib/format";
 import { episodeKey, pageKey, type Unlocks } from "@/lib/session";
@@ -6,7 +6,7 @@ import { episodeKey, pageKey, type Unlocks } from "@/lib/session";
 // Live-site rule: free episodes read in full; locked episodes show their first pages, and every page
 // after that is locked until the reader unlocks it with credits (or has a pass).
 export const PAGES_PER_EPISODE = 10;
-export const PREVIEW_PAGES = 5;
+export { PREVIEW_PAGES };
 
 // Live-site prices, in credits: one page for a day, or the whole episode for good.
 export const UNLOCK_PRICES = { page: 10, episode: 50 };

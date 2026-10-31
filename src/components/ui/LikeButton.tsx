@@ -4,9 +4,7 @@ import { useState, type MouseEvent } from "react";
 import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import { formatCount } from "@/lib/format";
 import { useMockComicLikes, useMockSession } from "@/lib/mockSession";
-import { HEART_BURST_MS, HeartBurst } from "./HeartBurst";
-
-type Burst = { id: number; x: number; y: number };
+import { useHeartBursts } from "./HeartBurst";
 
 // Like a comic. Liking (not unliking) sets off the heart burst. Signed out, it flips the mock sign-in
 // first, like the library button. `cell` is the count in the comic page's stat bar; `icon` is the
@@ -15,7 +13,7 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
   const { user, signIn } = useMockSession();
   const liked = useMockComicLikes();
   const isLiked = liked.has(uuid);
-  const [bursts, setBursts] = useState<Burst[]>([]);
+  const { burstAt, hearts } = useHeartBursts();
   const [popKey, setPopKey] = useState(0);
 
   const onClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -23,11 +21,7 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
     liked.toggle(uuid);
     if (isLiked) return;
     setPopKey((k) => k + 1);
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const box = event.currentTarget.getBoundingClientRect();
-    const burst = { id: event.timeStamp, x: box.left + box.width / 2, y: box.top + box.height / 2 };
-    setBursts((all) => [...all, burst]);
-    setTimeout(() => setBursts((all) => all.filter((b) => b.id !== burst.id)), HEART_BURST_MS);
+    burstAt(event.currentTarget);
   };
 
   const Icon = isLiked ? IoHeart : IoHeartOutline;
@@ -41,7 +35,7 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
           onClick={onClick}
           aria-pressed={isLiked}
           aria-label={`${isLiked ? "Unlike" : "Like"} ${title}${count == null ? "" : `, ${count} likes`}`}
-          title={user ? undefined : "Signs you in and likes this comic"}
+          title={user ? undefined : "Signs you in and likes this Mafiki"}
           className="flex items-center gap-2 px-3 font-display text-[15px] uppercase tracking-[0.03em] text-white transition-colors hover:bg-white/10"
         >
           <Icon key={popKey} className={`text-lg ${isLiked ? "like-pop text-mint" : ""}`} />
@@ -61,9 +55,7 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
           <Icon key={popKey} className={isLiked ? "like-pop" : ""} />
         </button>
       )}
-      {bursts.map((b) => (
-        <HeartBurst key={b.id} x={b.x} y={b.y} />
-      ))}
+      {hearts}
     </>
   );
 }

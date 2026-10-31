@@ -65,7 +65,7 @@ export function Avatar({ user, className = "h-9 w-9 text-sm" }: { user: MockUser
 }
 
 const publishItems = [
-  { href: "/creator/comics/new", icon: IoCloudUploadOutline, label: "Upload comic" },
+  { href: "/creator/comics/new", icon: IoCloudUploadOutline, label: "Upload Mafiki" },
   { href: "/shorts/upload", icon: IoVideocamOutline, label: "Upload short" },
   { href: "/creator/dashboard", icon: IoGridOutline, label: "Creator dashboard" },
   { href: "/creator101", icon: IoSchoolOutline, label: "Creator 101", hint: "Guide" },

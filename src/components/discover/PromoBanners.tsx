@@ -29,7 +29,7 @@ const clip = (text: string, max: number) => (text.length > max ? `${text.slice(0
 function buildBanners(featured: Comic[]): Banner[] {
   const comics: Banner[] = featured.map((comic) => ({
     id: comic.uuid,
-    kicker: comic.isOriginal ? "Toon Central Original" : "Popular by Toon Central",
+    kicker: comic.isOriginal ? "Toon Central Original" : "Popular by Indies",
     title: comic.title,
     body: clip(comic.description, 140),
     art: comic.backgroundImage || comic.coverImage,
@@ -41,7 +41,7 @@ function buildBanners(featured: Comic[]): Banner[] {
     id: "mtn",
     kicker: "MTN Daily Pass",
     title: `Read everything today for ₦${MTN_DAILY_PRICE}`,
-    body: "Every locked chapter of every comic opens for 24 hours, paid straight from your MTN airtime.",
+    body: "Every locked chapter of every Mafiki opens for 24 hours, paid straight from your MTN airtime.",
     perks: ["24 hours of every locked chapter", "No card, no sign-up", "Cancel any time"],
     art: null,
     cta: { label: `Get 24 hours for ₦${MTN_DAILY_PRICE}`, onClick: openMtnPay, mtn: true },
@@ -52,7 +52,7 @@ function buildBanners(featured: Comic[]): Banner[] {
     id: "publish",
     kicker: "For creators",
     title: "Publish your Mafiki",
-    body: "Upload comics and shorts, earn from ads or credits, and get paid to your bank.",
+    body: "Upload Mafiki and shorts, earn from ads or credits, and get paid to your bank.",
     perks: ["Free to publish", "Earn from episode 4", "Paid to your bank"],
     art: null,
     cta: { label: "Open Creator Studio", href: "/creator/dashboard" },
@@ -200,7 +200,7 @@ export function PromoBanners({ featured }: { featured: Comic[] }) {
       onMouseLeave={() => setPaused(false)}
       onTouchStart={() => setPaused(true)}
       onFocus={() => setPaused(true)}
-      className="relative mt-8"
+      className="relative mt-12"
     >
       {/* Bowed top and bottom (see .cinema-screen), like the live site. */}
       <div className="cinema-screen">

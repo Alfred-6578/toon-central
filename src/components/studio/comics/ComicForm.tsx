@@ -2,14 +2,19 @@
 
 import { useState, type FormEvent } from "react";
 import { DAYS, MAX_GENRES, SYNOPSIS_MAX, type StudioComic } from "@/lib/studioModel";
+import { FREE_EPISODES } from "@/lib/rules";
 import { GenreSelect } from "./GenreSelect";
 import { ImageDrop } from "./ImageDrop";
+import { TrailerDrop } from "./TrailerDrop";
 
-export type ComicDetails = Pick<StudioComic, "title" | "synopsis" | "cover" | "banner" | "genres" | "schedule">;
+export type ComicDetails = Pick<StudioComic, "title" | "synopsis" | "cover" | "banner" | "genres" | "schedule" | "trailer" | "monetization">;
 
 type ComicFormProps = {
   initial: ComicDetails;
   genres: string[];
+  // The creator may choose how this Mafiki earns: it's new since their 4-episode milestone, or was
+  // created monetizable. Otherwise the choice isn't shown (existing work is never switched on).
+  monetizable: boolean;
   submitLabel: string;
   onSubmit: (details: ComicDetails) => void;
   onCancel?: () => void;
@@ -18,13 +23,13 @@ type ComicFormProps = {
 const TITLE_MAX = 60;
 
 // Details shared by "New comic" and "Edit details".
-export function ComicForm({ initial, genres, submitLabel, onSubmit, onCancel }: ComicFormProps) {
+export function ComicForm({ initial, genres, monetizable, submitLabel, onSubmit, onCancel }: ComicFormProps) {
   const [details, setDetails] = useState(initial);
   const [submitted, setSubmitted] = useState(false);
   const set = <K extends keyof ComicDetails>(key: K, value: ComicDetails[K]) => setDetails((d) => ({ ...d, [key]: value }));
 
   const errors = {
-    title: !details.title.trim() ? "Give your comic a title." : null,
+    title: !details.title.trim() ? "Give your Mafiki a title." : null,
     synopsis: details.synopsis.trim().length < 20 ? "Write at least a sentence or two (20+ characters)." : null,
     cover: !details.cover ? "A cover is required: it's what readers see first." : null,
     genres: details.genres.length === 0 ? "Pick at least one genre." : null,
@@ -41,7 +46,7 @@ export function ComicForm({ initial, genres, submitLabel, onSubmit, onCancel }: 
   const input = "w-full border-2 bg-ink px-3 text-base text-white outline-none focus:border-mint";
 
   return (
-    <form onSubmit={submit} noValidate className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_16rem]">
+    <form onSubmit={submit} noValidate data-tour="mafiki-form" className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_16rem]">
       <div className="grid content-start gap-6">
         <label className="block">
           <span className="mb-1.5 flex justify-between text-sm font-semibold text-slate-200">
@@ -96,9 +101,45 @@ export function ComicForm({ initial, genres, submitLabel, onSubmit, onCancel }: 
           <span className="mt-1.5 block text-xs text-slate-500">Shown to readers as &quot;Updates {details.schedule ?? "…"}s&quot; while you keep to it.</span>
         </label>
 
+        {monetizable && (
+          <fieldset data-tour="monetize">
+            <legend className="mb-2 text-sm font-semibold text-slate-200">Monetization</legend>
+            <div className="grid gap-2 sm:grid-cols-3">
+              {(
+                [
+                  ["none", "Free", "Everyone reads every episode free."],
+                  ["ads", "Ads", "Ads show alongside your episodes."],
+                  ["credits", "Credits", "Readers spend credits to unlock. Passes and plans unlock it too."],
+                ] as const
+              ).map(([value, label, body]) => (
+                <label key={value} className="flex cursor-pointer items-start gap-3 border-2 border-line px-3 py-2.5 has-[:checked]:border-mint">
+                  <input
+                    type="radio"
+                    name="monetization"
+                    value={value}
+                    checked={(details.monetization ?? "none") === value}
+                    onChange={() => set("monetization", value)}
+                    className="mt-1 accent-[var(--color-mint)]"
+                  />
+                  <span>
+                    <span className="block font-semibold text-white">{label}</span>
+                    <span className="block text-xs text-slate-400">{body}</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+            <p className="mt-2 text-xs text-slate-500">
+              Episodes 1–{FREE_EPISODES} stay free so new readers get hooked; earning starts at episode {FREE_EPISODES + 1}.
+              {details.monetization === "credits" && " In each paid episode, the key on a page thumbnail sets where paid access begins."}
+            </p>
+          </fieldset>
+        )}
+
+        <TrailerDrop value={details.trailer ?? null} onChange={(ref) => set("trailer", ref)} />
+
         <ImageDrop
           label="Banner (optional)"
-          hint="Wide image behind your comic's page header. 1600px+ wide works best."
+          hint="Wide image behind your Mafiki's page header. 1600px+ wide works best."
           value={details.banner}
           onChange={(ref) => set("banner", ref)}
           aspect="aspect-[16/6]"

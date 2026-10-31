@@ -5,7 +5,7 @@ import { StudioShell } from "@/components/studio/StudioShell";
 import { studioHref } from "@/lib/studioModel";
 import { getStudioContext } from "@/lib/studioServer";
 
-export const metadata: Metadata = { title: "New comic · Creator Studio | Toon Central", robots: { index: false } };
+export const metadata: Metadata = { title: "New Mafiki · Creator Studio | Toon Central", robots: { index: false } };
 
 export default async function NewComicPage({ searchParams }: PageProps<"/creator/comics/new">) {
   const { mode, seeds, genres } = await getStudioContext(await searchParams);

@@ -155,7 +155,7 @@ export function Navigation() {
         ) : (
           <div className="px-4 pb-4 pt-2">
             <p className="text-sm leading-6 text-slate-300">
-              Save comics to your library, get new-episode alerts and support African creators.
+              Save Mafiki to your library, get new-episode alerts and support African creators.
             </p>
             <div className="mt-4 grid grid-cols-2 gap-3">
               <Link href={signInHref} onClick={closeSheet} className="btn btn-ghost h-11">Sign in</Link>

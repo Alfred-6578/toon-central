@@ -12,7 +12,7 @@ export function GenreHeader({ genre, total, originals, indies }: GenreHeaderProp
       <h1 className="mt-1 font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl">{genre.name}</h1>
       <p className="mt-3 text-sm text-slate-300">
         {total === 0 ? (
-          "No comics yet"
+          "No Mafiki yet"
         ) : (
           <>
             <span className="font-semibold text-white">{comicCount(total)}</span>

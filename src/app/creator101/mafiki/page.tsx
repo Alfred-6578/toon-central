@@ -7,7 +7,7 @@ import { cloudinary, comicHref, formatCount } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Mafiki · Creator 101 | Toon Central",
-  description: "The Mafiki format: vertical-scroll comics made for phones, told in episodes, rooted in African stories.",
+  description: "The Mafiki format: stories read by scrolling down, made for phones, told in episodes, rooted in Africa.",
 };
 
 // Draft copy: the live tab says "coming soon" and there's no design for it yet.
@@ -31,7 +31,7 @@ export default async function MafikiPage() {
           <span className="tag -rotate-2 bg-sun text-sm">The format</span>
           <h1 className="mt-4 max-w-4xl font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">Make a Mafiki</h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
-            Every comic on Toon Central is a Mafiki: a vertical-scroll comic, read on a phone, one episode at a time. Here&apos;s what that
+            Every story on Toon Central is a Mafiki: read by scrolling down, on a phone, one episode at a time. Here&apos;s what that
             means for how you draw and publish.
           </p>
 

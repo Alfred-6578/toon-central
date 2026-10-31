@@ -75,7 +75,7 @@ export const GUIDE: GuideSection[] = [
             examples: [art("05-legible-font-bad", 427, 373, "dont"), art("06-legible-font-good", 431, 378, "do")],
           },
           {
-            text: "Stick to a single font as much as you can, and use 2–3 at most in one comic.",
+            text: "Stick to a single font as much as you can, and use 2–3 at most in one Mafiki.",
             examples: [art("07-single-font-bad", 465, 699, "dont"), art("08-single-font-good", 451, 678, "do")],
           },
         ],

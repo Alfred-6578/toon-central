@@ -110,13 +110,13 @@ export function EarningsView({ mode, comics }: { mode: StudioMode; comics: Studi
         <section className="mt-8 border-2 border-dashed border-line p-5 text-sm leading-6 text-slate-300">
           <p className="font-display text-2xl uppercase text-white">How you earn</p>
           <p className="mt-2">
-            Episodes 1–{FREE_EPISODES} of every comic are free. From episode {FREE_EPISODES + 1}, switch on <span className="font-semibold text-white">Monetize this episode</span> and choose:
+            Episodes 1–{FREE_EPISODES} of every Mafiki are free. From episode {FREE_EPISODES + 1}, switch on <span className="font-semibold text-white">Monetize this episode</span> and choose:
           </p>
           <ul className="mt-2 grid gap-1">
             <li><span className="font-semibold text-white">Ads</span>: ads appear alongside the episode and it stays free for readers.</li>
             <li><span className="font-semibold text-white">Credits</span>: readers unlock it with credits, or a pass or plan.</li>
           </ul>
-          <Link href={studioHref("/creator/comics", mode)} className="mt-4 inline-block font-semibold text-mint hover:underline">Go to your comics →</Link>
+          <Link href={studioHref("/creator/comics", mode)} className="mt-4 inline-block font-semibold text-mint hover:underline">Go to your Mafiki →</Link>
         </section>
       )}
 
@@ -143,7 +143,7 @@ export function EarningsView({ mode, comics }: { mode: StudioMode; comics: Studi
 
           <section aria-labelledby="by-comic" className="border-2 border-line bg-panel p-5">
             <div className="flex items-end justify-between gap-3">
-              <h2 id="by-comic" className="font-display text-2xl uppercase text-white">By comic</h2>
+              <h2 id="by-comic" className="font-display text-2xl uppercase text-white">By Mafiki</h2>
               <span className="text-slate-500"><SampleStamp /></span>
             </div>
             <ul className="mt-4 grid gap-2">

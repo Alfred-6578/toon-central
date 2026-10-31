@@ -22,7 +22,7 @@ export function PremiumCTA({ variant = "coupon" }: { variant?: DesignChoice<"sub
               Unlock the full library
             </h2>
             <p className="mt-4 max-w-md text-base leading-7 text-slate-300">
-              Every locked chapter, every comic and ad-free reading, from{" "}
+              Every locked chapter, every Mafiki and ad-free reading, from{" "}
               <span className="font-bold text-mint">₦100 a day</span>.
             </p>
           </div>

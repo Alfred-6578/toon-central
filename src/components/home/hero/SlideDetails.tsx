@@ -9,7 +9,7 @@ import { genreTag } from "@/lib/tagStyles";
 
 function slideLabel(comic: Comic) {
   if (comic.hasNewEpisode) return "New episode";
-  if (comic.isNew) return "New comic";
+  if (comic.isNew) return "New Mafiki";
   if (comic.isOriginal) return "Toon Central Original";
   return "Featured";
 }

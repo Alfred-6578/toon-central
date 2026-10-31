@@ -20,14 +20,14 @@ type DesignOptionsProps = {
 const columnsFor = (count: number) => (count > 3 ? 2 : count);
 
 export function DesignOptions({ selection, basePath = "/", only, className = "bottom-24 left-4 lg:bottom-6 lg:left-6" }: DesignOptionsProps) {
-  // null = not toggled yet: expanded on desktop, collapsed on phones so it doesn't cover the page.
-  const [open, setOpen] = useState<boolean | null>(null);
+  // Starts collapsed to its palette button, so pages are seen as they'll ship.
+  const [open, setOpen] = useState(false);
   const keys = only ?? (Object.keys(designOptions) as DesignKey[]);
 
   return (
     <div className={`fixed z-40 ${className}`}>
-      {open !== false && (
-        <div className={`w-64 border-2 border-sun bg-ink shadow-[5px_5px_0_rgba(0,0,0,0.6)] ${open === null ? "hidden lg:block" : ""}`}>
+      {open && (
+        <div className="w-64 border-2 border-sun bg-ink shadow-[5px_5px_0_rgba(0,0,0,0.6)]">
           <div className="flex items-center justify-between border-b-2 border-line px-3 py-2">
             <span className="flex items-center gap-2 font-display text-sm uppercase tracking-wide text-sun">
               <IoColorPaletteOutline className="text-base" /> Design options
@@ -66,14 +66,13 @@ export function DesignOptions({ selection, basePath = "/", only, className = "bo
           </div>
         </div>
       )}
-      {open !== true && (
+      {!open && (
         <button
           type="button"
           onClick={() => setOpen(true)}
           aria-label="Show design options"
-          className={`h-11 w-11 items-center justify-center border-2 border-sun bg-ink text-xl text-sun shadow-[4px_4px_0_rgba(0,0,0,0.6)] ${
-            open === null ? "flex lg:hidden" : "flex"
-          }`}
+          title="Design options"
+          className="flex h-11 w-11 items-center justify-center border-2 border-sun bg-ink text-xl text-sun shadow-[4px_4px_0_rgba(0,0,0,0.6)]"
         >
           <IoColorPaletteOutline />
         </button>

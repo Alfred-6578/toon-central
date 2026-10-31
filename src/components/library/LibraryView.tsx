@@ -130,7 +130,7 @@ function SavedComics({ comics, sort, page, progress }: { comics: Comic[]; sort: 
     return (
       <Empty
         title="Nothing saved yet"
-        body="Tap the bookmark on any comic and it lands here, ready for when the next episode drops."
+        body="Tap the bookmark on any Mafiki and it lands here, ready for when the next episode drops."
         href="/discover"
         action="Find something to read"
       />
@@ -167,7 +167,7 @@ function SavedComics({ comics, sort, page, progress }: { comics: Comic[]; sort: 
         ))}
       </div>
 
-      <Pagination result={result} baseHref={tabHref("saved", sort)} noun="comics" />
+      <Pagination result={result} baseHref={tabHref("saved", sort)} noun="Mafiki" />
     </>
   );
 }
@@ -206,7 +206,7 @@ function History({ history, byUuid }: { history: ReadingProgress[]; byUuid: Map<
     return (
       <Empty
         title="No reading history"
-        body="Every comic you open shows up here with the page you stopped on."
+        body="Every Mafiki you open shows up here with the page you stopped on."
         href="/discover"
         action="Start reading"
       />

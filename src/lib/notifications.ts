@@ -30,7 +30,7 @@ const SAMPLES: MockNotification[] = [
     title: "New episode of ODOGWU",
     body: "47STUDIOS just dropped episode 7.",
     message: [
-      "47STUDIOS just published episode 7 of ODOGWU, a comic in your library.",
+      "47STUDIOS just published episode 7 of ODOGWU, a Mafiki in your library.",
       "Pick up where you left off, or start the new episode now.",
     ],
     cta: { label: "Read episode 7", href: "/comics/4c06eec3-c5a8-4c4c-b2e0-2aaad1478f01/read/7" },
@@ -44,8 +44,8 @@ const SAMPLES: MockNotification[] = [
     title: "3-day reading streak",
     body: "You've read something three days in a row. Keep it going!",
     message: [
-      "You've opened a comic three days in a row. That's a streak!",
-      "Read something today to make it four. Readers on a streak are first to hear about new episodes from the comics they follow.",
+      "You've opened a Mafiki three days in a row. That's a streak!",
+      "Read something today to make it four. Readers on a streak are first to hear about new episodes from the Mafiki they follow.",
     ],
     cta: { label: "Continue reading", href: "/library?tab=history" },
     art: null,
@@ -113,8 +113,9 @@ const signedIn = () => {
   }
 };
 
-// Adds a notification for the signed-in reader. `key` makes it once-only (e.g. "welcome").
-export function pushNotification(note: Omit<MockNotification, "id" | "createdAt" | "time">, key?: string) {
+// Adds a notification for the signed-in reader. `key` makes it once-only (e.g. "welcome"). `popup: false`
+// files it in the bell only, for messages a page already shows in its own card (the creator tutorial).
+export function pushNotification(note: Omit<MockNotification, "id" | "createdAt" | "time">, key?: string, { popup = true } = {}) {
   if (!signedIn()) return;
   const all = parse(readRaw());
   if (key && all.some((n) => n.key === key)) return;
@@ -125,6 +126,7 @@ export function pushNotification(note: Omit<MockNotification, "id" | "createdAt"
     return;
   }
   listeners.forEach((l) => l());
+  if (!popup) return;
   // Kept until a pop-up shows it, so a page change mid-way doesn't swallow it.
   try {
     sessionStorage.setItem(PENDING_KEY, created.id);
@@ -162,9 +164,9 @@ export const notifyWelcome = (name?: string) =>
       title: name ? `Welcome to Toon Central, ${name.split(" ")[0]}!` : "Welcome to Toon Central!",
       body: "Here's how to get the most out of it.",
       message: [
-        "Welcome to the home of Mafiki: comics and animated shorts from creators across Africa.",
-        "Start with any comic: the first 3 episodes of every one are free.",
-        "Tap the bookmark on a comic to save it to your library. We'll tell you here when it gets a new episode.",
+        "Welcome to the home of Mafiki and animated shorts from creators across Africa.",
+        "Start with any Mafiki: the first 3 episodes of every one are free.",
+        "Tap the bookmark on a Mafiki to save it to your library. We'll tell you here when it gets a new episode.",
         "Swipe through Shorts for animated stories, and follow the creators you like.",
       ],
       cta: { label: "Find something to read", href: "/discover" },
@@ -205,7 +207,7 @@ export const notifyNewEpisodeDemo = () =>
     kind: "episode",
     title: "New episode of AFRI DIVAZ",
     body: "Tooncentralofficial just published a new episode.",
-    message: ["A new episode of AFRI DIVAZ, a comic in your library, is out now.", "Jump straight in, or catch up from where you left off."],
+    message: ["A new episode of AFRI DIVAZ, a Mafiki in your library, is out now.", "Jump straight in, or catch up from where you left off."],
     cta: { label: "Read it now", href: "/comics/9e20eecf-14ee-4312-bf68-ea3e9f348c0f" },
     art: "https://res.cloudinary.com/da0ivgw2v/image/upload/v1782920680/comics/nneyq3dcp5qhr4f0ebp7.jpg",
   });

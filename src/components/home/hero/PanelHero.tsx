@@ -16,7 +16,7 @@ export function PanelHero({ slides }: { slides: Comic[] }) {
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="Featured comics"
+      aria-label="Featured Mafiki"
       {...rootHandlers}
       className="relative flex flex-col overflow-hidden border-2 border-line bg-panel lg:min-h-[min(80vh,680px)]"
     >

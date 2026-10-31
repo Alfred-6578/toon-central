@@ -17,7 +17,7 @@ export function LibraryCTA({ uuid, className = "px-5 py-3 text-base" }: { uuid: 
         library.toggle(uuid);
       }}
       aria-pressed={saved}
-      title={user ? undefined : "Signs you in and saves this comic"}
+      title={user ? undefined : "Signs you in and saves this Mafiki"}
       className={`btn btn-ghost ${className}`}
     >
       {saved ? <IoCheckmark className="text-lg" /> : <IoAdd className="text-lg" />}

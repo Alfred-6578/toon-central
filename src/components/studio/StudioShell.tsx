@@ -4,7 +4,10 @@ import { IoAnalyticsOutline, IoBookOutline, IoFilmOutline, IoPersonCircleOutline
 import type { IconType } from "react-icons";
 import { Navigation } from "@/components/layout/Navigation";
 import { STUDIO_PAGES, type StudioPageId } from "@/lib/studio";
+import type { StudioMode } from "@/lib/studioModel";
+import { CreatorCoach } from "./CreatorCoach";
 import { ScrollIntoStrip } from "./ScrollIntoStrip";
+import { TutorialButton } from "./TutorialButton";
 
 const ICONS: Record<StudioPageId, IconType> = {
   overview: IoAnalyticsOutline,
@@ -23,6 +26,7 @@ type Props = {
 
 // Creator Studio frame: site nav on top, Studio sections on the left (a sideways strip on phones).
 export function StudioShell({ active, query = "", children }: Props) {
+  const mode: StudioMode = query.includes("studio=established") ? "established" : "new";
   return (
     <div className="relative min-h-screen text-white">
       <main className="relative pb-24 lg:pb-12">
@@ -46,6 +50,7 @@ export function StudioShell({ active, query = "", children }: Props) {
                         <Link
                           href={`${href}${query}`}
                           aria-current={current ? "page" : undefined}
+                          data-tour={id === "profile" ? "profile" : undefined}
                           className={`${base} ${current ? "border-black bg-mint text-ink shadow-[3px_3px_0_#000]" : "border-transparent text-slate-300 hover:border-line hover:text-white"}`}
                         >
                           <Icon className="text-lg" /> {label}
@@ -68,6 +73,9 @@ export function StudioShell({ active, query = "", children }: Props) {
                     <IoSchoolOutline className="text-lg" /> Creator guide
                   </Link>
                 </li>
+                <li>
+                  <TutorialButton mode={mode} />
+                </li>
               </ul>
               <ScrollIntoStrip />
             </nav>
@@ -75,6 +83,7 @@ export function StudioShell({ active, query = "", children }: Props) {
 
           <div className="min-w-0">{children}</div>
         </div>
+        <CreatorCoach mode={mode} />
       </main>
     </div>
   );

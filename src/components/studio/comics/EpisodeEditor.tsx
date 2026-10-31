@@ -3,15 +3,15 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type DragEvent } from "react";
-import { IoArrowBack, IoClose, IoCloudUploadOutline, IoEyeOutline, IoInformationCircleOutline, IoTrashOutline } from "react-icons/io5";
+import { IoArrowBack, IoClose, IoCloudUploadOutline, IoEyeOutline, IoInformationCircleOutline, IoKey, IoLockClosed, IoTrashOutline } from "react-icons/io5";
 import { storePageImage, UnreadableImageError } from "@/lib/imageStore";
 import { FREE_EPISODES } from "@/lib/rules";
 import {
   accessOf,
-  canMonetize,
-  defaultAccess,
   MONETIZE_FROM,
+  monetizationOf,
   newId,
+  paidFromOf,
   studioHref,
   type EpisodeAccess,
   type StudioComic,
@@ -47,7 +47,7 @@ export function EpisodeEditor({ comicId, episodeId, mode, seeds }: Props) {
     return (
       <div className="border-2 border-dashed border-line px-6 py-12 text-center">
         <p className="font-display text-3xl uppercase text-white">Not found</p>
-        <Link href={studioHref("/creator/comics", mode)} className="btn btn-primary mt-6 px-6 py-3">Back to comics</Link>
+        <Link href={studioHref("/creator/comics", mode)} className="btn btn-primary mt-6 px-6 py-3">Back to Mafiki</Link>
       </div>
     );
   }
@@ -66,6 +66,8 @@ export function EpisodeEditor({ comicId, episodeId, mode, seeds }: Props) {
         <DesktopOnly what="upload episodes">
           <EpisodeForm
             number={number}
+            access={accessOf(comic, number)}
+            monetized={monetizationOf(comic) !== "none"}
             existing={existing}
             onSave={(episode) => {
               const episodes = existing ? comic.episodes.map((e) => (e.id === existing.id ? episode : e)) : [...comic.episodes, episode];
@@ -82,22 +84,24 @@ export function EpisodeEditor({ comicId, episodeId, mode, seeds }: Props) {
 
 function EpisodeForm({
   number,
+  access,
+  monetized,
   existing,
   onSave,
   onCancel,
 }: {
   number: number;
+  // How this episode is read, from its Mafiki's monetization (episodes 1–3 always free).
+  access: EpisodeAccess;
+  // The Mafiki earns at all (this episode may still be one of the free opening ones).
+  monetized: boolean;
   existing: StudioEpisode | null;
   onSave: (episode: StudioEpisode) => void;
   onCancel: () => void;
 }) {
   const [title, setTitle] = useState(existing?.title ?? "");
   const [pages, setPages] = useState<string[]>(existing?.pages ?? []);
-  const [access, setAccess] = useState<EpisodeAccess>(existing ? accessOf(existing, number) : defaultAccess());
-  // The earning method stays picked if the switch is turned off and on again.
-  const [method, setMethod] = useState<"ads" | "credits">(access === "ads" ? "ads" : "credits");
-  const monetizable = canMonetize(number);
-  const monetized = monetizable && access !== "free";
+  const [paidFrom, setPaidFrom] = useState<number | null>(existing?.paidFrom ?? null);
   const [release, setRelease] = useState<Release>(
     existing ? (existing.status === "published" ? "now" : existing.status === "scheduled" ? "schedule" : "draft") : "now"
   );
@@ -156,7 +160,7 @@ function EpisodeForm({
       id: existing?.id ?? newId(),
       title: title.trim() || `Episode ${number}`,
       pages,
-      access: monetized ? access : "free",
+      paidFrom: access === "credits" ? paidFrom : null,
       status: release === "now" ? "published" : release === "schedule" ? "scheduled" : "draft",
       publishAt: release === "schedule" ? new Date(publishAt).toISOString() : null,
       pagesKnown: true,
@@ -187,7 +191,13 @@ function EpisodeForm({
               This episode&apos;s pages are on the live site. Uploading here replaces them in this preview only.
             </p>
           )}
-          <PageGrid pages={pages} onChange={setPages} />
+          <PageGrid
+            pages={pages}
+            onChange={setPages}
+            // Credits episodes: the key on a thumbnail picks where paid access begins.
+            paidFrom={access === "credits" ? paidFromOf({ paidFrom }) : null}
+            onPaidFrom={setPaidFrom}
+          />
           <PageDrop onFiles={addFiles} uploading={uploading} full={pages.length >= MAX_PAGES} />
           {failed.length > 0 && (
             <div role="alert" className="mt-3 border-2 border-sun px-3 py-2.5 text-sm">
@@ -213,66 +223,23 @@ function EpisodeForm({
       </div>
 
       <aside className="grid content-start gap-6 border-2 border-line bg-panel p-5">
-        <fieldset>
-          <legend className="mb-2 text-sm font-semibold text-slate-200">Monetization</legend>
-          <div className="flex items-start gap-3">
-            <button
-              type="button"
-              role="switch"
-              aria-checked={monetized}
-              aria-label="Monetize this episode"
-              disabled={!monetizable}
-              onClick={() => setAccess(monetized ? "free" : method)}
-              className={`relative mt-0.5 h-7 w-12 shrink-0 border-2 transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-                monetized ? "border-black bg-mint" : "border-line bg-ink"
-              }`}
-            >
-              <span
-                className={`absolute top-0.5 h-5 w-5 border-2 transition-all ${monetized ? "left-[calc(100%-1.375rem)] border-black bg-ink" : "left-0.5 border-line bg-slate-500"}`}
-              />
-            </button>
-            <div>
-              <p className="font-semibold text-white">Monetize this episode?</p>
-              <p className="mt-0.5 text-xs leading-5 text-slate-400">
-                {monetizable ? (monetized ? "Choose how it earns." : "Off: everyone reads it free.") : `Opens from episode ${MONETIZE_FROM}.`}
-              </p>
-            </div>
-          </div>
-
-          <div className={`mt-3 grid gap-2 ${monetized ? "" : "pointer-events-none opacity-40"}`} aria-disabled={!monetized}>
-            {(
-              [
-                ["ads", "Ads", "Ads appear alongside your episode. Free for readers."],
-                ["credits", "Credits", "Readers unlock it with credits, or a pass or plan."],
-              ] as const
-            ).map(([value, label, body]) => (
-              <label key={value} className="flex cursor-pointer items-start gap-3 border-2 border-line px-3 py-2.5 has-[:checked]:border-mint">
-                <input
-                  type="radio"
-                  name="monetize"
-                  disabled={!monetized}
-                  checked={monetized && access === value}
-                  onChange={() => {
-                    setMethod(value);
-                    setAccess(value);
-                  }}
-                  className="mt-1 accent-[var(--color-mint)]"
-                />
-                <span>
-                  <span className="block font-semibold text-white">{label}</span>
-                  <span className="block text-xs text-slate-400">{body}</span>
-                </span>
-              </label>
-            ))}
-          </div>
-
-          {!monetizable && (
-            <p className="mt-3 flex gap-2 text-xs leading-5 text-sun">
-              <IoInformationCircleOutline className="mt-0.5 shrink-0 text-base" />
-              Episodes 1–{FREE_EPISODES} are always free, so new readers can get hooked. Monetization is available from episode {MONETIZE_FROM}.
-            </p>
-          )}
-        </fieldset>
+        <div data-tour="chapter-monetize">
+          <p className="mb-2 text-sm font-semibold text-slate-200">Monetization</p>
+          <p className="flex items-center gap-2 font-semibold text-white">
+            <span className={`tag ${access === "free" ? "bg-mint" : access === "ads" ? "bg-paper" : "bg-sun"}`}>{ACCESS_NOTE[access].tag}</span>
+            {ACCESS_NOTE[access].title}
+          </p>
+          <p className="mt-1.5 flex gap-2 text-xs leading-5 text-slate-400">
+            <IoInformationCircleOutline className="mt-0.5 shrink-0 text-base" />
+            {access === "credits"
+              ? `Pages 1–${paidFromOf({ paidFrom }) - 1} are a free preview. Use the key on a page to choose where paid access begins.`
+              : access === "ads"
+                ? "Ads show alongside this episode. It's free for readers."
+                : monetized
+                  ? `Episodes 1–${FREE_EPISODES} are always free so new readers get hooked. This Mafiki earns from episode ${MONETIZE_FROM}.`
+                  : "This Mafiki isn't monetized. Monetization is chosen when you create a Mafiki, after your 4-episode milestone."}
+          </p>
+        </div>
 
         <fieldset>
           <legend className="mb-2 text-sm font-semibold text-slate-200">Release</legend>
@@ -333,6 +300,7 @@ function PageDrop({ onFiles, uploading, full }: { onFiles: (files: File[]) => vo
           setOver(false);
           onFiles([...e.dataTransfer.files]);
         }}
+        data-tour="upload-chapter"
         className={`mt-3 flex w-full flex-col items-center gap-2 border-2 border-dashed px-6 py-8 text-sm text-slate-400 ${over ? "border-mint" : "border-line hover:border-mint"}`}
       >
         <IoCloudUploadOutline className="text-3xl text-mint" />
@@ -353,7 +321,21 @@ function PageDrop({ onFiles, uploading, full }: { onFiles: (files: File[]) => vo
   );
 }
 
-function PageGrid({ pages, onChange }: { pages: string[]; onChange: (pages: string[]) => void }) {
+const ACCESS_NOTE: Record<EpisodeAccess, { tag: string; title: string }> = {
+  free: { tag: "Free", title: "Free to read" },
+  ads: { tag: "Ads", title: "Earns with ads" },
+  credits: { tag: "Credits", title: "Earns with credits" },
+};
+
+type PageGridProps = {
+  pages: string[];
+  onChange: (pages: string[]) => void;
+  // 1-based page where paid access begins, or null when the episode isn't paid with credits.
+  paidFrom: number | null;
+  onPaidFrom: (page: number | null) => void;
+};
+
+function PageGrid({ pages, onChange, paidFrom, onPaidFrom }: PageGridProps) {
   const [dragging, setDragging] = useState<number | null>(null);
   if (!pages.length) return null;
 
@@ -380,7 +362,27 @@ function PageGrid({ pages, onChange }: { pages: string[]; onChange: (pages: stri
           className={`group relative cursor-grab ${dragging === i ? "opacity-40" : ""}`}
         >
           <StudioImage src={ref} width={240} className="aspect-[3/4] w-full border-2 border-line group-hover:border-mint" />
+          {paidFrom !== null && i + 1 >= paidFrom && (
+            <span className="pointer-events-none absolute inset-0.5 bg-ink/45" aria-hidden="true">
+              <IoLockClosed className="absolute bottom-1.5 right-1.5 text-sm text-sun" />
+            </span>
+          )}
           <span className="absolute left-1 top-1 bg-ink/85 px-1.5 text-xs font-bold text-white">{i + 1}</span>
+          {paidFrom !== null && (
+            <button
+              type="button"
+              onClick={() => onPaidFrom(i + 1 === paidFrom ? null : i + 1)}
+              data-tour={i + 1 === paidFrom || (paidFrom > pages.length && i === pages.length - 1) ? "chapter-key" : undefined}
+              aria-pressed={i + 1 === paidFrom}
+              aria-label={i + 1 === paidFrom ? `Paid access begins at page ${i + 1} (reset to the default)` : `Begin paid access at page ${i + 1}`}
+              title={i + 1 === paidFrom ? "Paid access begins here" : "Begin paid access here"}
+              className={`absolute bottom-1 left-1 flex h-6 w-6 items-center justify-center border text-sm ${
+                i + 1 === paidFrom ? "border-black bg-sun text-ink" : "border-black bg-ink/90 text-slate-300 opacity-0 hover:text-sun group-hover:opacity-100"
+              }`}
+            >
+              <IoKey />
+            </button>
+          )}
           <button
             type="button"
             onClick={() => onChange(pages.filter((_, j) => j !== i))}

@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { USERNAME_PATTERN } from "@/lib/auth";
+import { useCreatorTutorial } from "@/lib/creatorTutorial";
 import { useMockCreator } from "@/lib/mockCreator";
 import { useMockSession } from "@/lib/mockSession";
 
 const MAKES = [
-  { value: "comics", label: "Comics", hint: "Mafiki, episode by episode" },
+  { value: "comics", label: "Mafiki", hint: "Episode by episode" },
   { value: "shorts", label: "Shorts", hint: "Animated videos" },
 ] as const;
 
@@ -30,11 +31,14 @@ export function BecomeCreator() {
   };
   const show = (key: keyof typeof errors) => submitted && errors[key];
 
+  const tutorial = useCreatorTutorial("new");
+
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
     setSubmitted(true);
     if (Object.values(errors).some(Boolean)) return;
     become({ name: name.trim(), handle, makes, bio: "" });
+    tutorial.welcome();
   };
 
   const input = "h-11 w-full border-2 bg-ink px-3 text-base text-white outline-none focus:border-mint";
@@ -44,7 +48,7 @@ export function BecomeCreator() {
       <span className="tag -rotate-2 bg-sun text-sm">For creators</span>
       <h1 className="mt-4 font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Publish on Toon Central</h1>
       <p className="mt-3 text-sm leading-6 text-slate-300">
-        Set up your creator profile to publish comics and shorts. It&apos;s free, and you can change all of this later. New to
+        Set up your creator profile to publish Mafiki and shorts. It&apos;s free, and you can change all of this later. New to
         publishing?{" "}
         <Link href="/creator101" className="font-semibold text-mint underline-offset-4 hover:underline">
           Read the creator guide first

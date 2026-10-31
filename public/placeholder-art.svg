@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 400" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <pattern id="dots" width="12" height="12" patternUnits="userSpaceOnUse">
+      <circle cx="3" cy="3" r="1.6" fill="#223047"/>
+    </pattern>
+  </defs>
+  <rect width="300" height="400" fill="#0f1622"/>
+  <rect width="300" height="400" fill="url(#dots)"/>
+  <text x="150" y="208" text-anchor="middle" font-family="Impact, 'Arial Narrow', sans-serif" font-size="26" letter-spacing="2" fill="#3effa2" opacity="0.55">TOON CENTRAL</text>
+</svg>

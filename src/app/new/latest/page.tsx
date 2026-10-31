@@ -41,7 +41,7 @@ export default async function LatestPage({ searchParams }: PageProps<"/new/lates
       )}
       <Pagination result={result} baseHref={hrefFor(filter)} noun="updates" />
       <p className="mt-8 text-xs text-slate-500">
-        Each comic shows once, at its newest episode. Episode-by-episode history arrives with the live API.
+        Each Mafiki shows once, at its newest episode. Episode-by-episode history arrives with the live API.
       </p>
     </NewAndPopularShell>
   );
