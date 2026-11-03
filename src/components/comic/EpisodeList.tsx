@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
 import { IoLockClosed } from "react-icons/io5";
 import { dateParts } from "@/components/home/latest/releaseLogData";
@@ -7,7 +6,7 @@ import type { Comic, ComicPageData } from "@/lib/api/types";
 import { cloudinary, comicHref } from "@/lib/format";
 import { PAGE_SIZES, paginate } from "@/lib/pagination";
 import { Pagination } from "@/components/ui/Pagination";
-import { readerHref } from "./ComicHeader";
+import { EpisodeLink } from "./EpisodeLink";
 
 const formatDate = (date: string) => {
   const { day, month, year } = dateParts(date);
@@ -46,44 +45,60 @@ export function EpisodeList({ comic, episodes, episodesSource, page, heading }: 
         </p>
       )}
 
-      {episodesSource === "unknown" ? (
+      {episodesSource === "loading" ? (
+        <ol className="grid gap-3 md:grid-cols-2" aria-busy="true" aria-label="Loading episodes">
+          {Array.from({ length: Math.min(episodes.length || 4, PAGE_SIZES.episodes) }, (_, i) => (
+            <li key={i} className="flex items-center gap-4 border-2 border-line bg-panel p-3">
+              <span className="h-7 w-10 shrink-0 animate-pulse bg-line" />
+              <span className="aspect-[3/4] w-11 shrink-0 animate-pulse bg-line" />
+              <span className="h-4 w-1/2 animate-pulse bg-line" />
+            </li>
+          ))}
+        </ol>
+      ) : episodesSource === "unknown" ? (
         <div className="flex flex-col items-start gap-4 border-2 border-line bg-panel p-6 sm:flex-row sm:items-center sm:justify-between">
           <p className="max-w-xl text-sm leading-6 text-slate-300">
             The episode list for this Mafiki comes from the live API, which isn&apos;t connected in this preview. You can still start
             from the first episode.
           </p>
-          <Link href={readerHref(comic.uuid)} className="btn btn-primary px-5 py-3">Read episode 1</Link>
+          <EpisodeLink uuid={comic.uuid} episode={1} className="btn btn-primary px-5 py-3">Read episode 1</EpisodeLink>
         </div>
       ) : (
         <ol className="grid gap-3 md:grid-cols-2">
           {result.items.map((episode) => (
             <li key={episode.number}>
-              <Link
-                href={readerHref(comic.uuid, episode.number)}
+              <EpisodeLink
+                uuid={comic.uuid}
+                episode={episode.number}
+                episodeId={episode.id}
                 className="group flex items-center gap-4 border-2 border-line bg-panel p-3 transition-colors hover:border-mint"
               >
                 <span className="w-10 shrink-0 text-center font-display text-3xl leading-none text-slate-300">{episode.number}</span>
                 <img
-                  src={cloudinary(comic.coverImage, 120)}
+                  src={cloudinary(episode.thumbnail || comic.coverImage, 120)}
                   alt=""
                   loading="lazy"
                   className={`aspect-[3/4] w-11 shrink-0 border-2 border-line object-cover ${episode.locked ? "opacity-50 grayscale" : ""}`}
                 />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-semibold text-white group-hover:text-mint">{episode.title}</p>
-                  <p className="mt-0.5 text-xs text-slate-400">{episode.publishedAt ? formatDate(episode.publishedAt) : " "}</p>
+                  <p className="mt-0.5 text-xs text-slate-400">
+                    {[episode.publishedAt && formatDate(episode.publishedAt), episode.pages && `${episode.pages} ${episode.pages === 1 ? "page" : "pages"}`]
+                      .filter(Boolean)
+                      .join(" · ") || " "}
+                  </p>
                 </div>
                 {episode.locked ? (
                   <span className="tag shrink-0 gap-1 bg-sun"><IoLockClosed /> Premium</span>
                 ) : (
                   <span className="tag shrink-0 bg-mint">Free</span>
                 )}
-              </Link>
+              </EpisodeLink>
             </li>
           ))}
         </ol>
       )}
-      {episodesSource !== "unknown" && (
+      {(episodesSource === "live" || episodesSource === "placeholder") && (
         <Pagination result={result} baseHref={comicHref(comic.uuid)} noun="episodes" hash="#episodes" />
       )}
     </>

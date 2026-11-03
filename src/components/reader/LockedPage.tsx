@@ -3,7 +3,7 @@
 import { IoLockClosed } from "react-icons/io5";
 import { openUnlock } from "./UnlockDialog";
 
-type Props = { number: number; src: string; width: number; height: number };
+type Props = { number: number; src: string; width?: number; height?: number };
 
 // A page the server sent only as a blurred, watermarked image. Tapping it opens the unlock dialog.
 export function LockedPage({ number, src, width, height }: Props) {

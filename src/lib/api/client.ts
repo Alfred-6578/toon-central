@@ -1,7 +1,7 @@
 import snapshot from "@/data/snapshot.json";
 import { isLive } from "./config";
 import { apiRequest, isEmpty } from "./http";
-import { camelize, toComic, toGenre, toShort } from "./normalize";
+import { camelize, toComic, toEpisode, toGenre, toShort } from "./normalize";
 import { creatorSlug, genreSlug } from "@/lib/format";
 import type { Comic, ComicPageData, CreatorPageData, Episode, Genre, HomeFeed, Short, SocialLink } from "./types";
 
@@ -172,10 +172,26 @@ function placeholderEpisodes(comic: Comic): Episode[] {
   }));
 }
 
+// The comic's real episode list. comics/:uuid/view is the only endpoint that has it and it also counts
+// a view, so it's only called when a reader actually opens the comic page (from the browser, through
+// /api/comics/:uuid/open), never while building pages. null when reading isn't live or it fails.
+export async function openComic(uuid: string): Promise<{ episodes: Episode[]; views: number; likes: number } | null> {
+  if (!isLive("reading")) return null;
+  const result = await apiRequest<Raw>(`/comics/${encodeURIComponent(uuid)}/view`, { revalidate: false });
+  if (!result.ok) {
+    console.error(`[api] GET comics/${uuid}/view failed: ${result.status} ${result.message}`);
+    return null;
+  }
+  const raw = Array.isArray(result.data.episodes) ? (result.data.episodes as Raw[]) : [];
+  const episodes = raw.map(toEpisode).sort((a, b) => a.number - b.number);
+  const comic = toComic(result.data);
+  return { episodes, views: comic.views, likes: comic.likes };
+}
+
 export async function getComicPageData(uuid: string): Promise<ComicPageData | null> {
-  // The API's comic details (comics/:uuid/view) also count a view, so the server can't use them to
-  // build pages: every refresh would add a fake view. Until the backend adds a read-only version, the
-  // comic comes from the catalogue and its episode list is built from the episode count.
+  // The comic comes from the catalogue; see openComic for why the server never builds its episode list
+  // from comics/:uuid/view. When reading is live the browser fetches the real list once the page opens,
+  // and these placeholders are what it falls back to.
   const [catalogue, shorts] = await Promise.all([getCatalogue(), getAllShorts()]);
 
   const comic = catalogue.find((c) => c.uuid === uuid);

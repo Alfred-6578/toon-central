@@ -4,8 +4,9 @@ import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import { FollowButton } from "@/components/ui/FollowButton";
 import { SubscribeButton } from "@/components/ui/SubscribeButton";
 import type { Comic } from "@/lib/api/types";
-import { cloudinary, creatorHref, genreHref, readerHref, scheduleLabel, timeAgo } from "@/lib/format";
+import { cloudinary, creatorHref, genreHref, scheduleLabel, timeAgo } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
+import { EpisodeLink } from "./EpisodeLink";
 import { StatBar } from "./StatBar";
 import { Synopsis } from "./Synopsis";
 
@@ -74,7 +75,7 @@ export function ComicHeader({ comic }: { comic: Comic }) {
           {comic.description && <Synopsis text={comic.description} />}
 
           <div className="mt-7 flex flex-wrap items-center gap-3">
-            <Link href={readerHref(comic.uuid)} className="btn btn-primary flex-1 px-6 py-3 text-base sm:flex-none">Start reading</Link>
+            <EpisodeLink uuid={comic.uuid} episode={1} className="btn btn-primary flex-1 px-6 py-3 text-base sm:flex-none">Start reading</EpisodeLink>
             <SubscribeButton uuid={comic.uuid} title={comic.title} className="flex-1 sm:flex-none" />
             <a href="#episodes" className="hidden text-sm font-semibold text-slate-300 hover:text-mint sm:block">Episodes ↓</a>
           </div>

@@ -71,11 +71,18 @@ switched back to mock without touching the rest.
 - Empty lists ("no record found") count as empty, not as errors.
 - Comics with no cover or banner show a placeholder instead of a broken image.
 
-**Not real yet, waiting on the backend**
+**Episode lists and pages (added 31 Oct)**
 
-- **Episode lists and episode pages.** The only endpoint with them, `comics/:uuid/view`, adds a view every
-  time it's called (checked: 51 → 52), so our server can't use it to build pages. Comic pages keep the
-  numbered placeholder list, and the reader keeps its stand-in pages.
+Both endpoints with episodes add a view on every call (checked on staging: `comics/:uuid/view` 21 → 22 → 23,
+`comics/:uuid/episode/:id/get` 25 → 27), so neither is called while the server builds pages:
+
+- **Comic page:** the real episode list (titles, dates, page counts, thumbnails) is fetched by the browser
+  once the reader opens the page, through `/api/comics/:uuid/open`, which keeps only those fields (no page
+  images, lock flags, emails or phones). One view per visit; paging through episodes doesn't count again.
+- **Reader:** real pages come from `comics/:uuid/episode/:id/get`, called once when an episode opens.
+  It needs the episode's id, so links from the comic page's list carry `?id=`; reader links are never
+  prefetched. Signed out, the backend only serves episode 1; later episodes keep stand-in pages until
+  sign-in (Phase 2) passes the reader's token. Locked pages still go out blurred only.
 
 **How to review**
 
@@ -88,7 +95,8 @@ switched back to mock without touching the rest.
 **For the backend team (Phase 1 findings)**
 
 1. A read-only comic details endpoint (e.g. `GET comics/:uuid`) that returns the comic and its episodes
-   **without** counting a view. Count views with a separate POST when someone actually opens the comic.
+   **without** counting a view, and an episode by its number (`comics/:uuid/episode/:number`). Count views
+   with a separate POST when someone actually opens the comic or episode.
 2. **Paywall:** each page in an episode comes with its full image link plus `is_lock`. Locked pages must not
    include the real image link (send a blurred preview, or nothing, until the reader has unlocked it).
    Otherwise anyone can read paid pages. Fix before Phase 4.
