@@ -67,14 +67,21 @@ export type Episode = {
   title: string;
   publishedAt: string | null;
   locked: boolean;
+  // Live episodes only: the backend's episode id (the reader fetches pages by it), the creator's
+  // episode thumbnail and how many pages it has.
+  id?: number;
+  thumbnail?: string | null;
+  pages?: number;
 };
+
+// "live" when episodes came from the API; "placeholder" when generated from the chapter count;
+// "unknown" when we have no chapter count to build from; "loading" while the browser fetches the live list.
+export type EpisodesSource = "live" | "placeholder" | "unknown" | "loading";
 
 export type ComicPageData = {
   comic: Comic;
   episodes: Episode[];
-  // "live" when episodes came from the API; "placeholder" when generated from the chapter count;
-  // "unknown" when we have no chapter count to build from.
-  episodesSource: "live" | "placeholder" | "unknown";
+  episodesSource: EpisodesSource;
   moreFromCreator: Comic[];
   similar: Comic[];
   shorts: Short[];

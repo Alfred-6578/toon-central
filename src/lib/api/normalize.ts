@@ -1,4 +1,5 @@
-import type { Comic, Creator, Genre, Short } from "./types";
+import { FREE_EPISODES } from "@/lib/rules";
+import type { Comic, Creator, Episode, Genre, Short } from "./types";
 
 // The API mixes snake_case (/home) and camelCase (/home/top-carousel) payloads,
 // so every response is camelized before it is mapped.
@@ -75,6 +76,22 @@ export function toShort(raw: Raw): Short {
     comicId: raw.comicId == null ? null : num(raw.comicId),
     linkedComic: null,
     isSponsored: SPONSOR_ACCOUNTS.test(creator.username),
+  };
+}
+
+// One entry of comics/:uuid/view's `episodes`. Only listing fields are kept: the page images (with
+// their is_lock flags) and comments never leave our server. Locking follows the site's own rule, the
+// same one the reader enforces.
+export function toEpisode(raw: Raw, index: number): Episode {
+  const number = num(raw.episodeNumber) || index + 1;
+  return {
+    id: num(raw.id) || undefined,
+    number,
+    title: str(raw.title) || `Episode ${number}`,
+    publishedAt: str(raw.createdAt) || null,
+    locked: number > FREE_EPISODES,
+    thumbnail: str(raw.thumbnail) || null,
+    pages: Array.isArray(raw.comicImages) ? raw.comicImages.length : undefined,
   };
 }
 

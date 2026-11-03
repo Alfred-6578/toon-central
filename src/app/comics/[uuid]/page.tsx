@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComicHeader } from "@/components/comic/ComicHeader";
 import { ComicTabs } from "@/components/comic/ComicTabs";
-import { EpisodeList } from "@/components/comic/EpisodeList";
+import { LiveEpisodeList } from "@/components/comic/LiveEpisodeList";
 import { ShortsRail } from "@/components/home/shorts/ShortsRail";
 import { Footer } from "@/components/layout/Footer";
 import { Navigation } from "@/components/layout/Navigation";
 import { ComicGrid } from "@/components/ui/ComicGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getComicPageData, getSiteStats } from "@/lib/api/client";
+import { isLive } from "@/lib/api/config";
 import { cloudinary, creatorHref } from "@/lib/format";
 import { pageParam } from "@/lib/pagination";
 
@@ -52,7 +53,8 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
                 <ShortsRail shorts={shorts.map((s) => ({ ...s, linkedComic: null }))} />
               </>
             ) : (
-              <EpisodeList
+              <LiveEpisodeList
+                live={isLive("reading")}
                 comic={comic}
                 episodes={episodes}
                 episodesSource={episodesSource}

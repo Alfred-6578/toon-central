@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { IoArrowBack, IoChevronBack, IoChevronForward } from "react-icons/io5";
 import type { Comic } from "@/lib/api/types";
+import { EpisodeLink } from "@/components/comic/EpisodeLink";
 import { ReaderActions } from "@/components/reader/ReaderActions";
 import { comicHref } from "@/lib/format";
 
@@ -24,7 +25,7 @@ export function ReaderTopBar({ comic, episode, total }: { comic: Comic; episode:
 
         <div data-tour="episodes" className="flex shrink-0 items-center gap-1.5 sm:gap-2">
           {hasPrev ? (
-            <Link href={episodeHref(comic.uuid, episode - 1)} aria-label="Previous episode" className={navButton}><IoChevronBack /></Link>
+            <EpisodeLink uuid={comic.uuid} episode={episode - 1} aria-label="Previous episode" className={navButton}><IoChevronBack /></EpisodeLink>
           ) : (
             <span aria-hidden="true" className={navButtonOff}><IoChevronBack /></span>
           )}
@@ -33,7 +34,7 @@ export function ReaderTopBar({ comic, episode, total }: { comic: Comic; episode:
             {total != null && <span className="hidden text-slate-500 sm:inline"> / {total}</span>}
           </p>
           {hasNext ? (
-            <Link href={episodeHref(comic.uuid, episode + 1)} aria-label="Next episode" className={navButton}><IoChevronForward /></Link>
+            <EpisodeLink uuid={comic.uuid} episode={episode + 1} aria-label="Next episode" className={navButton}><IoChevronForward /></EpisodeLink>
           ) : (
             <span aria-hidden="true" className={navButtonOff}><IoChevronForward /></span>
           )}

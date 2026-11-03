@@ -48,3 +48,6 @@ next-env.d.ts
 *.pdf
 public/Screenshot*
 docs/api/*.postman.json
+
+# Local copy of the backend API docs (contains contact details)
+/docs/api/api doc.md

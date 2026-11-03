@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { EpisodeLink } from "@/components/comic/EpisodeLink";
 import { ReaderDock } from "@/components/reader/ReaderDock";
 import { ReaderProgress } from "@/components/reader/ReaderProgress";
 import { MtnPayFlow } from "@/components/mtn/MtnPayFlow";
@@ -13,6 +14,7 @@ import { UnlockDialog } from "@/components/reader/UnlockDialog";
 import { ReaderTopBar, episodeHref } from "@/components/reader/ReaderTopBar";
 import { ReaderTour } from "@/components/reader/ReaderTour";
 import { getComicPageData } from "@/lib/api/client";
+import { getEpisodePages } from "@/lib/api/episodes";
 import { comicHref } from "@/lib/format";
 import { buildEpisode } from "@/lib/reader";
 import { parsePass, parseUnlocks, PASS_COOKIE, UNLOCKS_COOKIE } from "@/lib/session";
@@ -25,9 +27,10 @@ async function load(params: Params["params"]) {
   const data = await getComicPageData(uuid);
   if (!data || !Number.isInteger(episode) || episode < 1) return null;
 
-  // Without a known episode count only episode 1 is guaranteed to exist.
+  // Many comics have no episode count in the lists the server reads; the comic page's live list can
+  // still link to any of their episodes, so only a known count rules an episode out.
   const total = data.episodes.length || null;
-  if (total ? episode > total : episode !== 1) return null;
+  if (total && episode > total) return null;
   return { ...data, episode, total };
 }
 
@@ -43,14 +46,22 @@ async function readAccess() {
   return [parseUnlocks(jar.get(UNLOCKS_COOKIE)?.value), Date.now(), parsePass(jar.get(PASS_COOKIE)?.value)?.until ?? null] as const;
 }
 
-export default async function ReaderPage({ params }: Params) {
-  const data = await load(params);
+export default async function ReaderPage({ params, searchParams }: Params) {
+  const [data, query] = await Promise.all([load(params), searchParams]);
   if (!data) notFound();
 
-  const { comic, episode, total, episodesSource } = data;
+  const { comic, episode, total } = data;
+  // Real pages need the episode's backend id, which links from the comic page's live list carry.
+  const episodeId = Number(query.id);
+  const real = Number.isInteger(episodeId) && episodeId > 0 ? await getEpisodePages(comic.uuid, episodeId, episode) : null;
   // The server decides which pages go out clean: unlocked ones (mock record in a cookie, see
   // session.ts) and the free preview. Everything else is only ever sent blurred.
-  const { pages, lockedCount, premiumEpisode, passActive } = buildEpisode(comic, episode, ...(await readAccess()));
+  const { pages, lockedCount, premiumEpisode, passActive } = buildEpisode(
+    comic,
+    episode,
+    ...(await readAccess()),
+    real?.status === "ok" ? real.pages : null
+  );
   const hasNext = total != null && episode < total;
 
   return (
@@ -58,10 +69,14 @@ export default async function ReaderPage({ params }: Params) {
       <ReaderTopBar comic={comic} episode={episode} total={total} />
 
       <main className="mx-auto max-w-[720px] pb-24">
-        <p className="mx-4 mt-4 border-2 border-dashed border-line px-4 py-3 text-xs leading-5 text-slate-400 sm:mx-0">
-          Preview build: these pages are stand-ins cropped from the Mafiki&apos;s cover and banner art.
-          {episodesSource !== "live" && " Real pages arrive with the live API."}
-        </p>
+        {real?.status !== "ok" && (
+          <p className="mx-4 mt-4 border-2 border-dashed border-line px-4 py-3 text-xs leading-5 text-slate-400 sm:mx-0">
+            Preview build: these pages are stand-ins cropped from the Mafiki&apos;s cover and banner art.
+            {real?.status === "signin"
+              ? ` Toon Central only shows episode ${episode} to signed-in readers, and signing in isn't connected yet.`
+              : " Real pages load when you open the episode from the Mafiki's episode list."}
+          </p>
+        )}
 
         {premiumEpisode && passActive && (
           <div className="mx-4 mt-4 sm:mx-0">
@@ -104,9 +119,9 @@ export default async function ReaderPage({ params }: Params) {
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-3">
               {hasNext && (
-                <Link href={episodeHref(comic.uuid, episode + 1)} className="btn btn-primary px-6 py-3 text-base">
+                <EpisodeLink uuid={comic.uuid} episode={episode + 1} className="btn btn-primary px-6 py-3 text-base">
                   Next: episode {episode + 1}
-                </Link>
+                </EpisodeLink>
               )}
               <Link href={comicHref(comic.uuid)} className="btn btn-ghost px-6 py-3 text-base">Back to Mafiki</Link>
             </div>
