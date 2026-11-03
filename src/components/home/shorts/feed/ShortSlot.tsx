@@ -5,7 +5,9 @@ import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { IoClose, IoPlay, IoRefresh } from "react-icons/io5";
 import type { Short } from "@/lib/api/types";
 import { cloudinary, cloudinaryVideo, comicHref, creatorHref, formatCount, genreSlug, readerHref } from "@/lib/format";
-import { useMockComments, useMockFollows, useMockLikes, useMockSavedShorts, useMockSession } from "@/lib/mockSession";
+import { useFollowCheck, useMockComments, useMockFollows, useMockLikes, useMockSavedShorts, useMockSession, useReaderActionsLive } from "@/lib/mockSession";
+import { useShortComments } from "@/lib/shortComments";
+import { countShortView, viewAfter } from "@/lib/shortViews";
 import { useHeartBursts } from "@/components/ui/HeartBurst";
 import { BubbleDots } from "@/components/ui/Loaders";
 import { ActionRail } from "./ActionRail";
@@ -27,8 +29,6 @@ type ShortSlotProps = {
   onNext: () => void;
   onComments: () => void;
   onShare: () => void;
-  muted: boolean;
-  onToggleMute: () => void;
   onDuration?: (uuid: string, seconds: number) => void;
 };
 
@@ -113,7 +113,7 @@ function Caption({ short, showTieIn, onDismissTieIn }: { short: Short; showTieIn
   );
 }
 
-export function ShortSlot({ short, index, near, isActive, isNext, registerVideo, registerSlot, onNext, onComments, onShare, muted, onToggleMute, onDuration }: ShortSlotProps) {
+export function ShortSlot({ short, index, near, isActive, isNext, registerVideo, registerSlot, onNext, onComments, onShare, onDuration }: ShortSlotProps) {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const tapTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [paused, setPaused] = useState(false);
@@ -137,6 +137,10 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
   const saves = useMockSavedShorts();
   const follows = useMockFollows();
   const { comments } = useMockComments(short.uuid);
+  // Live, the real comment count and follow state are asked for once the short is on screen.
+  const live = useReaderActionsLive();
+  const liveComments = useShortComments(short.uuid, live && isActive && !short.isSponsored);
+  useFollowCheck(short.creator.username, short.creator.id, isActive && !short.isSponsored);
   const liked = likes.has(short.uuid);
   const comic = short.linkedComic;
 
@@ -211,10 +215,8 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
       liked={liked}
       saved={saves.has(short.uuid)}
       following={follows.has(short.creator.username)}
-      comments={comments.length}
+      comments={live ? liveComments.total : comments.length}
       playing={isActive && !paused}
-      muted={muted}
-      onToggleMute={onToggleMute}
       onLike={(event) => {
         requireUser();
         if (!liked) burstAt(event.currentTarget);
@@ -226,7 +228,7 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
       }}
       onFollow={() => {
         requireUser();
-        follows.toggle(short.creator.username);
+        follows.toggle(short.creator.username, short.creator.id);
       }}
       onComments={onComments}
       onShare={onShare}
@@ -274,6 +276,7 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
                 if (bufferTimer.current || buffering) stopBuffering();
                 setProgress(video.duration ? video.currentTime / video.duration : 0);
                 if (video.currentTime > TIE_IN_AFTER_S) setShowTieIn(true);
+                if (video.currentTime >= viewAfter(video.duration)) countShortView(short.uuid);
               }}
               onDurationChange={(event) => onDuration?.(short.uuid, event.currentTarget.duration)}
               onEnded={() => (comic && !short.isSponsored ? setEndCard(END_CARD_SECONDS) : onNext())}

@@ -5,21 +5,34 @@ import { IoBookmark, IoBookmarkOutline } from "react-icons/io5";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { formatCount } from "@/lib/format";
 import { useMockLibrary, useMockSession } from "@/lib/mockSession";
+import { useOpenedCounts } from "@/lib/openedComics";
 
 // Views, likes and save-to-library as one small joined strip in the comic's stats line. Views is just a
 // count; the heart and the bookmark are buttons. Signed out, saving flips the mock sign-in first.
-export function StatBar({ uuid, title, views, likes }: { uuid: string; title: string; views: number; likes: number }) {
+// `live`: the page opens the comic (reading live), so the view and like counts wait for that fresh
+// answer instead of showing the catalogue's, which can be minutes old.
+export function StatBar({ uuid, title, views, likes, live = false }: { uuid: string; title: string; views: number; likes: number; live?: boolean }) {
   const { user, signIn } = useMockSession();
   const library = useMockLibrary();
   const saved = library.has(uuid);
+  const opened = useOpenedCounts(uuid);
+  const pending = live && opened === undefined;
+  const reads = opened?.views ?? views;
 
   return (
     <div className="flex h-10 w-fit divide-x-2 divide-white/25 rounded-[3px] border-2 border-white/60">
-      <span className="flex items-center gap-2 px-3 font-display text-[15px] uppercase tracking-[0.03em] text-slate-300" title={`${views} reads`}>
+      <span className="flex items-center gap-2 px-3 font-display text-[15px] uppercase tracking-[0.03em] text-slate-300" title={pending ? undefined : `${reads} reads`}>
         <FaRegEye aria-hidden="true" />
-        <span className="sr-only">Reads:</span> {formatCount(views)}
+        <span className="sr-only">Reads:</span>{" "}
+        {pending ? <span aria-hidden="true" className="inline-block h-3 w-6 animate-pulse bg-white/25" /> : formatCount(reads)}
       </span>
-      <LikeButton uuid={uuid} title={title} likes={likes} />
+      <LikeButton
+        uuid={uuid}
+        title={title}
+        likes={opened?.likes ?? likes}
+        likedInCount={opened ? opened.likedByReader : undefined}
+        countPending={pending}
+      />
       <button
         type="button"
         onClick={() => {

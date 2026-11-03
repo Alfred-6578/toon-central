@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { IoChevronDown, IoChevronUp, IoClose } from "react-icons/io5";
+import { IoArrowBack, IoChevronDown, IoChevronUp, IoClose, IoVolumeHighOutline, IoVolumeMuteOutline } from "react-icons/io5";
 import type { Short } from "@/lib/api/types";
 import { CommentsDrawer } from "./feed/CommentsDrawer";
 import { ShortSlot } from "./feed/ShortSlot";
@@ -204,13 +205,17 @@ export function ShortsFeed({ shorts, startIndex, onClose, onDuration, deepLinked
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [active, close, commentsFor, isPage, scrollToSlot, togglePlay, toggleMute]);
 
+  // Back to wherever the reader came from; straight to the home page when Shorts was opened directly.
+  const router = useRouter();
+  const goBack = () => (window.history.length > 1 ? router.back() : router.push("/"));
+
   const feed = (
     <div
       {...(isPage ? { "aria-label": "Shorts" } : { role: "dialog", "aria-modal": true, "aria-label": "Shorts" })}
       className={
         isPage
-          ? // Between the fixed site header and the phone tab bar.
-            "fixed inset-x-0 bottom-[calc(3.875rem+env(safe-area-inset-bottom))] top-[66px] z-30 bg-ink lg:bottom-0"
+          ? // Above the phone tab bar; under the site header from md (phones have no header here).
+            "fixed inset-x-0 bottom-[calc(3.875rem+env(safe-area-inset-bottom))] top-0 z-30 bg-ink md:top-[66px] lg:bottom-0"
           : "fixed inset-0 z-[80] bg-ink"
       }
     >
@@ -232,8 +237,6 @@ export function ShortsFeed({ shorts, startIndex, onClose, onDuration, deepLinked
             onNext={() => scrollToSlot(i + 1)}
             onComments={() => setCommentsFor(short)}
             onShare={() => share(short)}
-            muted={muted}
-            onToggleMute={toggleMute}
             onDuration={onDuration}
           />
         ))}
@@ -267,12 +270,19 @@ export function ShortsFeed({ shorts, startIndex, onClose, onDuration, deepLinked
         </section>
       </div>
 
-      {/* Fixed chrome over the feed */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 flex items-center justify-between gap-3 bg-gradient-to-b from-black/60 to-transparent px-4 pb-6 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:px-6">
-        <p className="font-display text-xl uppercase leading-none text-white drop-shadow">
-          Shorts <span className="text-slate-400">{Math.min(active + 1, shorts.length)} / {shorts.length}</span>
-        </p>
+      {/* Fixed chrome over the feed: back (phones, where the page has no header), sound, close. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-center justify-between gap-3 bg-gradient-to-b from-black/60 to-transparent px-4 pb-6 pt-[calc(env(safe-area-inset-top)+0.75rem)] sm:px-6">
+        <div className="pointer-events-auto">
+          {isPage && (
+            <button type="button" onClick={goBack} aria-label="Back" className={`${iconButton} md:hidden`}>
+              <IoArrowBack />
+            </button>
+          )}
+        </div>
         <div className="pointer-events-auto flex gap-2">
+          <button type="button" onClick={toggleMute} aria-label={muted ? "Unmute" : "Mute"} aria-pressed={muted} className={iconButton}>
+            {muted ? <IoVolumeMuteOutline /> : <IoVolumeHighOutline />}
+          </button>
           {!isPage && (
             <button type="button" onClick={close} autoFocus aria-label="Close shorts" className={iconButton}>
               <IoClose />

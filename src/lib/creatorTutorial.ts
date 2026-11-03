@@ -3,12 +3,13 @@
 import { useEffect } from "react";
 import { useLocalValue } from "@/lib/localValue";
 import { pushNotification } from "@/lib/notifications";
-import { reachedMilestone, studioHref, type StudioComic, type StudioMode } from "@/lib/studioModel";
+import { MILESTONE_EPISODES, milestoneComic, reachedMilestone, studioHref, type StudioComic, type StudioMode } from "@/lib/studioModel";
 
 // The creator onboarding from the client's "Creator Notifications & Tutorial" doc:
 //  A. a welcome card when someone becomes a creator → Steps 1–5 (profile, hub, new Mafiki, chapters, share);
 //  B. a congratulations card once their first Mafiki is created → back into Step 4;
-//  C. a milestone card once a Mafiki has 4 published episodes → D. Steps 6–7 (monetizing the next Mafiki).
+//  C. a milestone card once a Mafiki has 4 published episodes → D. Steps 6–7 (ads on its episodes from
+//     episode 4, and locking panels).
 // Steps 6–7 never show before the milestone. Mock: progress lives in this browser, one record per Studio
 // demo mode; the real milestone and "first Mafiki" events must come from the server.
 
@@ -22,6 +23,9 @@ type State = {
   comicId: string | null;
   firstMafiki: "none" | "pending" | "seen";
   milestone: "none" | "pending" | "seen";
+  // The Mafiki that reached it and its 4th episode, for the milestone card and Steps 6–7.
+  milestoneComicId?: string | null;
+  milestoneEpisodeId?: string | null;
   // Steps 6–7, started from the milestone card.
   monetize: "off" | "on" | "done";
   monetizeStep: 6 | 7;
@@ -35,9 +39,8 @@ export type StepSpec = {
   target: string;
   title: string;
   body: string;
-  // Where the control lives, for "Take me there" when it isn't on this page. Without one (Step 7: the
-  // key only exists in a paid episode) the card explains where to find it instead.
-  href?: (s: { comicId: string | null }) => string;
+  // Where the control lives, for "Take me there" when it isn't on this page.
+  href?: (s: { comicId: string | null; milestoneComicId?: string | null; milestoneEpisodeId?: string | null }) => string;
   // false: the step ends when the creator does the thing (Step 3 ends when the Mafiki is created).
   next: boolean;
 };
@@ -87,16 +90,23 @@ export const STEPS: StepSpec[] = [
   {
     step: 6,
     target: "monetize",
-    title: "Monetize your next Mafiki",
-    body: "You've reached the 4-episode milestone. When creating your next Mafiki, choose Ads to show ads alongside your work, or Credits to lock access so readers spend credits to unlock it.",
-    href: () => "/creator/comics/new",
+    title: "Earn from episode 4",
+    body: "Episodes 1–3 of every Mafiki stay free. From episode 4, switch on ads for an episode to earn while it stays free to read.",
+    href: ({ milestoneComicId }) => (milestoneComicId ? `/creator/comics/${milestoneComicId}` : "/creator/comics"),
     next: true,
   },
   {
     step: 7,
-    target: "chapter-key",
-    title: "Offer paid access by section",
-    body: "For a more flexible option, use the key icon on a page thumbnail to choose where paid access begins. Readers preview the free pages, then spend credits to continue.",
+    target: "panel-lock",
+    title: "Lock panels",
+    body: "In episode 4 or later, tap the lock on a page thumbnail to lock that panel. Readers unlock locked panels with credits, one at a time or the whole episode.",
+    // Episode 4 of the Mafiki that reached the milestone: the first one that can be locked.
+    href: ({ milestoneComicId, milestoneEpisodeId }) =>
+      milestoneComicId && milestoneEpisodeId
+        ? `/creator/comics/${milestoneComicId}/episodes/${milestoneEpisodeId}`
+        : milestoneComicId
+          ? `/creator/comics/${milestoneComicId}`
+          : "/creator/comics",
     next: true,
   },
 ];
@@ -112,7 +122,7 @@ export const NOTICE_COPY = {
   },
   milestone: {
     title: "You've unlocked monetization!",
-    body: "Congratulations on reaching 4 published episodes. Your next Mafiki can use monetization tools. We'll guide you through Ads, Credits and the key/lock option when you create it.",
+    body: "Congratulations on publishing episode 4. From episode 4 on, you can earn with ads, lock panels so readers unlock them with credits, and offer ad spaces to advertisers. We'll show you how.",
   },
 };
 
@@ -172,14 +182,15 @@ export function useCreatorTutorial(mode: StudioMode) {
     // D. "Monetize my next Mafiki".
     startMonetize: () => write({ milestone: "seen", monetize: "on", monetizeStep: 6 }),
     milestone: (comics: StudioComic[]) => {
-      if (state.milestone !== "none" || !reachedMilestone(comics)) return;
-      write({ milestone: "pending" });
+      const reached = milestoneComic(comics);
+      if (state.milestone !== "none" || !reached) return;
+      write({ milestone: "pending", milestoneComicId: reached.id, milestoneEpisodeId: reached.episodes[MILESTONE_EPISODES - 1]?.id ?? null });
       pushNotification(
         {
           kind: "milestone",
           ...NOTICE_COPY.milestone,
           message: [NOTICE_COPY.milestone.body],
-          cta: { label: "Monetize my next Mafiki", href: "/creator/comics/new" },
+          cta: { label: "Show me how", href: `/creator/comics/${reached.id}` },
           art: null,
         },
         `creator-monetization-${mode}`,

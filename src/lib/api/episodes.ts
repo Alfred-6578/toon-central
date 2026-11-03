@@ -5,8 +5,9 @@ import { getAccessToken } from "./token";
 
 // An episode's real pages (comics/:uuid/episode/:id/get), for the reader. Server-only: the page image
 // links never go to the browser as-is, the reader decides which ones go out clean (lib/reader.ts).
-// The backend counts a view on every call, so it's only made when someone opens the episode, once per
-// request (cache), and episode links are never prefetched (EpisodeLink).
+// It counts a comic view: every call when signed out, once per reader when signed in (checked on
+// staging, 4 Nov). So it's only made when someone opens the episode, once per request (cache), never
+// for crawlers (the reader page), and episode links are never prefetched (EpisodeLink).
 export type EpisodePages =
   | { status: "ok"; title: string; pages: string[] }
   // The backend only serves episode 1 to signed-out readers.

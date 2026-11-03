@@ -20,6 +20,10 @@ export const navItems = [
 
 type HeaderProps = {
   user: MockUser | null;
+  // Left out below md (the Shorts page is full screen there).
+  hideOnPhone?: boolean;
+  // Signed in, but who hasn't loaded yet: a placeholder instead of Sign in / Join now.
+  pending?: boolean;
   hidden: boolean;
   activeSection: string;
   openMenu: DesktopMenu;
@@ -41,6 +45,8 @@ const iconButton =
 
 export function Header({
   user,
+  hideOnPhone = false,
+  pending = false,
   hidden,
   activeSection,
   openMenu,
@@ -62,7 +68,7 @@ export function Header({
     <header
       className={`fixed inset-x-0 top-0 z-40 border-b-2 border-line bg-ink transition-transform duration-300 ${
         hidden ? "-translate-y-full" : "translate-y-0"
-      }`}
+      } ${hideOnPhone ? "max-md:hidden" : ""}`}
     >
       <div className="flex items-center justify-between gap-4 px-6 py-3 md:px-8 lg:px-10">
         <Link href="/" aria-label="Toon Central home" className="shrink-0">
@@ -162,12 +168,14 @@ export function Header({
                 )}
               </div>
             </>
+          ) : pending ? (
+            <span aria-hidden="true" className="h-10 w-10 animate-pulse border-2 border-line bg-panel" />
           ) : (
             <>
-              <Link href={signInHref} className="btn btn-ghost hidden h-10 whitespace-nowrap lg:inline-flex">
+              <Link href={signInHref} className="signed-out-only btn btn-ghost hidden h-10 whitespace-nowrap lg:inline-flex">
                 Sign in
               </Link>
-              <Link href={joinHref} className="btn btn-primary h-10 whitespace-nowrap">
+              <Link href={joinHref} className="signed-out-only btn btn-primary h-10 whitespace-nowrap">
                 Join now
               </Link>
             </>

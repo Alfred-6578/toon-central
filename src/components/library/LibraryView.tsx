@@ -8,7 +8,7 @@ import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import { Pagination } from "@/components/ui/Pagination";
 import type { Comic, Short } from "@/lib/api/types";
 import { cloudinary, cloudinaryTransform, comicCount, comicHref, creatorHref, formatCount, timeAgo } from "@/lib/format";
-import { useMockFollows, useMockLibrary, useMockSavedShorts, useMockSession } from "@/lib/mockSession";
+import { useMockFollows, useMockLibrary, useMockSavedShorts, useMockSession, useReaderActionsLive } from "@/lib/mockSession";
 import { PAGE_SIZES, paginate } from "@/lib/pagination";
 import { authHref } from "@/lib/auth";
 import { LIBRARY_TABS, SAVED_SORTS, type FollowedCreator, type LibraryTab, type SavedSort } from "@/lib/library";
@@ -35,6 +35,7 @@ const tabHref = (tab: LibraryTab, sort?: SavedSort) => {
 // the catalogue here, after the page loads.
 export function LibraryView({ tab, sort, page, comics, shorts, creators }: LibraryViewProps) {
   const { user } = useMockSession();
+  const live = useReaderActionsLive();
   const library = useMockLibrary();
   const savedShorts = useMockSavedShorts();
   const follows = useMockFollows();
@@ -69,7 +70,11 @@ export function LibraryView({ tab, sort, page, comics, shorts, creators }: Libra
       {!user && (
         <div className="mt-6 flex flex-wrap items-center justify-between gap-4 border-2 border-dashed border-line px-5 py-4">
           <p className="text-sm text-slate-300">
-            <span className="font-bold text-white">Saved on this device only.</span> Sign in to keep your library on every phone and laptop.
+            {live ? (
+              <><span className="font-bold text-white">Your library lives in your account.</span> Sign in to see what you&apos;ve saved and who you follow.</>
+            ) : (
+              <><span className="font-bold text-white">Saved on this device only.</span> Sign in to keep your library on every phone and laptop.</>
+            )}
           </p>
           <Link href={authHref("signin", "/library")} className="btn btn-primary px-5 py-2 text-sm">Sign in</Link>
         </div>
@@ -103,7 +108,7 @@ export function LibraryView({ tab, sort, page, comics, shorts, creators }: Libra
         {tab === "saved" && <SavedComics comics={savedComics} sort={sort} page={page} progress={progressByComic} />}
         {tab === "history" && <History history={history} byUuid={byUuid} />}
         {tab === "shorts" && <SavedShorts shorts={savedShortList} page={page} onRemove={savedShorts.toggle} />}
-        {tab === "following" && <Following creators={followed} onUnfollow={follows.toggle} />}
+        {tab === "following" && <Following creators={followed} onUnfollow={(creator) => follows.toggle(creator.username, creator.id)} />}
       </div>
     </>
   );
@@ -335,7 +340,7 @@ function SavedShorts({ shorts, page, onRemove }: { shorts: Short[]; page: number
   );
 }
 
-function Following({ creators, onUnfollow }: { creators: FollowedCreator[]; onUnfollow: (id: string) => void }) {
+function Following({ creators, onUnfollow }: { creators: FollowedCreator[]; onUnfollow: (creator: FollowedCreator["creator"]) => void }) {
   if (!creators.length) {
     return (
       <Empty
@@ -366,7 +371,7 @@ function Following({ creators, onUnfollow }: { creators: FollowedCreator[]; onUn
             </div>
             <button
               type="button"
-              onClick={() => onUnfollow(creator.username)}
+              onClick={() => onUnfollow(creator)}
               className="shrink-0 border-2 border-line px-3 py-1.5 text-xs font-bold text-slate-300 hover:border-white hover:text-white"
             >
               Following

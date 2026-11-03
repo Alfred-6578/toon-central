@@ -1,21 +1,23 @@
 "use client";
 
 import { IoAdd, IoCheckmark } from "react-icons/io5";
-import { useMockFollows, useMockSession } from "@/lib/mockSession";
+import { useFollowCheck, useMockFollows, useMockSession } from "@/lib/mockSession";
 
 // Follow a creator (keyed by username, shared with Shorts and the library's Following tab). Signed out,
 // it flips the mock sign-in first. `small` sits beside a byline; the default sits in a page header.
-export function FollowButton({ username, small = false }: { username: string; small?: boolean }) {
+// `creatorId` is the creator's user id, which following on the live API needs.
+export function FollowButton({ username, creatorId, small = false }: { username: string; creatorId?: number; small?: boolean }) {
   const { user, signIn } = useMockSession();
   const follows = useMockFollows();
   const following = follows.has(username);
+  useFollowCheck(username, creatorId);
 
   return (
     <button
       type="button"
       onClick={() => {
         if (!user) signIn();
-        follows.toggle(username);
+        follows.toggle(username, creatorId);
       }}
       aria-pressed={following}
       aria-label={following ? `Unfollow ${username}` : `Follow ${username}`}

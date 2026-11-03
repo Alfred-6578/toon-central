@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useRef, useState, type FormEvent, type ReactNode } from "react";
-import { IoCameraOutline, IoCheckmarkCircle } from "react-icons/io5";
+import { IoCameraOutline, IoCheckmarkCircle, IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { changePasswordAction, updateProfileAction, uploadPhotoAction } from "@/app/auth/actions";
 import { Avatar } from "@/components/layout/nav/Menus";
 import type { MobileOperator } from "@/lib/api/account";
@@ -267,11 +267,31 @@ export function ChangePasswordForm() {
   );
 }
 
+// With a show/hide eye, like the sign-in form's.
 function PasswordInput({ label, error, hint, value, onChange, autoComplete }: { label: string; error?: string; hint?: string; value: string; onChange: (v: string) => void; autoComplete: string }) {
+  const [visible, setVisible] = useState(false);
   return (
     <Field label={label} error={error} hint={hint}>
       {(id) => (
-        <input id={id} type="password" value={value} onChange={(e) => onChange(e.target.value)} autoComplete={autoComplete} className={`${inputClass} ${error ? "border-sun" : "border-line"}`} />
+        <div className="relative">
+          <input
+            id={id}
+            type={visible ? "text" : "password"}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            autoComplete={autoComplete}
+            className={`${inputClass} pr-12 ${error ? "border-sun" : "border-line"}`}
+          />
+          <button
+            type="button"
+            onClick={() => setVisible((v) => !v)}
+            aria-label={visible ? `Hide ${label.toLowerCase()}` : `Show ${label.toLowerCase()}`}
+            aria-pressed={visible}
+            className="absolute right-0.5 top-0.5 flex h-10 w-10 items-center justify-center text-lg text-slate-400 hover:text-white"
+          >
+            {visible ? <IoEyeOffOutline /> : <IoEyeOutline />}
+          </button>
+        </div>
       )}
     </Field>
   );

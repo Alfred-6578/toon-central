@@ -3,17 +3,16 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type DragEvent } from "react";
-import { IoArrowBack, IoClose, IoCloudUploadOutline, IoEyeOutline, IoInformationCircleOutline, IoKey, IoLockClosed, IoTrashOutline } from "react-icons/io5";
+import { IoArrowBack, IoClose, IoCloudUploadOutline, IoEyeOutline, IoInformationCircleOutline, IoLockClosed, IoLockOpenOutline, IoTrashOutline } from "react-icons/io5";
 import { storePageImage, UnreadableImageError } from "@/lib/imageStore";
 import { FREE_EPISODES } from "@/lib/rules";
 import {
-  accessOf,
+  adsOn,
+  canMonetize,
+  lockedPanelsOf,
   MONETIZE_FROM,
-  monetizationOf,
   newId,
-  paidFromOf,
   studioHref,
-  type EpisodeAccess,
   type StudioComic,
   type StudioEpisode,
   type StudioMode,
@@ -21,6 +20,7 @@ import {
 import { useStudioComics } from "@/lib/studioStore";
 import { DesktopOnly } from "../StudioGate";
 import { StudioImage } from "../StudioImage";
+import { ImageDrop } from "./ImageDrop";
 
 type Props = { comicId: string; episodeId: string | null; mode: StudioMode; seeds: StudioComic[] };
 type Release = "now" | "schedule" | "draft";
@@ -66,8 +66,8 @@ export function EpisodeEditor({ comicId, episodeId, mode, seeds }: Props) {
         <DesktopOnly what="upload episodes">
           <EpisodeForm
             number={number}
-            access={accessOf(comic, number)}
-            monetized={monetizationOf(comic) !== "none"}
+            initialAds={adsOn(comic, number, existing)}
+            initialLocked={lockedPanelsOf(comic, number, existing)}
             existing={existing}
             onSave={(episode) => {
               const episodes = existing ? comic.episodes.map((e) => (e.id === existing.id ? episode : e)) : [...comic.episodes, episode];
@@ -84,24 +84,34 @@ export function EpisodeEditor({ comicId, episodeId, mode, seeds }: Props) {
 
 function EpisodeForm({
   number,
-  access,
-  monetized,
+  initialAds,
+  initialLocked,
   existing,
   onSave,
   onCancel,
 }: {
   number: number;
-  // How this episode is read, from its Mafiki's monetization (episodes 1–3 always free).
-  access: EpisodeAccess;
-  // The Mafiki earns at all (this episode may still be one of the free opening ones).
-  monetized: boolean;
+  // How this episode earns so far (episodes 1–3 never do): ads, and its locked panels (page numbers).
+  initialAds: boolean;
+  initialLocked: number[];
   existing: StudioEpisode | null;
   onSave: (episode: StudioEpisode) => void;
   onCancel: () => void;
 }) {
   const [title, setTitle] = useState(existing?.title ?? "");
+  const canEarn = canMonetize(number);
+  const [ads, setAds] = useState(canEarn && initialAds);
+  const [thumbnail, setThumbnail] = useState<string | null>(existing?.thumbnail ?? null);
   const [pages, setPages] = useState<string[]>(existing?.pages ?? []);
-  const [paidFrom, setPaidFrom] = useState<number | null>(existing?.paidFrom ?? null);
+  // Locked panels by image, so a lock moves with its page when pages are reordered or removed.
+  const [locked, setLocked] = useState<Set<string>>(() => new Set(initialLocked.map((n) => existing?.pages[n - 1]).filter((ref): ref is string => !!ref)));
+  const lockedCount = pages.filter((ref) => locked.has(ref)).length;
+  const toggleLock = (ref: string) =>
+    setLocked((current) => {
+      const next = new Set(current);
+      if (!next.delete(ref)) next.add(ref);
+      return next;
+    });
   const [release, setRelease] = useState<Release>(
     existing ? (existing.status === "published" ? "now" : existing.status === "scheduled" ? "schedule" : "draft") : "now"
   );
@@ -160,7 +170,9 @@ function EpisodeForm({
       id: existing?.id ?? newId(),
       title: title.trim() || `Episode ${number}`,
       pages,
-      paidFrom: access === "credits" ? paidFrom : null,
+      thumbnail,
+      ads: canEarn ? ads : undefined,
+      lockedPanels: canEarn ? pages.flatMap((ref, i) => (locked.has(ref) ? [i + 1] : [])) : undefined,
       status: release === "now" ? "published" : release === "schedule" ? "scheduled" : "draft",
       publishAt: release === "schedule" ? new Date(publishAt).toISOString() : null,
       pagesKnown: true,
@@ -176,6 +188,16 @@ function EpisodeForm({
           <span className="mb-1.5 block text-sm font-semibold text-slate-200">Episode title</span>
           <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder={`Episode ${number}`} maxLength={80} className={`${input} placeholder:text-slate-600`} />
         </label>
+
+        <ImageDrop
+          label="Thumbnail (optional)"
+          hint="Portrait, 3:4. Page 1 is used if you skip it."
+          value={thumbnail}
+          onChange={setThumbnail}
+          aspect="aspect-[3/4]"
+          maxWidth={480}
+          className="max-w-[13rem]"
+        />
 
         <div>
           <div className="mb-1.5 flex items-end justify-between gap-3">
@@ -194,9 +216,9 @@ function EpisodeForm({
           <PageGrid
             pages={pages}
             onChange={setPages}
-            // Credits episodes: the key on a thumbnail picks where paid access begins.
-            paidFrom={access === "credits" ? paidFromOf({ paidFrom }) : null}
-            onPaidFrom={setPaidFrom}
+            // From episode 4: the lock on a thumbnail locks that panel.
+            locked={canEarn ? locked : null}
+            onToggleLock={toggleLock}
           />
           <PageDrop onFiles={addFiles} uploading={uploading} full={pages.length >= MAX_PAGES} />
           {failed.length > 0 && (
@@ -224,21 +246,48 @@ function EpisodeForm({
 
       <aside className="grid content-start gap-6 border-2 border-line bg-panel p-5">
         <div data-tour="chapter-monetize">
-          <p className="mb-2 text-sm font-semibold text-slate-200">Monetization</p>
-          <p className="flex items-center gap-2 font-semibold text-white">
-            <span className={`tag ${access === "free" ? "bg-mint" : access === "ads" ? "bg-paper" : "bg-sun"}`}>{ACCESS_NOTE[access].tag}</span>
-            {ACCESS_NOTE[access].title}
-          </p>
-          <p className="mt-1.5 flex gap-2 text-xs leading-5 text-slate-400">
-            <IoInformationCircleOutline className="mt-0.5 shrink-0 text-base" />
-            {access === "credits"
-              ? `Pages 1–${paidFromOf({ paidFrom }) - 1} are a free preview. Use the key on a page to choose where paid access begins.`
-              : access === "ads"
-                ? "Ads show alongside this episode. It's free for readers."
-                : monetized
-                  ? `Episodes 1–${FREE_EPISODES} are always free so new readers get hooked. This Mafiki earns from episode ${MONETIZE_FROM}.`
-                  : "This Mafiki isn't monetized. Monetization is chosen when you create a Mafiki, after your 4-episode milestone."}
-          </p>
+          {canEarn ? (
+            <>
+              <p className="mb-2 text-sm font-semibold text-slate-200">Monetization</p>
+              <label className="flex cursor-pointer items-start gap-3 border-2 border-line px-3 py-2.5 has-[:checked]:border-mint">
+                <input type="checkbox" checked={ads} onChange={(e) => setAds(e.target.checked)} className="mt-1 accent-[var(--color-mint)]" />
+                <span>
+                  <span className="block font-semibold text-white">Show ads</span>
+                  <span className="block text-xs text-slate-400">Ads show alongside this episode. It stays free to read.</span>
+                </span>
+              </label>
+              <div className="mt-3 border-2 border-line px-3 py-2.5">
+                <p className="flex items-center gap-1.5 font-semibold text-white">
+                  <IoLockClosed className={lockedCount ? "text-sun" : "text-slate-500"} aria-hidden="true" />
+                  {lockedCount ? `${lockedCount} of ${pages.length} panels locked` : "No locked panels"}
+                </p>
+                <p className="mt-1 text-xs leading-5 text-slate-400">
+                  Tap the lock on a page to lock that panel. Readers unlock locked panels with credits, one at a time or the whole episode.
+                </p>
+                {pages.length > 0 && (
+                  <div className="mt-2 flex gap-3 text-xs font-semibold">
+                    <button type="button" onClick={() => setLocked(new Set(pages))} disabled={lockedCount === pages.length} className="text-sun hover:underline disabled:opacity-40">
+                      Lock all
+                    </button>
+                    <button type="button" onClick={() => setLocked(new Set())} disabled={lockedCount === 0} className="text-slate-300 hover:underline disabled:opacity-40">
+                      Unlock all
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="mb-2 text-sm font-semibold text-slate-200">Monetization</p>
+              <p className="flex items-center gap-2 font-semibold text-white">
+                <span className="tag bg-mint">Free</span> Free to read
+              </p>
+              <p className="mt-1.5 flex gap-2 text-xs leading-5 text-slate-400">
+                <IoInformationCircleOutline className="mt-0.5 shrink-0 text-base" />
+                Episodes 1–{FREE_EPISODES} are always free so new readers get hooked. From episode {MONETIZE_FROM} you can show ads and lock panels.
+              </p>
+            </>
+          )}
         </div>
 
         <fieldset>
@@ -321,21 +370,15 @@ function PageDrop({ onFiles, uploading, full }: { onFiles: (files: File[]) => vo
   );
 }
 
-const ACCESS_NOTE: Record<EpisodeAccess, { tag: string; title: string }> = {
-  free: { tag: "Free", title: "Free to read" },
-  ads: { tag: "Ads", title: "Earns with ads" },
-  credits: { tag: "Credits", title: "Earns with credits" },
-};
-
 type PageGridProps = {
   pages: string[];
   onChange: (pages: string[]) => void;
-  // 1-based page where paid access begins, or null when the episode isn't paid with credits.
-  paidFrom: number | null;
-  onPaidFrom: (page: number | null) => void;
+  // The locked panels (by image), or null for episodes that can't lock any (1–3).
+  locked: Set<string> | null;
+  onToggleLock: (ref: string) => void;
 };
 
-function PageGrid({ pages, onChange, paidFrom, onPaidFrom }: PageGridProps) {
+function PageGrid({ pages, onChange, locked, onToggleLock }: PageGridProps) {
   const [dragging, setDragging] = useState<number | null>(null);
   if (!pages.length) return null;
 
@@ -362,25 +405,24 @@ function PageGrid({ pages, onChange, paidFrom, onPaidFrom }: PageGridProps) {
           className={`group relative cursor-grab ${dragging === i ? "opacity-40" : ""}`}
         >
           <StudioImage src={ref} width={240} className="aspect-[3/4] w-full border-2 border-line group-hover:border-mint" />
-          {paidFrom !== null && i + 1 >= paidFrom && (
-            <span className="pointer-events-none absolute inset-0.5 bg-ink/45" aria-hidden="true">
-              <IoLockClosed className="absolute bottom-1.5 right-1.5 text-sm text-sun" />
-            </span>
+          {locked?.has(ref) && (
+            <span className="pointer-events-none absolute inset-0.5 bg-ink/45" aria-hidden="true" />
           )}
           <span className="absolute left-1 top-1 bg-ink/85 px-1.5 text-xs font-bold text-white">{i + 1}</span>
-          {paidFrom !== null && (
+          {locked && (
             <button
               type="button"
-              onClick={() => onPaidFrom(i + 1 === paidFrom ? null : i + 1)}
-              data-tour={i + 1 === paidFrom || (paidFrom > pages.length && i === pages.length - 1) ? "chapter-key" : undefined}
-              aria-pressed={i + 1 === paidFrom}
-              aria-label={i + 1 === paidFrom ? `Paid access begins at page ${i + 1} (reset to the default)` : `Begin paid access at page ${i + 1}`}
-              title={i + 1 === paidFrom ? "Paid access begins here" : "Begin paid access here"}
+              onClick={() => onToggleLock(ref)}
+              // The tutorial's "lock panels" step points at the first page's lock.
+              data-tour={i === 0 ? "panel-lock" : undefined}
+              aria-pressed={locked.has(ref)}
+              aria-label={locked.has(ref) ? `Unlock panel ${i + 1}` : `Lock panel ${i + 1}`}
+              title={locked.has(ref) ? "Locked: readers unlock it with credits" : "Lock this panel"}
               className={`absolute bottom-1 left-1 flex h-6 w-6 items-center justify-center border text-sm ${
-                i + 1 === paidFrom ? "border-black bg-sun text-ink" : "border-black bg-ink/90 text-slate-300 opacity-0 hover:text-sun group-hover:opacity-100"
+                locked.has(ref) ? "border-black bg-sun text-ink" : "border-black bg-ink/90 text-slate-300 opacity-70 hover:text-sun group-hover:opacity-100"
               }`}
             >
-              <IoKey />
+              {locked.has(ref) ? <IoLockClosed /> : <IoLockOpenOutline />}
             </button>
           )}
           <button

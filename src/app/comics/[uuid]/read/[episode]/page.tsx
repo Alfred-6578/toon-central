@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { EpisodeEnd } from "@/components/reader/EpisodeEnd";
 import { EpisodeLoader } from "@/components/reader/EpisodeLoader";
@@ -43,6 +43,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 // What this request's reader has unlocked, and the time to judge 24-hour unlocks against.
+// Crawlers and link previews. Fetching the pages counts a view, so they get the stand-ins instead.
+const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|headless/i;
+
 async function readAccess() {
   const jar = await cookies();
   return [parseUnlocks(jar.get(UNLOCKS_COOKIE)?.value), Date.now(), parsePass(jar.get(PASS_COOKIE)?.value)?.until ?? null] as const;
@@ -63,7 +66,9 @@ export default async function ReaderPage({ params, searchParams }: Params) {
   const token = await getAccessToken();
   const signedIn = isLive("accounts") ? token !== null : (await cookies()).get(SESSION_COOKIE)?.value === "1";
   const signedOutGate = isLive("reading") && episode > 1 && !signedIn;
-  const real = hasId && token && !signedOutGate ? await getEpisodePages(comic.uuid, episodeId, episode) : null;
+  // Episode 1 is open to everyone; later ones need a real token (the demo sign-in gets stand-ins).
+  const canFetch = hasId && !signedOutGate && (token !== null || episode === 1) && !BOT.test((await headers()).get("user-agent") ?? "");
+  const real = canFetch ? await getEpisodePages(comic.uuid, episodeId, episode) : null;
   if (signedOutGate || real?.status === "signin") {
     return (
       <div className="h-dvh overflow-hidden bg-ink text-white">

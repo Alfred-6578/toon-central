@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Anton, Archivo } from "next/font/google";
 import { isLive } from "@/lib/api/config";
 import { AccountsProvider } from "@/lib/mockSession";
+import { SIGNED_IN_HINT } from "@/lib/session";
 import "./globals.css";
 
 const anton = Anton({
@@ -24,9 +25,18 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" data-scroll-behavior="smooth" className={`${anton.variable} ${archivo.variable} h-full antialiased`}>
+    // suppressHydrationWarning: the script below may add data-session-hint before React hydrates.
+    <html lang="en" data-scroll-behavior="smooth" className={`${anton.variable} ${archivo.variable} h-full antialiased`} suppressHydrationWarning>
+      <head>
+        {/* Runs before the page is drawn: a signed-in reader never sees "Sign in / Join now" flash. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `document.cookie.split("; ").includes("${SIGNED_IN_HINT}=1")&&document.documentElement.setAttribute("data-session-hint","")`,
+          }}
+        />
+      </head>
       <body className="min-h-full bg-ink text-white">
-        <AccountsProvider live={isLive("accounts")}>{children}</AccountsProvider>
+        <AccountsProvider live={isLive("accounts")} readerActions={isLive("readerActions")}>{children}</AccountsProvider>
       </body>
     </html>
   );

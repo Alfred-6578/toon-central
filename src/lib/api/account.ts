@@ -1,7 +1,7 @@
 import type { MockUser } from "@/lib/mockSession";
 import { isLive } from "./config";
 import { apiRequest } from "./http";
-import { clearAccessToken, getAccessToken, saveAccessToken } from "./token";
+import { clearAccessToken, getAccessToken, saveAccessToken, tokenLifetime } from "./token";
 
 // Accounts (Phase 2 area "accounts"): sign in, join, password reset and the signed-in reader's profile.
 // Server-only. The access token never reaches the browser; it lives in the httpOnly cookie (token.ts).
@@ -50,18 +50,6 @@ export function toSessionUser(raw: Raw): SessionUser {
     dob: str(raw.dob) || null,
     referralCode: str((raw.referralCode as Raw | undefined)?.code) || null,
   };
-}
-
-// Seconds until the token's own expiry (it's a JWT; the backend issues them for about 92 days).
-function tokenLifetime(token: string) {
-  try {
-    const { exp } = JSON.parse(Buffer.from(token.split(".")[1], "base64url").toString());
-    const seconds = Math.floor(exp - Date.now() / 1000);
-    if (seconds > 0) return seconds;
-  } catch {
-    // Not a JWT we can read: fall back below.
-  }
-  return 30 * 24 * 60 * 60;
 }
 
 // The backend's messages, reworded where they'd tell a stranger whether an email has an account.
@@ -124,11 +112,17 @@ export async function forgotPassword(email: string): Promise<AccountResult> {
 
 // The reader this request belongs to, or null when signed out (or the token stopped working).
 export async function getSessionUser(): Promise<SessionUser | null> {
-  if (!isLive("accounts")) return null;
+  return (await checkSession()).user;
+}
+
+// The same, plus whether the backend refused the token (401: signed in somewhere else, or expired), as
+// opposed to not answering, which shouldn't sign anyone out.
+export async function checkSession(): Promise<{ user: SessionUser | null; rejected: boolean }> {
+  if (!isLive("accounts")) return { user: null, rejected: false };
   const token = await getAccessToken();
-  if (!token) return null;
+  if (!token) return { user: null, rejected: true };
   const result = await apiRequest<Raw>("/profile", { token });
-  return result.ok ? toSessionUser(result.data) : null;
+  return result.ok ? { user: toSessionUser(result.data), rejected: false } : { user: null, rejected: result.status === 401 };
 }
 
 export type ProfileFields = {

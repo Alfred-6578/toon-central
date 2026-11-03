@@ -16,7 +16,7 @@ switched back to mock without touching the rest.
 | 0. Foundations | none | Plumbing only, nothing visible changes | Done |
 | 1. Public reading | `reading` | Home, Discover, comics, episodes, genres, originals, New & Popular, search, shorts, creator pages | **Ready for review** (episode lists and pages wait on the backend) |
 | 2. Accounts | `accounts` | Register, verify, sign in/out, reset password, profile, avatar | **In progress** (sign in/out, join, reset request done) |
-| 3. Reader actions | `readerActions` | Likes, subscribe, library (favourites), follow, comments, view counts | |
+| 3. Reader actions | `readerActions` | Likes, subscribe, library (favourites), follow, comments, view counts | **Ready for review** on staging (subscribe waits on the backend) |
 | 4. Money | `money` | Wallet, plans, credit packs, checkout, unlocks, transaction history | |
 | 5. Creator Studio | `studio` | Comics, chapters and shorts: create, edit, publish, real uploads | |
 | 6. Waiting on backend | none | Notifications feed, referrals, MTN pass, earnings/payouts, Creator Rewards views, trailers, per-Mafiki monetization, panel locks, ad offers, Creator of the Month | Needs endpoints |
@@ -177,3 +177,69 @@ referral counts on `/me`.
     forms check, but the API should too.)
 14. A failed sign-in answers **HTTP 200** with `status: false`. Use 401/422 so clients can't mistake it
     for success.
+
+## Phase 3: Reader actions
+
+**What the endpoints do (checked on staging with the test reader, 3 Nov)**
+
+| Action | Endpoint | Behaviour |
+|---|---|---|
+| Like a comic | `GET comics/:uuid/like` | Toggles; the message says "liked" or "unliked" |
+| Liked comics | `GET user-likes` | The reader's liked comics; 404 "no likes found" when none |
+| Save to library | `GET comics/:uuid/add-to-favourite` | Adds only; calling it again changes nothing |
+| Library | `GET comics/favourites` | The reader's saved comics, paged |
+| Follow / unfollow | `GET profile/:id/follow`, `/unfollow` | Safe to repeat; needs the creator's user id |
+| Follow status | `GET profile/:id/check-follow-status` | `true` / `false` |
+| Like a short | `GET shorts/:uuid/like` (and `/dislike`) | Toggles, like comics |
+| Short comments | `GET short-comments/:uuid`, `POST short-comments/:uuid/add-comment` | By the short's uuid; public to read; newest first; empty comment refused (422) |
+| Comic comments | `GET comments/:id`, `POST comments/:id/add-comment` | By the comic's number id (the uuid gives 500) |
+| Episode comments | `GET episode-comments/:id`, `POST episode-comments/:id/add-episode-comment` | By the episode id |
+| Subscribe | `GET comics/:uuid/subscribe` | **500 Server Error** |
+
+**What was built (3 Nov)**
+
+- Switch: `readerActions` in `TOON_API_LIVE` (needs `accounts` too). Off, everything stays in the browser
+  as before.
+- Comic likes and the library load from the account once per page (`user-likes` and `comics/favourites`)
+  and every like, save and follow goes to the backend (`src/lib/api/readerActions.ts`,
+  `src/app/actions/reader.ts`). Buttons change straight away and go back if the backend refuses.
+- Follow buttons ask the backend whether the reader follows that creator, so the state is right on any device.
+- The comic page's like count comes from opening the comic (not the 5-minute cached catalogue), so it
+  includes the reader's latest like.
+- Shorts: likes go to the backend; the comments drawer shows the real comments (name and photo only)
+  and posts new ones. Anyone can read them; posting needs sign-in.
+- Signed out with live actions, the buttons send the reader to sign in. Signing out wipes the copy of
+  the reader's likes, library and follows kept in the browser.
+- Tested in a browser on staging: like, save, follow, then wipe the browser's copy and reload (the
+  state came back from the backend), undo all three, short comments read and post, short like and unlike,
+  sign-out.
+
+**Views (4 Nov)**: the backend counts a view on `comics/:uuid/view` and on the episode endpoint (every
+call when signed out, once per reader when signed in), and on `shorts/:uuid/view` (`infinite-view` counts
+nothing). We count: opening a comic page (once per visit, from the browser), opening an episode
+(episode 1 now for signed-out readers too, with real pages; never for crawlers), and a short once it
+has played for 3 seconds (once per short per visit). List endpoints show counts the backend has cached,
+so new views take a while to appear there.
+
+**Still in the browser only**: subscribing (finding 15), saved shorts and comment likes (no endpoints).
+Taking a comic out of the library only hides it in that browser (finding 16).
+
+**Not built yet**: comment sections for comics and episodes (the endpoints work; the site has no
+comment UI there yet).
+
+**For the backend team (Phase 3 findings)**
+
+15. **Subscribe fails**: `comics/:uuid/subscribe` answers 500 every time.
+16. **No way to remove a comic from favourites.** `add-to-favourite` only adds. Please add a remove (or
+    make it toggle, like `like`), otherwise the library only grows.
+17. **`comics/subscribed` lists every reader's subscriptions**, with their email, date of birth and phone,
+    and works with no token. It should return only the signed-in reader's.
+18. **Comments expose commenters' private details**: each comment (comic, episode and short) carries the
+    commenter's whole account (email, phone, date of birth). Our server strips them, but anyone can call
+    the API directly. Send only username and photo.
+19. No list of the creators a reader follows (we check one creator at a time), and no list of liked
+    shorts. Both are needed for the library's Following tab and the shorts feed on a new device.
+20. Like, follow, favourite and subscribe are GET requests that change data (also question 6 above).
+    Browsers, crawlers and link previews can trigger them. They should be POST.
+21. Signed-out views count on every call, so one visitor refreshing can inflate a comic's or short's
+    views. Counting once per visitor (by IP or a device id) per day would match how signed-in views work.
