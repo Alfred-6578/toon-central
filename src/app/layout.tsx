@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Anton, Archivo } from "next/font/google";
+import { isLive } from "@/lib/api/config";
+import { AccountsProvider } from "@/lib/mockSession";
 import "./globals.css";
 
 const anton = Anton({
@@ -23,7 +25,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" data-scroll-behavior="smooth" className={`${anton.variable} ${archivo.variable} h-full antialiased`}>
-      <body className="min-h-full bg-ink text-white">{children}</body>
+      <body className="min-h-full bg-ink text-white">
+        <AccountsProvider live={isLive("accounts")}>{children}</AccountsProvider>
+      </body>
     </html>
   );
 }

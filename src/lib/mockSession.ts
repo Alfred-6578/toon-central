@@ -1,10 +1,12 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { createContext, createElement, useContext, useEffect, useSyncExternalStore, type ReactNode } from "react";
+import { authHref } from "./auth";
 import { SESSION_COOKIE } from "./session";
 
-// Stand-in for real auth: "Sign in" / "Join now" flip this on, "Sign out" flips it off.
-// Persisted in localStorage so a refresh keeps the state. Swap for the real session later.
+// The signed-in reader. With accounts live (TOON_API_LIVE has "accounts") it's the real account, read
+// from our server (/api/session); otherwise it's the stand-in below: "Sign in" / "Join now" flip it
+// on, "Sign out" flips it off, persisted in localStorage so a refresh keeps the state.
 const STORAGE_KEY = "tc-mock-signed-in";
 
 export type MockUser = {
@@ -20,6 +22,7 @@ export type MockUser = {
   // Friends who joined with this reader's referral link, newest first. Sample: the API has no
   // referral data yet.
   referrals: { name: string; joined: string }[];
+  photo?: string | null;
 };
 
 export const mockUser: MockUser = {
@@ -209,10 +212,63 @@ export function spendCredits(amount: number) {
   listeners.forEach((listener) => listener());
 }
 
+// Whether accounts are live, set once by the root layout (the setting is server-side).
+const AccountsLiveContext = createContext(false);
+
+export function AccountsProvider({ live, children }: { live: boolean; children: ReactNode }) {
+  return createElement(AccountsLiveContext.Provider, { value: live }, children);
+}
+
+// The real session, fetched once per page load and again after signing in or out.
+type RealSession = { status: "idle" | "loading" | "ready"; user: MockUser | null };
+const IDLE: RealSession = { status: "idle", user: null };
+let realSession = IDLE;
+
+function setRealSession(next: RealSession) {
+  realSession = next;
+  listeners.forEach((listener) => listener());
+}
+
+export function loadSession(force = false) {
+  if (!force && realSession.status !== "idle") return Promise.resolve();
+  setRealSession({ ...realSession, status: "loading" });
+  return fetch("/api/session", { cache: "no-store" })
+    .then((res) => (res.ok ? res.json() : { user: null }))
+    .then((data: { user?: MockUser | null }) => setRealSession({ status: "ready", user: data.user ?? null }))
+    .catch(() => setRealSession({ status: "ready", user: null }));
+}
+
+function useRealSession() {
+  const live = useContext(AccountsLiveContext);
+  const session = useSyncExternalStore(subscribe, () => realSession, () => IDLE);
+  useEffect(() => {
+    if (live) loadSession();
+  }, [live]);
+  return { live, session };
+}
+
+// Signed-out readers who like, follow or save are sent to sign in, then brought back here.
+const goToSignIn = () => window.location.assign(authHref("signin", window.location.pathname + window.location.search));
+
+async function signOutLive() {
+  await fetch("/api/session", { method: "DELETE" }).catch(() => null);
+  setRealSession({ status: "ready", user: null });
+  // Server-rendered pages (the reader) were built for the signed-in reader.
+  window.location.reload();
+}
+
 export function useMockSession() {
+  const { live, session } = useRealSession();
   const signedIn = useSyncExternalStore(subscribe, read, () => false);
   const edits: ProfileEdits = JSON.parse(useSyncExternalStore(subscribe, readProfile, () => "{}"));
   const spent = Number(useSyncExternalStore(subscribe, readSpent, () => "0")) || 0;
+
+  if (live) {
+    // Credits spent on (still mock) unlocks come off the real balance until Phase 4.
+    const user = session.user && { ...session.user, credits: Math.max(0, session.user.credits - spent) };
+    return { user, signIn: goToSignIn, signOut: signOutLive };
+  }
+
   const user = { ...mockUser, ...edits, credits: Math.max(0, mockUser.credits - spent) };
   user.initials = initialsOf(user.name);
 
@@ -225,8 +281,10 @@ export function useMockSession() {
 
 const noopSubscribe = () => () => {};
 
-// False on the server and during hydration, true after. Account pages wait for it so a signed-in
-// reader doesn't see a "Sign in" panel flash before their session is read from this browser.
+// False on the server and during hydration, true after (and, with live accounts, once the session has
+// loaded). Account pages wait for it so a signed-in reader doesn't see a "Sign in" panel flash first.
 export function useHydrated() {
-  return useSyncExternalStore(noopSubscribe, () => true, () => false);
+  const { live, session } = useRealSession();
+  const hydrated = useSyncExternalStore(noopSubscribe, () => true, () => false);
+  return hydrated && (!live || session.status === "ready");
 }

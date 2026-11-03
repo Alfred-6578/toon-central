@@ -15,7 +15,7 @@ switched back to mock without touching the rest.
 |---|---|---|---|
 | 0. Foundations | none | Plumbing only, nothing visible changes | Done |
 | 1. Public reading | `reading` | Home, Discover, comics, episodes, genres, originals, New & Popular, search, shorts, creator pages | **Ready for review** (episode lists and pages wait on the backend) |
-| 2. Accounts | `accounts` | Register, verify, sign in/out, reset password, profile, avatar | |
+| 2. Accounts | `accounts` | Register, verify, sign in/out, reset password, profile, avatar | **In progress** (sign in/out, join, reset request done) |
 | 3. Reader actions | `readerActions` | Likes, subscribe, library (favourites), follow, comments, view counts | |
 | 4. Money | `money` | Wallet, plans, credit packs, checkout, unlocks, transaction history | |
 | 5. Creator Studio | `studio` | Comics, chapters and shorts: create, edit, publish, real uploads | |
@@ -117,6 +117,29 @@ Both endpoints with episodes add a view on every call (checked on staging: `comi
   public lists under `selectables/`.
 - Forgot password sends an email; there's no endpoint for choosing the new password except `set-password`.
 
+**What was built (3 Nov)**
+
+- Sign in, join (the full form: first and last name, username, email, Nigerian phone number, network with
+  MTN first, password, terms), forgot password, and resending the verification email, all through our
+  server (`src/lib/api/account.ts`, `src/app/auth/actions.ts`). "Continue with Google" is hidden while
+  accounts are live (no endpoint).
+- The token is kept in the httpOnly `tc-access` cookie for as long as it lasts (92 days); the browser
+  only learns who's signed in from `/api/session`. Signing out forgets the token (there's no sign-out
+  endpoint, so it stays valid on the backend until it expires).
+- Every component that used the demo reader now gets the real one when `accounts` is live; liking,
+  following or saving while signed out sends the reader to sign in and back.
+- Signed-in readers get real pages for episodes after the first (the reader sends their token).
+- Tested on staging with a test reader (login in `.env.local`, git-ignored): wrong password, sign-in,
+  session, token cookie not readable by page scripts, episode 2 real pages, sign-out.
+
+**How to try it**: in `.env.local`, point `TOON_API_BASE_URL` at the staging server and set
+`TOON_API_LIVE=reading,accounts`, restart the dev server, and sign in with the test reader.
+Don't switch `accounts` on against production until the backend findings below are fixed.
+
+**Not built yet**: the page the verification and reset email links open (we don't know where they point),
+choosing a new password after a reset (waits on finding 2), editing the profile and photo, changing the
+password, Google sign-in, and real follower and referral counts on `/me`.
+
 **For the backend team (Phase 2 findings)**
 
 1. **Sign-up returns the verification code** in its response (`data`). Anyone can then verify an email
@@ -129,3 +152,10 @@ Both endpoints with episodes add a view on every call (checked on staging: `comi
 4. One example of a successful sign-in response, and how the token expires and is refreshed.
 5. Which page the verify and reset email links open (ours, so we can build it), and Google sign-in, if wanted.
 6. "T-Mobile NG" in the mobile operators list is probably meant to be 9mobile.
+7. **Reset emails don't arrive** (same on the live site). `onboard/forgot-password` answers 200 "A mail has
+   been sent…", so the request works; the email isn't delivered. Check the mail queue worker, mail settings
+   and spam (SPF/DKIM for the sending domain). Worth checking the sign-up verification email too.
+8. Forgot password also returns a code in `data`, like sign-up. If that's the reset code, anyone can reset any
+   account without the email. It must only go out by email.
+9. `profile/change-password` doesn't ask for the current password, so anyone holding a signed-in device can
+   lock the owner out.

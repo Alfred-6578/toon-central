@@ -3,7 +3,9 @@ import { notFound } from "next/navigation";
 import { AuthForm } from "@/components/auth/AuthForm";
 import { AuthShell } from "@/components/auth/AuthShell";
 import { Navigation } from "@/components/layout/Navigation";
+import { getMobileOperators } from "@/lib/api/account";
 import { getCatalogue } from "@/lib/api/client";
+import { isLive } from "@/lib/api/config";
 import { safeNext, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
 
 const PAGES: Record<AuthMode, { title: string; bubble: string }> = {
@@ -30,7 +32,8 @@ export default async function AuthPage({ params, searchParams }: PageProps<"/aut
   const rawRef = Array.isArray(query.ref) ? query.ref[0] : query.ref;
   const referrer = mode === "signup" && rawRef && USERNAME_PATTERN.test(rawRef) ? rawRef : null;
   // The art side: the four most-read covers.
-  const covers = [...(await getCatalogue())].sort((a, b) => b.views - a.views).slice(0, 4);
+  const [catalogue, operators] = await Promise.all([getCatalogue(), mode === "signup" ? getMobileOperators() : []]);
+  const covers = [...catalogue].sort((a, b) => b.views - a.views).slice(0, 4);
 
   return (
     <div className="relative min-h-screen overflow-hidden text-white">
@@ -40,7 +43,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<"/aut
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-80" />
         <div className="relative">
           <AuthShell covers={covers} bubble={PAGES[mode].bubble}>
-            <AuthForm mode={mode} next={next} referrer={referrer} />
+            <AuthForm mode={mode} next={next} referrer={referrer} live={isLive("accounts")} operators={operators} />
           </AuthShell>
         </div>
       </main>
