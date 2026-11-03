@@ -102,3 +102,30 @@ Both endpoints with episodes add a view on every call (checked on staging: `comi
    Otherwise anyone can read paid pages. Fix before Phase 4.
 3. Image links contain creators' email addresses (e.g. `.../Reader/someone%40gmail.com/...`), and comic
    responses include the creator's email and phone. Both should be removed from public responses.
+
+## Phase 2: Accounts
+
+**What we know (checked on staging, 3 Nov, without creating anything)**
+
+- Sign-in: `POST onboard/login` with `email` and `password`. Errors come back as HTTP 422
+  `{ header: "Form Error", status: false, message }`, one message at a time. What a successful sign-in
+  returns (where the token is, how long it lasts) still has no example.
+- Sign-up is the full form ("New Registration"): `username`, `firstName`, `lastName` and `email` are
+  required (in that order); the example also sends `password`, `confirmedPassword`, `countryId`,
+  `mobileOperatorId`, `telephone` and `referralCode`. Success sends an email with a link to `onboard/verify`.
+- Countries (193), mobile operators (MTN, Glo, Airtel, "T-Mobile NG") and user types (Creator, Reader) are
+  public lists under `selectables/`.
+- Forgot password sends an email; there's no endpoint for choosing the new password except `set-password`.
+
+**For the backend team (Phase 2 findings)**
+
+1. **Sign-up returns the verification code** in its response (`data`). Anyone can then verify an email
+   address they don't own. The code must only go out by email.
+2. **`set-password` takes only an email** and the new password, with no code or token. If it works on an
+   existing account, anyone can take over any account by its email. It needs the reset code from the email.
+3. Sign-in and forgot password answer "This email address does not exists", which tells anyone whether an
+   email has an account. Use one message for wrong email or password, and "If that email has an account,
+   we've sent a link" for resets. Sign-in also needs rate limiting.
+4. One example of a successful sign-in response, and how the token expires and is refreshed.
+5. Which page the verify and reset email links open (ours, so we can build it), and Google sign-in, if wanted.
+6. "T-Mobile NG" in the mobile operators list is probably meant to be 9mobile.
