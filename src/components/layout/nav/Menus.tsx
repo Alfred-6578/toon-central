@@ -16,6 +16,7 @@ import {
   IoVideocamOutline,
   IoWalletOutline,
 } from "react-icons/io5";
+import { cloudinaryAvatar } from "@/lib/format";
 import type { MockUser } from "@/lib/mockSession";
 import type { MockNotification } from "@/lib/notifications";
 import { notificationHref } from "@/components/notifications/kinds";
@@ -56,7 +57,12 @@ export function MenuItem({ label, href, icon: Icon, hint, onClick }: MenuItemPro
 
 const MenuDivider = () => <div className="my-1 border-t-2 border-line" />;
 
-export function Avatar({ user, className = "h-9 w-9 text-sm" }: { user: MockUser; className?: string }) {
+// The reader's photo, or their initials. The backend gives every new account a generated Gravatar
+// pattern, which reads as noise next to the site's art, so that one counts as no photo.
+export function Avatar({ user, className = "h-9 w-9 text-sm", size = 72 }: { user: MockUser; className?: string; size?: number }) {
+  if (user.photo && !user.photo.includes("gravatar.com")) {
+    return <img src={cloudinaryAvatar(user.photo, size)} alt="" className={`shrink-0 border-2 border-black object-cover ${className}`} />;
+  }
   return (
     <span className={`flex shrink-0 items-center justify-center border-2 border-black bg-sun font-display text-ink ${className}`}>
       {user.initials}

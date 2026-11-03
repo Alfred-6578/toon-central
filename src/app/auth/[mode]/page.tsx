@@ -28,7 +28,8 @@ export default async function AuthPage({ params, searchParams }: PageProps<"/aut
   if (!isMode(mode)) notFound();
 
   const next = safeNext(Array.isArray(query.next) ? query.next[0] : query.next);
-  // Referral links: /auth/signup?ref=username. Only a well-formed username is shown back.
+  // Referral links: /auth/signup?ref=CODE (the inviter's referral code; their username in the preview).
+  // Only a well-formed value is accepted.
   const rawRef = Array.isArray(query.ref) ? query.ref[0] : query.ref;
   const referrer = mode === "signup" && rawRef && USERNAME_PATTERN.test(rawRef) ? rawRef : null;
   // The art side: the four most-read covers.

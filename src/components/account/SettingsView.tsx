@@ -9,7 +9,9 @@ import { Avatar } from "@/components/layout/nav/Menus";
 import { authHref, USERNAME_PATTERN } from "@/lib/auth";
 import { timeAgo } from "@/lib/format";
 import { useLocalValue } from "@/lib/localValue";
+import type { MobileOperator } from "@/lib/api/account";
 import { updateProfile, useMockSession, useHydrated } from "@/lib/mockSession";
+import { ChangePasswordForm, LiveProfileForm } from "./LiveAccountForms";
 import { clearProgress, useReadingProgress } from "@/lib/readingProgress";
 import { MtnPayFlow, openMtnPay } from "@/components/mtn/MtnPayFlow";
 import { PassBanner } from "@/components/mtn/PassBanner";
@@ -38,9 +40,10 @@ const NOTIFY_OPTIONS = [
   { key: "email", label: "Email newsletter", hint: "Occasional picks and news from Toon Central.", fallback: false },
 ] as const;
 
-// Account settings. Preview only: edits are kept in this browser and the mock profile picks them up,
-// so the header and /me show the new name straight away.
-export function SettingsView() {
+// Account settings. With accounts live, the profile, photo and password are saved to the account
+// (LiveAccountForms); reading and notification settings stay in this browser either way. In the
+// preview, edits are kept in this browser and the mock profile picks them up.
+export function SettingsView({ live = false, operators = [] }: { live?: boolean; operators?: MobileOperator[] }) {
   const { user } = useMockSession();
 
   const hydrated = useHydrated();
@@ -65,13 +68,22 @@ export function SettingsView() {
       </nav>
 
       <div className="grid gap-8">
-        <ProfileSection />
-        <AccountSection />
+        {live ? (
+          <Section id="profile" title="Profile" lede="How you appear to creators and other readers.">
+            <LiveProfileForm operators={operators} />
+            <ReferralLink />
+          </Section>
+        ) : (
+          <ProfileSection />
+        )}
+        <AccountSection live={live} />
         <ReadingSection />
         <NotificationsSection />
         <PrivacySection />
         <p className="border-2 border-dashed border-line px-4 py-3 text-xs leading-5 text-slate-500">
-          Preview: settings are saved in this browser only. They move to your account once the live API is connected.
+          {live
+            ? "Reading and notification settings are saved in this browser for now."
+            : "Preview: settings are saved in this browser only. They move to your account once the live API is connected."}
         </p>
       </div>
     </div>
@@ -201,8 +213,9 @@ function ProfileSection() {
 function ReferralLink() {
   const { user } = useMockSession();
   const [status, setStatus] = useState<string | null>(null);
-  // Only rendered after hydration (SettingsView waits), so window is available.
-  const url = `${window.location.origin}/auth/signup?ref=${encodeURIComponent(user!.username)}`;
+  // Only rendered after hydration (SettingsView waits), so window is available. Real accounts invite
+  // with their referral code (what the backend credits); the preview uses the username.
+  const url = `${window.location.origin}/auth/signup?ref=${encodeURIComponent(user!.referralCode ?? user!.username)}`;
 
   const flash = (message: string) => {
     setStatus(message);
@@ -306,7 +319,7 @@ const initials = (name: string) =>
     .map((p) => p[0]!.toUpperCase())
     .join("") || "?";
 
-function AccountSection() {
+function AccountSection({ live }: { live: boolean }) {
   const { user } = useMockSession();
   const [email, setEmail] = useState(user!.email);
   const [submitted, setSubmitted] = useState(false);
@@ -315,6 +328,13 @@ function AccountSection() {
 
   return (
     <Section id="account" title="Account">
+      {live ? (
+        <div className="max-w-md">
+          <p className="text-sm font-semibold text-slate-200">Email</p>
+          <p className="mt-1.5 text-base text-white">{user!.email}</p>
+          <p className="mt-1.5 text-xs text-slate-500">Changing your email isn&apos;t available yet.</p>
+        </div>
+      ) : (
       <form
         noValidate
         onSubmit={(e) => {
@@ -340,17 +360,30 @@ function AccountSection() {
         </div>
         <SaveRow saved={saved} label="Update email" />
       </form>
+      )}
 
       <MtnPassSetting />
 
-      <div className="mt-8 grid gap-4 border-t-2 border-line pt-6 sm:grid-cols-2">
-        <div>
-          <p className="text-sm font-semibold text-slate-200">Password</p>
-          <p className="mt-1 text-sm text-slate-400">We&apos;ll email you a link to set a new one.</p>
-          <Link href={authHref("forgot", "/settings")} className="mt-3 inline-block text-sm font-semibold text-mint underline-offset-4 hover:underline">
-            Change password
-          </Link>
+      {live && (
+        <div className="mt-8 border-t-2 border-line pt-6">
+          <ChangePasswordForm />
+          <p className="mt-4 text-xs text-slate-500">
+            Forgotten it?{" "}
+            <Link href={authHref("forgot", "/settings")} className="font-semibold text-slate-300 underline-offset-4 hover:underline">Get a reset link</Link>
+          </p>
         </div>
+      )}
+
+      <div className="mt-8 grid gap-4 border-t-2 border-line pt-6 sm:grid-cols-2">
+        {!live && (
+          <div>
+            <p className="text-sm font-semibold text-slate-200">Password</p>
+            <p className="mt-1 text-sm text-slate-400">We&apos;ll email you a link to set a new one.</p>
+            <Link href={authHref("forgot", "/settings")} className="mt-3 inline-block text-sm font-semibold text-mint underline-offset-4 hover:underline">
+              Change password
+            </Link>
+          </div>
+        )}
         <div>
           <p className="text-sm font-semibold text-slate-200">Plan</p>
           <p className="mt-1 flex items-center gap-2 text-sm text-slate-400">

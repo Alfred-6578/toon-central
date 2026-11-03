@@ -43,6 +43,12 @@ export function toSessionUser(raw: Raw): SessionUser {
     followers: 0,
     referrals: [],
     photo: str(raw.photo) || null,
+    firstName: str(raw.firstName),
+    lastName: str(raw.lastName),
+    phone: str(raw.telephone),
+    operatorId: Number(raw.mobileOperatorId) || undefined,
+    dob: str(raw.dob) || null,
+    referralCode: str((raw.referralCode as Raw | undefined)?.code) || null,
   };
 }
 
@@ -84,6 +90,8 @@ export type SignUpFields = {
   telephone: string;
   mobileOperatorId: number;
   password: string;
+  // From an invite link (/auth/signup?ref=CODE).
+  referralCode?: string;
 };
 
 // Every reader joins from Nigeria for now (the only country with mobile operators listed).
@@ -93,7 +101,7 @@ export async function signUp(fields: SignUpFields): Promise<AccountResult> {
   if (!isLive("accounts")) return NOT_LIVE;
   const result = await apiRequest("/onboard/register", {
     method: "POST",
-    body: { ...fields, confirmedPassword: fields.password, countryId: NIGERIA, acceptedTerms: true },
+    body: { ...fields, referralCode: fields.referralCode || undefined, confirmedPassword: fields.password, countryId: NIGERIA, acceptedTerms: true },
     revalidate: false,
   });
   // The response also carries the verification code; it's deliberately dropped here (backend issue).
@@ -121,6 +129,72 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   if (!token) return null;
   const result = await apiRequest<Raw>("/profile", { token });
   return result.ok ? toSessionUser(result.data) : null;
+}
+
+export type ProfileFields = {
+  firstName: string;
+  lastName: string;
+  username: string;
+  bio: string;
+  phone: string;
+  operatorId: number;
+  dob: string;
+};
+
+// The backend checks almost nothing here (it took "x" as a username and "123" as a phone number), so
+// the form validates first; the backend does insist on a date of birth, 18 or over.
+export async function updateProfile(fields: ProfileFields): Promise<AccountResult> {
+  if (!isLive("accounts")) return NOT_LIVE;
+  const token = await getAccessToken();
+  if (!token) return { ok: false, message: "Your session has ended. Sign in again." };
+  const result = await apiRequest("/profile/update", {
+    method: "PATCH",
+    token,
+    body: {
+      firstName: fields.firstName,
+      lastName: fields.lastName,
+      username: fields.username,
+      welcomeNote: fields.bio,
+      telephone: fields.phone,
+      mobileOperatorId: fields.operatorId,
+      dob: fields.dob,
+      countryId: NIGERIA,
+    },
+  });
+  return result.ok ? { ok: true } : { ok: false, message: result.message };
+}
+
+// The backend doesn't ask for the current password, so we check it ourselves (by signing in with it)
+// before changing anything: someone at an unlocked, signed-in device can't take the account over.
+// A sign-in cancels the account's previous token (one session per account), so the check's fresh
+// token is the one we change the password with and keep.
+export async function changePassword(current: string, next: string): Promise<AccountResult> {
+  if (!isLive("accounts")) return NOT_LIVE;
+  const me = await getSessionUser();
+  if (!me) return { ok: false, message: "Your session has ended. Sign in again." };
+  const check = await apiRequest<{ accessToken?: string }>("/onboard/login", { method: "POST", body: { email: me.email, password: current }, revalidate: false });
+  const token = check.ok ? check.data.accessToken : undefined;
+  if (!token) return { ok: false, message: "Your current password isn't right." };
+  await saveAccessToken(token, tokenLifetime(token));
+  const result = await apiRequest("/profile/change-password", { method: "PATCH", token, body: { password: next, confirmedPassword: next } });
+  return result.ok ? { ok: true } : { ok: false, message: result.message };
+}
+
+export const PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp"];
+export const PHOTO_MAX_BYTES = 5 * 1024 * 1024;
+
+export async function uploadPhoto(photo: File): Promise<AccountResult> {
+  if (!isLive("accounts")) return NOT_LIVE;
+  const token = await getAccessToken();
+  if (!token) return { ok: false, message: "Your session has ended. Sign in again." };
+  if (!PHOTO_TYPES.includes(photo.type)) return { ok: false, message: "Use a JPG, PNG or WebP image." };
+  if (photo.size > PHOTO_MAX_BYTES) return { ok: false, message: "That image is over 5 MB. Try a smaller one." };
+  const form = new FormData();
+  form.append("photo", photo);
+  const result = await apiRequest("/profile/upload-image", { method: "POST", token, body: form, timeoutMs: 60_000 });
+  if (result.ok) return { ok: true };
+  // The upload itself failed on the server (it does on staging), not anything the reader did.
+  return { ok: false, message: result.status >= 500 ? "We couldn't upload your photo right now. Please try again later." : result.message };
 }
 
 // There's no sign-out endpoint, so the token stays valid on the backend until it expires; we forget it.

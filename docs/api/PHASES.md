@@ -136,9 +136,17 @@ Both endpoints with episodes add a view on every call (checked on staging: `comi
 `TOON_API_LIVE=reading,accounts`, restart the dev server, and sign in with the test reader.
 Don't switch `accounts` on against production until the backend findings below are fixed.
 
+**Settings (built 3 Nov)**: with accounts live, Settings saves first and last name, username, bio,
+date of birth, phone and network to the account (`PATCH profile/update`), uploads a photo (shrunk to
+512×512 in the browser first) and changes the password. Our server checks the current password by signing
+in with it before changing anything (the backend doesn't ask for it). Email is shown but can't be changed
+(no endpoint). Invite links carry the reader's referral code and the join form passes it on. Tested on
+staging with the test reader: profile save, date-of-birth check, phone check, wrong current password,
+password change and back. The photo upload fails on staging (finding 10).
+
 **Not built yet**: the page the verification and reset email links open (we don't know where they point),
-choosing a new password after a reset (waits on finding 2), editing the profile and photo, changing the
-password, Google sign-in, and real follower and referral counts on `/me`.
+choosing a new password after a reset (waits on finding 2), Google sign-in, and real follower and
+referral counts on `/me`.
 
 **For the backend team (Phase 2 findings)**
 
@@ -159,3 +167,13 @@ password, Google sign-in, and real follower and referral counts on `/me`.
    account without the email. It must only go out by email.
 9. `profile/change-password` doesn't ask for the current password, so anyone holding a signed-in device can
    lock the owner out.
+10. **Photo upload fails** on staging: `profile/upload-image` answers 500 "Server Error" for a normal
+    400×400 JPEG (a non-image gets a proper 422). Probably the image storage settings on that server.
+11. **One session per account**: every sign-in cancels the previous token, so signing in on a phone signs
+    the reader out on their laptop. Intended? Most readers use more than one device.
+12. Profile saves **require a date of birth and refuse anyone under 18**, though sign-up doesn't ask for
+    one. Is Toon Central 18+ only? If not, younger readers can never edit their profile.
+13. Profile update **doesn't validate**: it accepted "x" as a username and "123" as a phone number. (Our
+    forms check, but the API should too.)
+14. A failed sign-in answers **HTTP 200** with `status: false`. Use 401/422 so clients can't mistake it
+    for success.

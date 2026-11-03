@@ -6,8 +6,8 @@ import { useEffect, useId, useState, type FormEvent, type InputHTMLAttributes } 
 import { IoCheckmarkCircle, IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
 import { forgotPasswordAction, resendVerificationAction, signInAction, signUpAction } from "@/app/auth/actions";
 import type { MobileOperator } from "@/lib/api/account";
-import { authHref, PASSWORD_MIN, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
-import { loadSession, useMockSession } from "@/lib/mockSession";
+import { authHref, localPhone, PASSWORD_MIN, PHONE_HINT, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
+import { useMockSession } from "@/lib/mockSession";
 import { notifyWelcome } from "@/lib/notifications";
 
 type Values = { firstName: string; lastName: string; username: string; email: string; phone: string; operator: number; password: string; terms: boolean };
@@ -16,11 +16,6 @@ type Errors = Partial<Record<keyof Values, string>>;
 const EMPTY: Values = { firstName: "", lastName: "", username: "", email: "", phone: "", operator: 0, password: "", terms: false };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-// Nigerian mobile numbers, typed as 0803…, 803…, 234803… or +234 803…; sent as 0803… (11 digits).
-function localPhone(raw: string) {
-  const digits = raw.replace(/\D/g, "").replace(/^234/, "").replace(/^0/, "");
-  return /^[789]\d{9}$/.test(digits) ? `0${digits}` : null;
-}
 const RESEND_SECONDS = 30;
 
 const COPY: Record<AuthMode, { title: string; lede: string; submit: string }> = {
@@ -35,7 +30,7 @@ function validate(mode: AuthMode, v: Values): Errors {
     if (!v.firstName.trim()) errors.firstName = "Enter your first name.";
     if (!v.lastName.trim()) errors.lastName = "Enter your last name.";
     if (!USERNAME_PATTERN.test(v.username)) errors.username = "3–20 letters, numbers or underscores.";
-    if (!localPhone(v.phone)) errors.phone = "Enter a Nigerian mobile number, e.g. 0803 123 4567.";
+    if (!localPhone(v.phone)) errors.phone = PHONE_HINT;
   }
   if (!EMAIL_PATTERN.test(v.email.trim())) errors.email = "Enter a valid email address.";
   if (mode !== "forgot" && v.password.length < PASSWORD_MIN) {
@@ -102,10 +97,9 @@ export function AuthForm({ mode, next, referrer = null, live = false, operators 
     if (mode === "signin") {
       const result = await signInAction(email, values.password);
       if (result.ok) {
-        await loadSession(true);
-        router.replace(next);
-        // The reader decides access on the server; re-render so signed-in pages arrive.
-        router.refresh();
+        // A full load, so every server-rendered part (the reader decides access on the server) sees the
+        // new session at once; a client-side replace plus refresh could cancel each other out.
+        window.location.replace(next);
         return;
       }
       if (!result.ok && result.unverified) setVerifyEmail(true);
@@ -119,6 +113,7 @@ export function AuthForm({ mode, next, referrer = null, live = false, operators 
         telephone: localPhone(values.phone) ?? values.phone,
         mobileOperatorId: values.operator,
         password: values.password,
+        referralCode: referrer ?? undefined,
       });
       if (result.ok) {
         setVerifyEmail(true);
@@ -223,7 +218,7 @@ export function AuthForm({ mode, next, referrer = null, live = false, operators 
     <Card title={copy.title} lede={copy.lede}>
       {referrer && (
         <p className="-mt-3 mb-6 w-fit border-2 border-black bg-sun px-3 py-1.5 text-sm font-bold text-ink shadow-[3px_3px_0_#000]">
-          Invited by @{referrer}
+          {live ? "Invited by a friend" : `Invited by @${referrer}`}
         </p>
       )}
       {mode !== "forgot" && !live && (

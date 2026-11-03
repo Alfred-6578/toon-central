@@ -23,6 +23,15 @@ export type MockUser = {
   // referral data yet.
   referrals: { name: string; joined: string }[];
   photo?: string | null;
+  // Real accounts only: the editable profile fields as the API keeps them.
+  firstName?: string;
+  lastName?: string;
+  phone?: string;
+  operatorId?: number;
+  // YYYY-MM-DD; the API needs it on every profile save.
+  dob?: string | null;
+  // What the reader's invite link carries, so sign-ups are credited to them.
+  referralCode?: string | null;
 };
 
 export const mockUser: MockUser = {
@@ -231,7 +240,9 @@ function setRealSession(next: RealSession) {
 
 export function loadSession(force = false) {
   if (!force && realSession.status !== "idle") return Promise.resolve();
-  setRealSession({ ...realSession, status: "loading" });
+  // A refresh (after saving settings, say) keeps showing the current reader until the new one arrives,
+  // so pages waiting on the session don't blank out and lose their state.
+  if (realSession.status === "idle") setRealSession({ ...realSession, status: "loading" });
   return fetch("/api/session", { cache: "no-store" })
     .then((res) => (res.ok ? res.json() : { user: null }))
     .then((data: { user?: MockUser | null }) => setRealSession({ status: "ready", user: data.user ?? null }))
