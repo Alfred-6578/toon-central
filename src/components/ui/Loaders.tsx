@@ -8,7 +8,8 @@ import { Logo } from "./Logo";
 const SLOW_AFTER_MS = 8000;
 
 // Full-screen loader: the Toon Central logo inked stroke by stroke, then filled, on a loop.
-export function InkLogoLoader({ className = "" }: { className?: string }) {
+// `immediate`: show at once instead of fading in after a moment (for loaders that are meant to be seen).
+export function InkLogoLoader({ className = "", immediate = false }: { className?: string; immediate?: boolean }) {
   const [slow, setSlow] = useState(false);
 
   useEffect(() => {
@@ -17,7 +18,7 @@ export function InkLogoLoader({ className = "" }: { className?: string }) {
   }, []);
 
   return (
-    <div role="status" aria-live="polite" className={`delayed-in flex flex-col items-center justify-center gap-6 px-6 text-center ${className}`}>
+    <div role="status" aria-live="polite" className={`${immediate ? "" : "delayed-in "}flex flex-col items-center justify-center gap-6 px-6 text-center ${className}`}>
       <Logo className="ink-logo w-40 text-mint sm:w-48" />
       <span className="sr-only">Loading</span>
       {slow && (
