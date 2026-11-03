@@ -50,4 +50,4 @@ public/Screenshot*
 docs/api/*.postman.json
 
 # Local copy of the backend API docs (contains contact details)
-/public/api doc.md
+/docs/api/api doc.md
