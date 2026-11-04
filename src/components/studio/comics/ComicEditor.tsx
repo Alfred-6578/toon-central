@@ -3,18 +3,18 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, type DragEvent } from "react";
-import { IoAdd, IoArrowBack, IoArrowDown, IoArrowUp, IoCheckmark, IoLinkOutline, IoReorderTwo } from "react-icons/io5";
+import { IoAdd, IoArrowBack, IoArrowDown, IoArrowUp, IoCheckmark, IoLinkOutline, IoLockClosed, IoMegaphoneOutline, IoReorderTwo } from "react-icons/io5";
 import { comicHref, formatCount } from "@/lib/format";
 import { FREE_EPISODES } from "@/lib/rules";
 import {
-  ACCESS_LABEL,
-  accessOf,
+  adsOn,
+  adSpotsOf,
   canMonetize,
   episodeState,
-  monetizationOf,
-  paidFromOf,
+  MONETIZE_FROM,
+  lockedOnSite,
+  lockedPanelsOf,
   studioHref,
-  type EpisodeAccess,
   type StudioComic,
   type StudioEpisode,
   type StudioMode,
@@ -23,6 +23,7 @@ import { useMilestoneWatch } from "@/lib/creatorTutorial";
 import { useStudioComics } from "@/lib/studioStore";
 import { DesktopOnly } from "../StudioGate";
 import { StudioImage } from "../StudioImage";
+import { AdSpaces } from "./AdSpaces";
 import { ComicForm } from "./ComicForm";
 import { STATUS_TAG } from "./ComicsList";
 
@@ -50,6 +51,9 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
 
   const update = (patch: Partial<StudioComic>) => save({ ...comic, ...patch });
   const setEpisodes = (episodes: StudioEpisode[]) => update({ episodes });
+  const setAds = (episodeId: string, ads: boolean) => setEpisodes(comic.episodes.map((e) => (e.id === episodeId ? { ...e, ads } : e)));
+  const withLocks = comic.episodes.filter((e, i) => lockedPanelsOf(comic, i + 1, e).length > 0 || lockedOnSite(comic, i + 1, e)).length;
+  const withAds = comic.episodes.filter((e, i) => adsOn(comic, i + 1, e)).length;
   const live = comic.episodes.filter((e) => episodeState(e) !== "draft").length;
   const tag = STATUS_TAG[comic.status];
 
@@ -73,7 +77,6 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
           <ComicForm
             initial={comic}
             genres={genres}
-            monetizable={!!comic.monetizable}
             submitLabel="Save changes"
             onSubmit={(details) => {
               update(details);
@@ -98,7 +101,12 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
               <p className="mt-3 text-xs text-slate-500">
                 {formatCount(comic.reads)} reads · {formatCount(comic.likes)} likes{comic.schedule && ` · updates ${comic.schedule}s`}
                 {" · "}
-                <span className={monetizationOf(comic) === "none" ? "" : "font-semibold text-mint"}>{MONETIZATION_NOTE[monetizationOf(comic)]}</span>
+                <span className={withLocks + withAds ? "font-semibold text-mint" : ""}>
+                  {withLocks + withAds
+                    ? [withLocks && `${withLocks} with locked panels`, withAds && `${withAds} with ads`].filter(Boolean).join(", ")
+                    : "every episode free"}
+                </span>
+                {adSpotsOf(comic).length > 0 && ` · ${adSpotsOf(comic).length} ad ${adSpotsOf(comic).length === 1 ? "space" : "spaces"}`}
               </p>
 
               <div className="mt-5 hidden flex-wrap gap-3 lg:flex">
@@ -134,10 +142,8 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
               <div>
                 <h2 id="episodes-title" className="font-display text-3xl uppercase leading-none text-white">Episodes</h2>
                 <p className="mt-1 text-sm text-slate-400">
-                  {monetizationOf(comic) === "none"
-                    ? "Every episode is free to read."
-                    : `Episodes 1–${FREE_EPISODES} are always free; from episode ${FREE_EPISODES + 1} they earn with ${monetizationOf(comic)}.`}{" "}
-                  Drag to reorder.
+                  Episodes 1–{FREE_EPISODES} are always free. From episode {FREE_EPISODES + 1}, switch on ads for an episode, and lock any
+                  of its panels in the episode editor: readers unlock them with credits. Drag to reorder.
                 </p>
               </div>
               <Link
@@ -161,6 +167,7 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                 comic={comic}
                 mode={mode}
                 onMove={move}
+                onAds={setAds}
                 confirmDelete={confirmDelete}
                 onAskDelete={setConfirmDelete}
                 onDelete={(episodeId) => {
@@ -170,6 +177,8 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
               />
             )}
           </section>
+
+          <AdSpaces comic={comic} onChange={(adSpots) => update({ adSpots })} />
 
           <DesktopOnly what="add or edit episodes">
             <section className="mt-12 border-2 border-line p-5">
@@ -202,7 +211,6 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
   );
 }
 
-const MONETIZATION_NOTE = { none: "not monetized", ads: "earns with ads", credits: "earns with credits" } as const;
 
 // Copies the Mafiki's public link, to share on social media (Step 5 of the creator tutorial).
 function ShareLink({ comic }: { comic: StudioComic }) {
@@ -230,18 +238,36 @@ function ShareLink({ comic }: { comic: StudioComic }) {
   );
 }
 
-const ACCESS_TAG: Record<EpisodeAccess, string> = { free: "bg-mint", ads: "bg-paper", credits: "bg-sun" };
+// Ads on or off for one episode (from episode 4). Saved straight away.
+function AdsToggle({ on, onChange, label, tour }: { on: boolean; onChange: (on: boolean) => void; label: string; tour?: string }) {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!on)}
+      aria-pressed={on}
+      aria-label={`Ads in ${label}`}
+      title={on ? "Ads show alongside this episode. Tap to turn them off." : "Show ads alongside this episode. It stays free to read."}
+      data-tour={tour}
+      className={`flex shrink-0 items-center gap-1 border-2 px-2 py-1 text-xs font-bold uppercase tracking-wide transition-colors ${
+        on ? "border-black bg-paper text-ink" : "border-line text-slate-400 hover:text-white"
+      }`}
+    >
+      <IoMegaphoneOutline aria-hidden="true" /> {on ? "Ads on" : "Ads off"}
+    </button>
+  );
+}
 
 type ListProps = {
   comic: StudioComic;
   mode: StudioMode;
   onMove: (from: number, to: number) => void;
+  onAds: (episodeId: string, ads: boolean) => void;
   confirmDelete: string | null;
   onAskDelete: (id: string | null) => void;
   onDelete: (id: string) => void;
 };
 
-function EpisodeList({ comic, mode, onMove, confirmDelete, onAskDelete, onDelete }: ListProps) {
+function EpisodeList({ comic, mode, onMove, onAds, confirmDelete, onAskDelete, onDelete }: ListProps) {
   const [dragging, setDragging] = useState<number | null>(null);
   const [over, setOver] = useState<number | null>(null);
 
@@ -256,7 +282,8 @@ function EpisodeList({ comic, mode, onMove, confirmDelete, onAskDelete, onDelete
     <ol className="grid gap-2">
       {comic.episodes.map((episode, i) => {
         const state = episodeState(episode);
-        const access = accessOf(comic, i + 1);
+        const locked = lockedPanelsOf(comic, i + 1, episode);
+        const editHref = studioHref(`/creator/comics/${comic.id}/episodes/${episode.id}`, mode);
         const deleting = confirmDelete === episode.id;
         return (
           <li
@@ -278,7 +305,7 @@ function EpisodeList({ comic, mode, onMove, confirmDelete, onAskDelete, onDelete
           >
             <IoReorderTwo className="hidden shrink-0 cursor-grab text-xl text-slate-500 lg:block" aria-hidden="true" />
             <span className="w-8 shrink-0 text-center font-display text-2xl leading-none text-slate-300">{i + 1}</span>
-            <StudioImage src={episode.pages[0] ?? comic.cover} width={120} className="aspect-[3/4] w-9 shrink-0 border-2 border-line" />
+            <StudioImage src={episode.thumbnail ?? episode.pages[0] ?? comic.cover} width={120} className="aspect-[3/4] w-9 shrink-0 border-2 border-line" />
             <div className="min-w-0 flex-1">
               <p className="truncate font-semibold text-white">{episode.title || `Episode ${i + 1}`}</p>
               <p className="text-xs text-slate-400">
@@ -290,14 +317,34 @@ function EpisodeList({ comic, mode, onMove, confirmDelete, onAskDelete, onDelete
               </p>
             </div>
 
-            {/* Set by the Mafiki's monetization; credits episodes say where paid access begins. */}
-            <span
-              className={`tag shrink-0 ${ACCESS_TAG[access]}`}
-              title={canMonetize(i + 1) ? undefined : `Episodes 1–${FREE_EPISODES} are always free`}
-            >
-              {ACCESS_LABEL[access]}
-              {access === "credits" && episode.pagesKnown && ` · from p.${paidFromOf(episode)}`}
-            </span>
+            {canMonetize(i + 1) ? (
+              <div className="flex shrink-0 items-center gap-2">
+                {lockedOnSite(comic, i + 1, episode) ? (
+                  <span className="tag flex items-center gap-1 bg-sun" title="The live site locks this episode's panels">
+                    <IoLockClosed aria-hidden="true" /> Locked on site
+                  </span>
+                ) : locked.length > 0 ? (
+                  <Link href={editHref} className="tag flex items-center gap-1 bg-sun hover:-translate-y-px" title="Change which panels are locked">
+                    <IoLockClosed aria-hidden="true" /> {locked.length} of {episode.pages.length} locked
+                  </Link>
+                ) : (
+                  <Link href={editHref} className="hidden items-center gap-1 text-xs font-semibold text-slate-400 hover:text-sun lg:flex">
+                    <IoLockClosed aria-hidden="true" /> Lock panels
+                  </Link>
+                )}
+                <AdsToggle
+                  on={adsOn(comic, i + 1, episode)}
+                  onChange={(on) => onAds(episode.id, on)}
+                  label={episode.title || `Episode ${i + 1}`}
+                  // The tutorial's "earn from episode 4" step points at the first episode that can earn.
+                  tour={i + 1 === MONETIZE_FROM ? "monetize" : undefined}
+                />
+              </div>
+            ) : (
+              <span className="tag shrink-0 bg-mint" title={`Episodes 1–${FREE_EPISODES} are always free`}>
+                Free
+              </span>
+            )}
 
             <div className="hidden shrink-0 items-center gap-1 lg:flex">
               <button type="button" onClick={() => onMove(i, i - 1)} disabled={i === 0} aria-label="Move up" className="p-1.5 text-slate-400 hover:text-white disabled:opacity-30">

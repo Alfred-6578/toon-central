@@ -75,7 +75,7 @@ export function CreatorHeader({ data }: { data: CreatorPageData }) {
               </div>
             )}
             <div className="mt-5">
-              <FollowButton username={creator.username} />
+              <FollowButton username={creator.username} creatorId={creator.id} />
             </div>
           </div>
         </div>

@@ -21,7 +21,7 @@ export function ShortsSection({ shorts, variant = "strip" }: { shorts: Short[]; 
         <SectionHeader title="Shorts" action="Watch all" href="/shorts">
           <span className="pb-0.5 text-sm text-slate-400">Animated stories from African creators</span>
         </SectionHeader>
-        <ShortsRail shorts={shorts} />
+        <ShortsRail shorts={shorts} openOnShortsPage />
       </RevealOnScroll>
     </section>
   );

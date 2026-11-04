@@ -11,32 +11,35 @@ export const metadata: Metadata = {
 
 // Copy and layout from the client's "How to Make Money on Toon Central" guide (doc + PDF, Oct 2026).
 // Rates and rules marked "proposed" or still open in that guide are shown as the guide shows them.
+// Changed since (Nov 2026): earning starts at episode 4 on any Mafiki (ads per episode, locks panel by
+// panel in the Studio), so "On-site ads", "Panel by panel", "Ad offers" and "Credit points" say that
+// instead of the guide's 4-chapter unlock and whole-Mafiki lock at a flat 1,500 credits.
 
 const WAYS = [
   {
     title: "On-site ads",
-    body: "Earn per click when readers interact with the ads on your Mafiki. The more people interact, the more you stand to make.",
-    chip: "Unlocks at 4 chapters",
+    body: "Set any episode from episode 4 to Ads and earn per click when readers interact with the ads on it. It stays free to read, and the more people interact, the more you stand to make.",
+    chip: "From episode 4",
   },
   {
     title: "Panel by panel",
-    body: "Lock any panel of your work. Fans can pay for the complete work or unlock it one panel at a time, through small micro-transactions.",
-    chip: "Micro-transactions",
+    body: "From episode 4, lock any panel of your work. Fans unlock locked panels one at a time through small micro-transactions, or the whole episode at once.",
+    chip: "From episode 4",
   },
   {
     title: "Ad offers",
-    body: "From your Creator Studio, place ad offers in chosen spots on a Mafiki you've already uploaded. Advertisers click an offer, see the price and pay to run their ad there.",
+    body: "Once a Mafiki has 4 episodes out, pick up to two spots in its episodes from your Creator Studio. Advertisers click an offer, see the price and pay to run their ad there.",
     chip: "You choose the spots",
   },
   {
     title: "Credit points",
-    body: "Lock the full Mafiki and let readers unlock it with credit points. Every Mafiki unlocks for a flat 1,500 credits. This option replaces ads and micro-transactions on that Mafiki.",
-    chip: "Unlocks at 4 chapters, from chapter 5",
+    body: "Readers pay for your locked panels with credit points, which they top up on Toon Central. Passes and plans unlock locked panels too.",
+    chip: "How fans pay",
   },
 ];
 
 const AD_OFFER_STEPS = [
-  { title: "Place your offer.", body: "In your Creator Studio, mark the spots on an uploaded Mafiki where ads can go." },
+  { title: "Place your offer.", body: "Once a Mafiki has 4 episodes out, open it in your Creator Studio and pick where ads can go in its episodes: top, middle or bottom, up to two spots." },
   { title: "An advertiser clicks it.", body: "They go to a payment flow that shows exactly what it costs to put their ad there. You get a notification." },
   { title: "They pay.", body: "You get a second notification when the payment goes through, and the ad goes live on your Mafiki." },
 ];

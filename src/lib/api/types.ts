@@ -1,4 +1,6 @@
 export type Creator = {
+  // The backend's user id; following a creator needs it.
+  id?: number;
   username: string;
   photo: string | null;
 };
@@ -84,6 +86,8 @@ export type ComicPageData = {
   episodesSource: EpisodesSource;
   moreFromCreator: Comic[];
   similar: Comic[];
+  // "backend": the API's you-may-also-like list; "genres": ours, from shared genres, when it had none.
+  similarFrom: "backend" | "genres";
   shorts: Short[];
 };
 

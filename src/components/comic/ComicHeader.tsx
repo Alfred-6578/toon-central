@@ -18,7 +18,7 @@ function freshness(comic: Comic) {
 }
 
 // Full-bleed header: the banner pushed back behind halftone, the cover as a tilted comic panel.
-export function ComicHeader({ comic }: { comic: Comic }) {
+export function ComicHeader({ comic, live = false }: { comic: Comic; live?: boolean }) {
   return (
     <section className="relative overflow-hidden border-b-2 border-line">
       <div className="absolute inset-0" aria-hidden="true">
@@ -61,11 +61,11 @@ export function ComicHeader({ comic }: { comic: Comic }) {
                 by <span className="font-semibold text-white group-hover:text-mint">{comic.creator.username}</span>
               </span>
             </Link>
-            <FollowButton username={comic.creator.username} small />
+            <FollowButton username={comic.creator.username} creatorId={comic.creator.id} small />
           </div>
 
           <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-slate-300">
-            <StatBar uuid={comic.uuid} title={comic.title} views={comic.views} likes={comic.likes} />
+            <StatBar uuid={comic.uuid} title={comic.title} views={comic.views} likes={comic.likes} live={live} />
             {comic.episodes != null && (
               <span className="flex items-center gap-1.5"><VscNotebook /> {comic.episodes} {comic.episodes === 1 ? "chapter" : "chapters"}</span>
             )}

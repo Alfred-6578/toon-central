@@ -25,8 +25,9 @@ const SECTION_FOR_PATH: [string, string][] = [
 ];
 
 // Owns everything the header and mobile tab bar share: session, menus, search, scroll state.
-export function Navigation() {
-  const { user, signOut } = useMockSession();
+// `phoneHeader={false}`: no top header on phones (full-screen pages like Shorts keep only the tab bar).
+export function Navigation({ phoneHeader = true }: { phoneHeader?: boolean } = {}) {
+  const { user, pending, signOut } = useMockSession();
   const [openMenu, setOpenMenu] = useState<DesktopMenu>(null);
   const [sheet, setSheet] = useState<MobileSheet>(null);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -116,11 +117,20 @@ export function Navigation() {
     setSheet(null);
   };
 
+  const headerHidden = scrolledAway && !openMenu && !searchOpen;
+  // Published on <html> so bars pinned under the header (.under-header) can follow it up and down.
+  useEffect(() => {
+    document.documentElement.toggleAttribute("data-header-hidden", headerHidden);
+    return () => document.documentElement.removeAttribute("data-header-hidden");
+  }, [headerHidden]);
+
   return (
     <>
       <Header
         user={user}
-        hidden={scrolledAway && !openMenu && !searchOpen}
+        pending={pending}
+        hidden={headerHidden}
+        hideOnPhone={!phoneHeader}
         activeSection={activeSection}
         openMenu={openMenu}
         onToggleMenu={(menu) => setOpenMenu((current) => (current === menu ? null : menu))}

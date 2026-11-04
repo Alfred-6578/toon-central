@@ -42,7 +42,11 @@ export function CreatorCoach({ mode }: { mode: StudioMode }) {
       <Notice
         eyebrow="Milestone"
         {...NOTICE_COPY.milestone}
-        primary={{ label: "Monetize my next Mafiki", onClick: t.startMonetize, href: t.href("/creator/comics/new") }}
+        primary={{
+          label: "Show me how",
+          onClick: t.startMonetize,
+          href: t.href(state.milestoneComicId ? `/creator/comics/${state.milestoneComicId}` : "/creator/comics"),
+        }}
         secondary={{ label: "Later", onClick: t.dismissMilestone }}
       />
     );
@@ -156,7 +160,7 @@ function StepCard({ spec, label, href, nextHref, onBack, onNext, onSkip, last }:
       <p className="mt-2 text-sm leading-6 text-slate-700">{spec.body}</p>
       {!rect && spec.step === 7 && (
         <p className="mt-2 text-xs text-slate-500">
-          You&apos;ll find the key on the page thumbnails when you edit episode 4 or later of a Mafiki that earns with credits.
+          Open episode 4 or later of a Mafiki: the lock is on each page thumbnail.
         </p>
       )}
 

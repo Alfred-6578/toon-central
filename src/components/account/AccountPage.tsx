@@ -4,7 +4,9 @@ import { Navigation } from "@/components/layout/Navigation";
 // Frame for the signed-in pages (/me, /settings, /notifications): nav, a poster-type title, content.
 export function AccountPage({ title, width = "max-w-6xl", children }: { title?: string; width?: string; children: ReactNode }) {
   return (
-    <div className="relative min-h-screen overflow-hidden text-white">
+    // overflow-x-clip, not overflow-hidden: hidden would stop the sticky bars inside (Settings' section
+    // menu) from ever sticking.
+    <div className="relative min-h-screen overflow-x-clip text-white">
       <main className="relative pb-24 lg:pb-16">
         <Navigation />
         <div className="h-[66px]" />

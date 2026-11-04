@@ -175,9 +175,14 @@ function placeholderEpisodes(comic: Comic): Episode[] {
 // The comic's real episode list. comics/:uuid/view is the only endpoint that has it and it also counts
 // a view, so it's only called when a reader actually opens the comic page (from the browser, through
 // /api/comics/:uuid/open), never while building pages. null when reading isn't live or it fails.
-export async function openComic(uuid: string): Promise<{ episodes: Episode[]; views: number; likes: number } | null> {
+// With the reader's token the answer also says whether they like the comic, from the same moment as the
+// like count (null when signed out).
+export async function openComic(
+  uuid: string,
+  token: string | null = null
+): Promise<{ episodes: Episode[]; views: number; likes: number; likedByReader: boolean | null } | null> {
   if (!isLive("reading")) return null;
-  const result = await apiRequest<Raw>(`/comics/${encodeURIComponent(uuid)}/view`, { revalidate: false });
+  const result = await apiRequest<Raw>(`/comics/${encodeURIComponent(uuid)}/view`, { revalidate: false, token });
   if (!result.ok) {
     console.error(`[api] GET comics/${uuid}/view failed: ${result.status} ${result.message}`);
     return null;
@@ -185,14 +190,21 @@ export async function openComic(uuid: string): Promise<{ episodes: Episode[]; vi
   const raw = Array.isArray(result.data.episodes) ? (result.data.episodes as Raw[]) : [];
   const episodes = raw.map(toEpisode).sort((a, b) => a.number - b.number);
   const comic = toComic(result.data);
-  return { episodes, views: comic.views, likes: comic.likes };
+  return { episodes, views: comic.views, likes: comic.likes, likedByReader: token ? result.data.isLiked === true : null };
+}
+
+// The backend's suggestions for readers of a comic (genres/comic/…/you-may-also-like). Empty for
+// comics it has nothing for ("no record found").
+async function getSuggestedComics(uuid: string): Promise<Comic[]> {
+  const data = await fetchApi<{ comics?: Raw[] } | null>(`/genres/comic/${encodeURIComponent(uuid)}/you-may-also-like?page=1&limit=10`);
+  return (data?.comics ?? []).map(toComic);
 }
 
 export async function getComicPageData(uuid: string): Promise<ComicPageData | null> {
   // The comic comes from the catalogue; see openComic for why the server never builds its episode list
   // from comics/:uuid/view. When reading is live the browser fetches the real list once the page opens,
   // and these placeholders are what it falls back to.
-  const [catalogue, shorts] = await Promise.all([getCatalogue(), getAllShorts()]);
+  const [catalogue, shorts, suggested] = await Promise.all([getCatalogue(), getAllShorts(), getSuggestedComics(uuid)]);
 
   const comic = catalogue.find((c) => c.uuid === uuid);
   if (!comic) return null;
@@ -202,8 +214,15 @@ export async function getComicPageData(uuid: string): Promise<ComicPageData | nu
 
   const others = catalogue.filter((c) => c.uuid !== comic.uuid);
   const moreFromCreator = others.filter((c) => c.creator.username === comic.creator.username);
-  // Similar: most shared genres first, then most read; the creator's own titles are shown separately.
-  const similar = others
+  // Similar: the backend's suggestions, without this comic or the creator's own titles (shown above),
+  // using the catalogue's copy of each where it has one (it carries episode counts).
+  const byUuid = new Map(catalogue.map((c) => [c.uuid, c]));
+  const fromBackend = suggested
+    .filter((c) => c.uuid !== comic.uuid && c.creator.username !== comic.creator.username)
+    .map((c) => byUuid.get(c.uuid) ?? c)
+    .slice(0, 5);
+  // Ours, when the backend has none: most shared genres first, then most read.
+  const byGenre = others
     .filter((c) => c.creator.username !== comic.creator.username)
     .map((c) => ({ c, shared: c.genres.filter((g) => comic.genres.includes(g)).length }))
     .filter(({ shared }) => shared > 0)
@@ -216,7 +235,8 @@ export async function getComicPageData(uuid: string): Promise<ComicPageData | nu
     episodes,
     episodesSource,
     moreFromCreator,
-    similar,
+    similar: fromBackend.length ? fromBackend : byGenre,
+    similarFrom: fromBackend.length ? "backend" : "genres",
     shorts: shorts.filter((s) => s.comicId === comic.id && !s.isSponsored),
   };
 }

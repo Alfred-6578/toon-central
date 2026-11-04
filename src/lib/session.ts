@@ -3,6 +3,11 @@
 // This one is written by the browser, so anyone could set it.
 export const SESSION_COOKIE = "tc-mock-signed-in";
 
+// Set (and cleared) together with the real httpOnly token cookie, but readable by the page and holding
+// nothing secret: it only tells the browser a session exists, so it can show the reader (from its cached
+// copy) instead of "Sign in" while /api/session is still asking the backend.
+export const SIGNED_IN_HINT = "tc-signed-in";
+
 // Mock record of what this reader has unlocked with credits, so the reader page (server) knows which
 // pages to send clean. JSON: { "<comic>:<episode>": "full", "<comic>:<episode>:<page>": <expiry ms> }.
 // Demo only, and NOT secure: it's written by the browser. Real unlocks are recorded by the server

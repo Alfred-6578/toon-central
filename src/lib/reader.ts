@@ -69,6 +69,16 @@ function degradedPage(comic: Comic, episode: number, page: number): ReaderPage {
   return { number: page, src, width, height, degraded: true, unlockedUntil: null };
 }
 
+// What a signed-out reader sees of episode 2 on, behind the sign-in card: stand-in pages blurred past
+// reading (the real ones aren't sent to signed-out readers at all), so the episode keeps its page feel.
+export function signInPreviewPages(comic: Comic, episode: number, count = 4): ReaderPage[] {
+  return Array.from({ length: count }, (_, i) => {
+    const { url, gravity, width, height } = standInSource(comic, episode, i + 1);
+    const src = cloudinaryTransform(url, `c_fill,w_240,h_${Math.round((240 * height) / width)},g_${gravity}/e_blur:1200/q_auto:low,f_auto`);
+    return { number: i + 1, src, width, height, degraded: true, unlockedUntil: null };
+  });
+}
+
 // Real pages from the API (lib/api/episodes.ts), at the Creator 101 canvas width.
 const realPage = (url: string, page: number): ReaderPage => ({
   number: page,

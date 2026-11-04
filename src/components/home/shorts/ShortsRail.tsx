@@ -2,10 +2,14 @@
 
 import { useCallback, useState } from "react";
 import type { Short } from "@/lib/api/types";
+import { rememberScroll, useRestoreScroll } from "@/lib/returnScroll";
 import { ShortCard } from "./ShortCard";
 import { ShortsFeed } from "./ShortsFeed";
 
-export function ShortsRail({ shorts }: { shorts: Short[] }) {
+// `openOnShortsPage`: tapping a short opens the full /shorts feed at that short (the home page), so
+// it's the same feed, order and player everywhere. Otherwise the rail plays just its own shorts in an
+// overlay (a comic's or a creator's shorts).
+export function ShortsRail({ shorts, openOnShortsPage = false }: { shorts: Short[]; openOnShortsPage?: boolean }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   // Lengths become known once a short is opened in the player (previews are trimmed clips).
   // Keep the latest value: a stream Cloudinary is still transcoding can report a short duration first.
@@ -16,6 +20,8 @@ export function ShortsRail({ shorts }: { shorts: Short[] }) {
     setDurations((prev) => (prev[uuid] === seconds ? prev : { ...prev, [uuid]: seconds }));
   }, []);
   const close = useCallback(() => setOpenIndex(null), []);
+  // Back from /shorts returns to this spot on the page.
+  useRestoreScroll(openOnShortsPage);
 
   return (
     <>
@@ -26,7 +32,8 @@ export function ShortsRail({ shorts }: { shorts: Short[] }) {
               key={short.uuid}
               short={short}
               duration={durations[short.uuid]}
-              onOpen={() => setOpenIndex(i)}
+              href={openOnShortsPage ? `/shorts?short=${short.uuid}` : undefined}
+              onOpen={openOnShortsPage ? rememberScroll : () => setOpenIndex(i)}
             />
           ))}
         </div>

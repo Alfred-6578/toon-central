@@ -2,14 +2,16 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from "react";
 import { IoCheckmarkCircle } from "react-icons/io5";
 import { SignInPrompt } from "@/components/auth/SignInPrompt";
 import { Avatar } from "@/components/layout/nav/Menus";
 import { authHref, USERNAME_PATTERN } from "@/lib/auth";
 import { timeAgo } from "@/lib/format";
 import { useLocalValue } from "@/lib/localValue";
+import type { MobileOperator } from "@/lib/api/account";
 import { updateProfile, useMockSession, useHydrated } from "@/lib/mockSession";
+import { ChangePasswordForm, LiveProfileForm } from "./LiveAccountForms";
 import { clearProgress, useReadingProgress } from "@/lib/readingProgress";
 import { MtnPayFlow, openMtnPay } from "@/components/mtn/MtnPayFlow";
 import { PassBanner } from "@/components/mtn/PassBanner";
@@ -38,9 +40,10 @@ const NOTIFY_OPTIONS = [
   { key: "email", label: "Email newsletter", hint: "Occasional picks and news from Toon Central.", fallback: false },
 ] as const;
 
-// Account settings. Preview only: edits are kept in this browser and the mock profile picks them up,
-// so the header and /me show the new name straight away.
-export function SettingsView() {
+// Account settings. With accounts live, the profile, photo and password are saved to the account
+// (LiveAccountForms); reading and notification settings stay in this browser either way. In the
+// preview, edits are kept in this browser and the mock profile picks them up.
+export function SettingsView({ live = false, operators = [] }: { live?: boolean; operators?: MobileOperator[] }) {
   const { user } = useMockSession();
 
   const hydrated = useHydrated();
@@ -52,35 +55,101 @@ export function SettingsView() {
 
   return (
     <div className="grid gap-10 lg:grid-cols-[12rem_minmax(0,1fr)]">
-      <nav aria-label="Settings sections" className="hide-scrollbar -mx-6 overflow-x-auto px-6 lg:sticky lg:top-24 lg:mx-0 lg:self-start lg:px-0">
-        <ul className="flex gap-2 lg:flex-col lg:gap-1">
-          {SECTIONS.map((s) => (
-            <li key={s.id}>
-              <a href={`#${s.id}`} className="block whitespace-nowrap border-2 border-line px-3 py-1.5 text-sm font-semibold text-slate-300 hover:border-mint hover:text-white lg:border-0 lg:border-l-2 lg:px-4">
-                {s.label}
-              </a>
-            </li>
-          ))}
-        </ul>
-      </nav>
+      <SectionNav />
 
       <div className="grid gap-8">
-        <ProfileSection />
-        <AccountSection />
+        {live ? (
+          <Section id="profile" title="Profile" lede="How you appear to creators and other readers.">
+            <LiveProfileForm operators={operators} />
+            <ReferralLink />
+          </Section>
+        ) : (
+          <ProfileSection />
+        )}
+        <AccountSection live={live} />
         <ReadingSection />
         <NotificationsSection />
         <PrivacySection />
         <p className="border-2 border-dashed border-line px-4 py-3 text-xs leading-5 text-slate-500">
-          Preview: settings are saved in this browser only. They move to your account once the live API is connected.
+          {live
+            ? "Reading and notification settings are saved in this browser for now."
+            : "Preview: settings are saved in this browser only. They move to your account once the live API is connected."}
         </p>
       </div>
     </div>
   );
 }
 
+// The section menu stays in reach while you scroll: a strip pinned under the header on phones, a column
+// beside the sections on desktop. It marks the section you're reading.
+function SectionNav() {
+  const [active, setActive] = useState<string>(SECTIONS[0].id);
+  const strip = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const sections = SECTIONS.map((s) => document.getElementById(s.id)).filter((el): el is HTMLElement => el !== null);
+    // A section counts as current once its top passes the upper third of the screen.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top)[0];
+        if (visible) setActive(visible.target.id);
+      },
+      { rootMargin: "-130px 0px -60% 0px" }
+    );
+    sections.forEach((el) => observer.observe(el));
+    // The last section can't scroll up far enough to cross that line, so at the bottom it's the current one.
+    const atBottom = () => {
+      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4) setActive(SECTIONS[SECTIONS.length - 1].id);
+    };
+    window.addEventListener("scroll", atBottom, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", atBottom);
+    };
+  }, []);
+
+  // On phones, slide the strip so the current section's chip is in view.
+  useEffect(() => {
+    const nav = strip.current;
+    const chip = nav?.querySelector<HTMLElement>(`[data-section="${active}"]`);
+    if (nav && chip && nav.scrollWidth > nav.clientWidth) nav.scrollTo({ left: chip.offsetLeft - 24, behavior: "smooth" });
+  }, [active]);
+
+  return (
+    <nav
+      ref={strip}
+      aria-label="Settings sections"
+      className="under-header hide-scrollbar sticky z-30 -mx-6 overflow-x-auto border-b-2 border-line bg-ink px-6 py-3 lg:mx-0 lg:self-start lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:pt-6"
+    >
+      <ul className="flex gap-2 lg:flex-col lg:gap-1">
+        {SECTIONS.map((s) => {
+          const current = s.id === active;
+          return (
+            <li key={s.id}>
+              <a
+                href={`#${s.id}`}
+                data-section={s.id}
+                aria-current={current ? "location" : undefined}
+                onClick={() => setActive(s.id)}
+                className={`block whitespace-nowrap border-2 px-3 py-1.5 text-sm font-semibold transition-colors lg:border-0 lg:border-l-2 lg:px-4 ${
+                  current
+                    ? "border-black bg-mint text-ink lg:border-mint lg:bg-transparent lg:text-white"
+                    : "border-line text-slate-300 hover:border-mint hover:text-white"
+                }`}
+              >
+                {s.label}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    </nav>
+  );
+}
+
 function Section({ id, title, lede, children }: { id: string; title: string; lede?: string; children: ReactNode }) {
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="border-2 border-line bg-panel p-5 sm:p-6">
+    <section id={id} aria-labelledby={`${id}-title`} className="scroll-mt-32 border-2 border-line bg-panel p-5 sm:p-6 lg:scroll-mt-24">
       <h2 id={`${id}-title`} className="font-display text-3xl uppercase leading-none text-white">{title}</h2>
       {lede && <p className="mt-2 text-sm text-slate-400">{lede}</p>}
       <div className="mt-6">{children}</div>
@@ -201,8 +270,9 @@ function ProfileSection() {
 function ReferralLink() {
   const { user } = useMockSession();
   const [status, setStatus] = useState<string | null>(null);
-  // Only rendered after hydration (SettingsView waits), so window is available.
-  const url = `${window.location.origin}/auth/signup?ref=${encodeURIComponent(user!.username)}`;
+  // Only rendered after hydration (SettingsView waits), so window is available. Real accounts invite
+  // with their referral code (what the backend credits); the preview uses the username.
+  const url = `${window.location.origin}/auth/signup?ref=${encodeURIComponent(user!.referralCode ?? user!.username)}`;
 
   const flash = (message: string) => {
     setStatus(message);
@@ -228,7 +298,7 @@ function ReferralLink() {
   };
 
   return (
-    <div id="referrals" className="mt-8 scroll-mt-24 border-t-2 border-line pt-6">
+    <div id="referrals" className="mt-8 scroll-mt-32 border-t-2 border-line pt-6 lg:scroll-mt-24">
       <ReferralStats referrals={user!.referrals} />
       <p className="mt-6 text-sm font-semibold text-slate-200">Referral link</p>
       <p className="mt-1 text-sm text-slate-400">
@@ -306,7 +376,7 @@ const initials = (name: string) =>
     .map((p) => p[0]!.toUpperCase())
     .join("") || "?";
 
-function AccountSection() {
+function AccountSection({ live }: { live: boolean }) {
   const { user } = useMockSession();
   const [email, setEmail] = useState(user!.email);
   const [submitted, setSubmitted] = useState(false);
@@ -315,6 +385,13 @@ function AccountSection() {
 
   return (
     <Section id="account" title="Account">
+      {live ? (
+        <div className="max-w-md">
+          <p className="text-sm font-semibold text-slate-200">Email</p>
+          <p className="mt-1.5 text-base text-white">{user!.email}</p>
+          <p className="mt-1.5 text-xs text-slate-500">Changing your email isn&apos;t available yet.</p>
+        </div>
+      ) : (
       <form
         noValidate
         onSubmit={(e) => {
@@ -340,17 +417,30 @@ function AccountSection() {
         </div>
         <SaveRow saved={saved} label="Update email" />
       </form>
+      )}
 
       <MtnPassSetting />
 
-      <div className="mt-8 grid gap-4 border-t-2 border-line pt-6 sm:grid-cols-2">
-        <div>
-          <p className="text-sm font-semibold text-slate-200">Password</p>
-          <p className="mt-1 text-sm text-slate-400">We&apos;ll email you a link to set a new one.</p>
-          <Link href={authHref("forgot", "/settings")} className="mt-3 inline-block text-sm font-semibold text-mint underline-offset-4 hover:underline">
-            Change password
-          </Link>
+      {live && (
+        <div className="mt-8 border-t-2 border-line pt-6">
+          <ChangePasswordForm />
+          <p className="mt-4 text-xs text-slate-500">
+            Forgotten it?{" "}
+            <Link href={authHref("forgot", "/settings")} className="font-semibold text-slate-300 underline-offset-4 hover:underline">Get a reset link</Link>
+          </p>
         </div>
+      )}
+
+      <div className="mt-8 grid gap-4 border-t-2 border-line pt-6 sm:grid-cols-2">
+        {!live && (
+          <div>
+            <p className="text-sm font-semibold text-slate-200">Password</p>
+            <p className="mt-1 text-sm text-slate-400">We&apos;ll email you a link to set a new one.</p>
+            <Link href={authHref("forgot", "/settings")} className="mt-3 inline-block text-sm font-semibold text-mint underline-offset-4 hover:underline">
+              Change password
+            </Link>
+          </div>
+        )}
         <div>
           <p className="text-sm font-semibold text-slate-200">Plan</p>
           <p className="mt-1 flex items-center gap-2 text-sm text-slate-400">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type MouseEvent } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { IoHeart, IoHeartOutline } from "react-icons/io5";
 import { formatCount } from "@/lib/format";
 import { useMockComicLikes, useMockSession } from "@/lib/mockSession";
@@ -8,8 +8,18 @@ import { useHeartBursts } from "./HeartBurst";
 
 // Like a comic. Liking (not unliking) sets off the heart burst. Signed out, it flips the mock sign-in
 // first, like the library button. `cell` is the count in the comic page's stat bar; `icon` is the
-// square reader top-bar button.
-export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: string; title: string; likes?: number; variant?: "cell" | "icon" }) {
+// square reader top-bar button. `likedInCount`: whether `likes` already includes this reader's like,
+// when the backend said so with the count. `countPending`: a fresh count is on its way, so none is shown.
+type LikeButtonProps = {
+  uuid: string;
+  title: string;
+  likes?: number;
+  likedInCount?: boolean | null;
+  countPending?: boolean;
+  variant?: "cell" | "icon";
+};
+
+export function LikeButton({ uuid, title, likes, likedInCount, countPending = false, variant = "cell" }: LikeButtonProps) {
   const { user, signIn } = useMockSession();
   const liked = useMockComicLikes();
   const isLiked = liked.has(uuid);
@@ -25,7 +35,17 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
   };
 
   const Icon = isLiked ? IoHeart : IoHeartOutline;
-  const count = likes == null ? null : likes + (isLiked ? 1 : 0);
+  const { confirm } = liked;
+  // The backend's word on whether the reader likes this, from the same answer as the count.
+  useEffect(() => {
+    if (likedInCount != null) confirm(uuid, likedInCount);
+    // confirm is rebuilt every render; this only reacts to the answer arriving.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [uuid, likedInCount]);
+
+  // Take the reader's own like out of the count, then add it back if they like it now.
+  const inCount = likedInCount ?? liked.counted(uuid);
+  const count = likes == null || countPending ? null : likes - (inCount ? 1 : 0) + (isLiked ? 1 : 0);
 
   return (
     <>
@@ -39,7 +59,13 @@ export function LikeButton({ uuid, title, likes, variant = "cell" }: { uuid: str
           className="flex items-center gap-2 px-3 font-display text-[15px] uppercase tracking-[0.03em] text-white transition-colors hover:bg-white/10"
         >
           <Icon key={popKey} className={`text-lg ${isLiked ? "like-pop text-mint" : ""}`} />
-          {count == null ? (isLiked ? "Liked" : "Like") : formatCount(count)}
+          {countPending ? (
+            <span aria-hidden="true" className="inline-block h-3 w-6 animate-pulse bg-white/25" />
+          ) : count == null ? (
+            isLiked ? "Liked" : "Like"
+          ) : (
+            formatCount(count)
+          )}
         </button>
       ) : (
         <button

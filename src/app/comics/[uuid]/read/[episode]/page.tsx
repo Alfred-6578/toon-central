@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
-import { cookies } from "next/headers";
-import Link from "next/link";
+import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
-import { EpisodeLink } from "@/components/comic/EpisodeLink";
+import { EpisodeEnd } from "@/components/reader/EpisodeEnd";
+import { EpisodeLoader } from "@/components/reader/EpisodeLoader";
 import { ReaderDock } from "@/components/reader/ReaderDock";
 import { ReaderProgress } from "@/components/reader/ReaderProgress";
 import { MtnPayFlow } from "@/components/mtn/MtnPayFlow";
@@ -13,11 +13,13 @@ import { ReaderGate } from "@/components/reader/ReaderGate";
 import { UnlockDialog } from "@/components/reader/UnlockDialog";
 import { ReaderTopBar, episodeHref } from "@/components/reader/ReaderTopBar";
 import { ReaderTour } from "@/components/reader/ReaderTour";
+import { SignInGate } from "@/components/reader/SignInGate";
 import { getComicPageData } from "@/lib/api/client";
+import { isLive } from "@/lib/api/config";
 import { getEpisodePages } from "@/lib/api/episodes";
-import { comicHref } from "@/lib/format";
-import { buildEpisode } from "@/lib/reader";
-import { parsePass, parseUnlocks, PASS_COOKIE, UNLOCKS_COOKIE } from "@/lib/session";
+import { getAccessToken } from "@/lib/api/token";
+import { buildEpisode, signInPreviewPages } from "@/lib/reader";
+import { parsePass, parseUnlocks, PASS_COOKIE, SESSION_COOKIE, UNLOCKS_COOKIE } from "@/lib/session";
 
 type Params = PageProps<"/comics/[uuid]/read/[episode]">;
 
@@ -41,6 +43,9 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
 }
 
 // What this request's reader has unlocked, and the time to judge 24-hour unlocks against.
+// Crawlers and link previews. Fetching the pages counts a view, so they get the stand-ins instead.
+const BOT = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|telegram|discord|embedly|headless/i;
+
 async function readAccess() {
   const jar = await cookies();
   return [parseUnlocks(jar.get(UNLOCKS_COOKIE)?.value), Date.now(), parsePass(jar.get(PASS_COOKIE)?.value)?.until ?? null] as const;
@@ -53,7 +58,36 @@ export default async function ReaderPage({ params, searchParams }: Params) {
   const { comic, episode, total } = data;
   // Real pages need the episode's backend id, which links from the comic page's live list carry.
   const episodeId = Number(query.id);
-  const real = Number.isInteger(episodeId) && episodeId > 0 ? await getEpisodePages(comic.uuid, episodeId, episode) : null;
+  const hasId = Number.isInteger(episodeId) && episodeId > 0;
+  // The backend only serves episode 1 to signed-out readers, so they get the sign-in gate without
+  // asking it; signed-in readers whose token it turns down get the same.
+  // Before accounts go live, the demo sign-in counts (its cookie): it opens the episode on stand-in
+  // pages, since only a real sign-in brings real ones.
+  const token = await getAccessToken();
+  const signedIn = isLive("accounts") ? token !== null : (await cookies()).get(SESSION_COOKIE)?.value === "1";
+  const signedOutGate = isLive("reading") && episode > 1 && !signedIn;
+  // Episode 1 is open to everyone; later ones need a real token (the demo sign-in gets stand-ins).
+  const canFetch = hasId && !signedOutGate && (token !== null || episode === 1) && !BOT.test((await headers()).get("user-agent") ?? "");
+  const real = canFetch ? await getEpisodePages(comic.uuid, episodeId, episode) : null;
+  if (signedOutGate || real?.status === "signin") {
+    return (
+      <div className="h-dvh overflow-hidden bg-ink text-white">
+        <ReaderTopBar comic={comic} episode={episode} total={total} />
+        <main className="mx-auto max-w-[720px]">
+          <SignInGate
+            comic={comic}
+            episode={episode}
+            total={total}
+            pages={signInPreviewPages(comic, episode, 2)}
+            next={`${episodeHref(comic.uuid, episode)}${hasId ? `?id=${episodeId}` : ""}`}
+            preview={!isLive("accounts")}
+          />
+        </main>
+        <NotificationToast />
+        <EpisodeLoader key={`${comic.uuid}-${episode}`} />
+      </div>
+    );
+  }
   // The server decides which pages go out clean: unlocked ones (mock record in a cookie, see
   // session.ts) and the free preview. Everything else is only ever sent blurred.
   const { pages, lockedCount, premiumEpisode, passActive } = buildEpisode(
@@ -62,7 +96,6 @@ export default async function ReaderPage({ params, searchParams }: Params) {
     ...(await readAccess()),
     real?.status === "ok" ? real.pages : null
   );
-  const hasNext = total != null && episode < total;
 
   return (
     <div className="min-h-screen bg-ink text-white">
@@ -71,10 +104,10 @@ export default async function ReaderPage({ params, searchParams }: Params) {
       <main className="mx-auto max-w-[720px] pb-24">
         {real?.status !== "ok" && (
           <p className="mx-4 mt-4 border-2 border-dashed border-line px-4 py-3 text-xs leading-5 text-slate-400 sm:mx-0">
-            Preview build: these pages are stand-ins cropped from the Mafiki&apos;s cover and banner art.
-            {real?.status === "signin"
-              ? ` Toon Central only shows episode ${episode} to signed-in readers, and signing in isn't connected yet.`
-              : " Real pages load when you open the episode from the Mafiki's episode list."}
+            Preview build: these pages are stand-ins cropped from the Mafiki&apos;s cover and banner art.{" "}
+            {episode > 1 && !token
+              ? "Real pages need a real sign-in, which isn't connected yet."
+              : "Real pages load when you open the episode from the Mafiki's episode list."}
           </p>
         )}
 
@@ -112,20 +145,7 @@ export default async function ReaderPage({ params, searchParams }: Params) {
         {lockedCount > 0 ? (
           <ReaderGate episode={episode} lockedCount={lockedCount} firstEpisodeHref={episodeHref(comic.uuid, 1)} />
         ) : (
-          <div className="mx-4 mt-10 border-2 border-line bg-panel p-6 text-center sm:mx-0">
-            <p className="font-display text-3xl uppercase leading-none text-white">End of episode {episode}</p>
-            <p className="mt-2 text-sm text-slate-400">
-              {hasNext ? "The story continues." : total == null ? "More episodes arrive with the live API." : "You're all caught up on this Mafiki."}
-            </p>
-            <div className="mt-5 flex flex-wrap justify-center gap-3">
-              {hasNext && (
-                <EpisodeLink uuid={comic.uuid} episode={episode + 1} className="btn btn-primary px-6 py-3 text-base">
-                  Next: episode {episode + 1}
-                </EpisodeLink>
-              )}
-              <Link href={comicHref(comic.uuid)} className="btn btn-ghost px-6 py-3 text-base">Back to Mafiki</Link>
-            </div>
-          </div>
+          <EpisodeEnd uuid={comic.uuid} episode={episode} total={total} />
         )}
       </main>
 
@@ -142,6 +162,7 @@ export default async function ReaderPage({ params, searchParams }: Params) {
       <NotificationToast />
       <ReaderDock />
       <ReaderTour />
+      <EpisodeLoader key={`${comic.uuid}-${episode}`} />
     </div>
   );
 }

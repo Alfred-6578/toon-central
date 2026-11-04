@@ -2,44 +2,81 @@ import type { Comic, Short } from "@/lib/api/types";
 import { FREE_EPISODES, PREVIEW_PAGES } from "@/lib/rules";
 
 // The Studio's comic and episode model, shared by server pages and the browser store.
-// Monetization (client's creator-tutorial spec): a creator unlocks it once one of their Mafiki has
-// MILESTONE_EPISODES published episodes, and it applies to Mafiki they create after that (never
-// switched on for work that already exists). A monetized Mafiki earns with ads or credits from
-// episode 4 (1–3 stay free so new readers get hooked); with credits, each episode opens with free
-// preview pages and the creator picks the page where paid access begins (the key on a page thumbnail).
-export type EpisodeAccess = "free" | "ads" | "credits";
-export type Monetization = "none" | "ads" | "credits";
+// Monetization, on every Mafiki: episodes 1–3 are always free (new readers get hooked). From episode 4,
+// each episode can show ads (it stays free to read) and can have locked panels, panel by panel:
+// readers unlock them with credits one at a time or the whole episode at once. Both can be on together.
 
+// A Mafiki earns from its 4th episode: the "milestone" the creator tutorial celebrates.
 export const MILESTONE_EPISODES = 4;
 export const MONETIZE_FROM = FREE_EPISODES + 1;
 export const canMonetize = (number: number) => number >= MONETIZE_FROM;
 
-// A comic saved before monetization was per-Mafiki has no setting: it never earns.
-export const monetizationOf = (comic: Pick<StudioComic, "monetization">): Monetization => comic.monetization ?? "none";
+type LegacyEpisode = Pick<StudioEpisode, "monetize" | "paidFrom">;
+// Older saves said how a whole episode (or Mafiki) earned instead: "ads", or "credits" from a page on.
+const legacyOf = (comic: Pick<StudioComic, "monetization">, episode: LegacyEpisode) =>
+  episode.monetize ?? (comic.monetization === "none" ? undefined : comic.monetization);
 
-// How one episode is read: the opening episodes are always free, the rest follow the Mafiki's choice.
-export const accessOf = (comic: Pick<StudioComic, "monetization">, number: number): EpisodeAccess => {
-  const method = monetizationOf(comic);
-  return !canMonetize(number) || method === "none" ? "free" : method;
+// Whether episode `number` shows ads.
+export const adsOn = (comic: Pick<StudioComic, "monetization">, number: number, episode: (LegacyEpisode & Pick<StudioEpisode, "ads">) | null) =>
+  canMonetize(number) && !!episode && (episode.ads ?? legacyOf(comic, episode) === "ads");
+
+// Episode `number`'s locked panels: 1-based page numbers, in order.
+export function lockedPanelsOf(
+  comic: Pick<StudioComic, "monetization">,
+  number: number,
+  episode: (LegacyEpisode & Pick<StudioEpisode, "lockedPanels" | "pages">) | null
+): number[] {
+  if (!canMonetize(number) || !episode) return [];
+  const count = episode.pages.length;
+  if (episode.lockedPanels) return [...new Set(episode.lockedPanels)].filter((n) => n >= 1 && n <= count).sort((a, b) => a - b);
+  if (legacyOf(comic, episode) !== "credits") return [];
+  const from = episode.paidFrom ?? PREVIEW_PAGES + 1;
+  return Array.from({ length: Math.max(0, count - from + 1) }, (_, i) => from + i);
+}
+
+// A live comic's episode whose pages we can't see but that the live site locks (past the free ones).
+export const lockedOnSite = (comic: Pick<StudioComic, "monetization">, number: number, episode: LegacyEpisode & Pick<StudioEpisode, "pagesKnown">) =>
+  canMonetize(number) && !episode.pagesKnown && legacyOf(comic, episode) === "credits";
+
+export const publishedCount = (comic: Pick<StudioComic, "episodes">, now = Date.now()) =>
+  comic.episodes.filter((e) => episodeState(e, now) === "published").length;
+
+// The first Mafiki with its 4th episode out, if any (it can now earn).
+export const milestoneComic = (comics: StudioComic[], now = Date.now()) =>
+  comics.find((c) => publishedCount(c, now) >= MILESTONE_EPISODES) ?? null;
+export const reachedMilestone = (comics: StudioComic[], now = Date.now()) => milestoneComic(comics, now) !== null;
+
+
+// Ad offers (Creator 101, "Making money"): spots in every episode of a Mafiki that advertisers can buy.
+// The creator picks where, up to MAX_AD_SPOTS, once the Mafiki has MILESTONE_EPISODES episodes out.
+export const AD_SPOTS = ["top", "middle", "bottom"] as const;
+export type AdSpot = (typeof AD_SPOTS)[number];
+export const MAX_AD_SPOTS = 2;
+export const AD_SPOT_LABEL: Record<AdSpot, { name: string; where: string }> = {
+  top: { name: "Top", where: "Before the first page" },
+  middle: { name: "Middle", where: "Halfway through the episode" },
+  bottom: { name: "Bottom", where: "After the last page" },
 };
-
-// The page where paid access starts in a credits episode: the creator's pick, else after the free preview.
-export const paidFromOf = (episode: Pick<StudioEpisode, "paidFrom">) => episode.paidFrom ?? PREVIEW_PAGES + 1;
-
-// The milestone: any Mafiki with this many episodes out.
-export const reachedMilestone = (comics: StudioComic[], now = Date.now()) =>
-  comics.some((c) => c.episodes.filter((e) => episodeState(e, now) === "published").length >= MILESTONE_EPISODES);
-
-export const ACCESS_LABEL: Record<EpisodeAccess, string> = { free: "Free", ads: "Ads", credits: "Credits" };
+export const adSpotsAllowed = (comic: Pick<StudioComic, "episodes">) => publishedCount(comic) >= MILESTONE_EPISODES;
+// The chosen spots in reading order, none when the Mafiki can't have ads yet.
+export const adSpotsOf = (comic: Pick<StudioComic, "episodes" | "adSpots">): AdSpot[] =>
+  adSpotsAllowed(comic) ? AD_SPOTS.filter((spot) => comic.adSpots?.includes(spot)) : [];
 
 export type StudioEpisode = {
   id: string;
   title: string;
   // Image refs: "idb:…" for uploads in this browser, URLs for the demo's real comics.
   pages: string[];
-  // Kept on older saves only; how an episode is read now comes from its Mafiki (accessOf).
+  // Episodes from MONETIZE_FROM on: ads shown alongside it (see adsOn).
+  ads?: boolean;
+  // Episodes from MONETIZE_FROM on: 1-based page numbers readers unlock with credits (see lockedPanelsOf).
+  lockedPanels?: number[];
+  // Shown in the Mafiki's episode list; the first page stands in when there's none.
+  thumbnail?: string | null;
+  // Older saves only, read by adsOn / lockedPanelsOf: the whole episode's earning ("ads"/"credits"),
+  // and for credits the page where paid pages began.
   access?: string;
-  // Credits episodes: the 1-based page where paid access begins (null: after the free preview).
+  monetize?: "free" | "ads" | "credits";
   paidFrom?: number | null;
   // "scheduled" with a publishAt in the past counts as published (see episodeState).
   status: "draft" | "scheduled" | "published";
@@ -60,10 +97,12 @@ export type StudioComic = {
   schedule: string | null;
   status: "draft" | "published" | "completed";
   episodes: StudioEpisode[];
-  // Chosen when the Mafiki is created, if the creator had reached the milestone (see monetizationOf).
-  monetization?: Monetization;
-  // Created after the milestone, so its monetization can be set and changed.
+  // Older saves only: one setting for the whole Mafiki, before monetization was per episode.
+  monetization?: "none" | "ads" | "credits";
+  // Older saves only: whether that setting could be chosen.
   monetizable?: boolean;
+  // Where advertisers can buy a spot in each episode (see AD_SPOTS); none when missing.
+  adSpots?: AdSpot[];
   reads: number;
   likes: number;
   updatedAt: string;
@@ -96,12 +135,11 @@ export function fromLiveComic(comic: Comic): StudioComic {
     genres: comic.genres.slice(0, MAX_GENRES),
     schedule: comic.updateDays,
     status: comic.status === "COMPLETED" ? "completed" : "published",
-    // Live comics lock episodes past the free ones behind credits/passes.
-    monetization: "credits",
-    monetizable: true,
     episodes: Array.from({ length: count }, (_, i) => ({
       id: `${comic.uuid}-ep${i + 1}`,
       title: `Episode ${i + 1}`,
+      // Live comics lock episodes past the free ones behind credits/passes.
+      monetize: canMonetize(i + 1) ? ("credits" as const) : undefined,
       pages: [],
       status: "published",
       publishAt: null,

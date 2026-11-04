@@ -110,11 +110,11 @@ export function EarningsView({ mode, comics }: { mode: StudioMode; comics: Studi
         <section className="mt-8 border-2 border-dashed border-line p-5 text-sm leading-6 text-slate-300">
           <p className="font-display text-2xl uppercase text-white">How you earn</p>
           <p className="mt-2">
-            Episodes 1–{FREE_EPISODES} of every Mafiki are free. From episode {FREE_EPISODES + 1}, switch on <span className="font-semibold text-white">Monetize this episode</span> and choose:
+            Episodes 1–{FREE_EPISODES} of every Mafiki are free. From episode {FREE_EPISODES + 1}, each episode can earn in two ways, together or on their own:
           </p>
           <ul className="mt-2 grid gap-1">
             <li><span className="font-semibold text-white">Ads</span>: ads appear alongside the episode and it stays free for readers.</li>
-            <li><span className="font-semibold text-white">Credits</span>: readers unlock it with credits, or a pass or plan.</li>
+            <li><span className="font-semibold text-white">Locked panels</span>: readers unlock them with credits, one at a time or the whole episode, or with a pass or plan.</li>
           </ul>
           <Link href={studioHref("/creator/comics", mode)} className="mt-4 inline-block font-semibold text-mint hover:underline">Go to your Mafiki →</Link>
         </section>

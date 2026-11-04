@@ -30,7 +30,7 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
   const [data, stats] = await Promise.all([getComicPageData(uuid), getSiteStats()]);
   if (!data) notFound();
 
-  const { comic, episodes, episodesSource, moreFromCreator, similar, shorts } = data;
+  const { comic, episodes, episodesSource, moreFromCreator, similar, similarFrom, shorts } = data;
   // Comics with shorts get an Episodes | Shorts switch instead of two separate sections.
   const tab = shorts.length > 0 && query.tab === "shorts" ? "shorts" : "episodes";
   const tabs = shorts.length > 0 && <ComicTabs uuid={comic.uuid} tab={tab} episodes={episodes.length} shorts={shorts.length} />;
@@ -42,7 +42,7 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
         {/* Clears the fixed header */}
         <div className="h-[66px]" />
 
-        <ComicHeader comic={comic} />
+        <ComicHeader comic={comic} live={isLive("reading")} />
 
         <div className="mx-auto px-6 md:px-8 lg:px-10">
           <section id="episodes" className="mt-12">
@@ -74,7 +74,9 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
           {similar.length > 0 && (
             <section className="mb-16 mt-14">
               <SectionHeader title="You might also like" action={null}>
-                <span className="pb-0.5 text-sm text-slate-400">Shares genres with {comic.title}</span>
+                <span className="pb-0.5 text-sm text-slate-400">
+                  {similarFrom === "backend" ? `Picked for readers of ${comic.title}` : `Shares genres with ${comic.title}`}
+                </span>
               </SectionHeader>
               <ComicGrid comics={similar} limit={5} />
             </section>

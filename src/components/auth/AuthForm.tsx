@@ -4,15 +4,18 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useId, useState, type FormEvent, type InputHTMLAttributes } from "react";
 import { IoCheckmarkCircle, IoEyeOffOutline, IoEyeOutline } from "react-icons/io5";
-import { authHref, PASSWORD_MIN, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
+import { forgotPasswordAction, resendVerificationAction, signInAction, signUpAction } from "@/app/auth/actions";
+import type { MobileOperator } from "@/lib/api/account";
+import { authHref, localPhone, PASSWORD_MIN, PHONE_HINT, USERNAME_PATTERN, type AuthMode } from "@/lib/auth";
 import { useMockSession } from "@/lib/mockSession";
 import { notifyWelcome } from "@/lib/notifications";
 
-type Values = { username: string; email: string; password: string; terms: boolean };
+type Values = { firstName: string; lastName: string; username: string; email: string; phone: string; operator: number; password: string; terms: boolean };
 type Errors = Partial<Record<keyof Values, string>>;
 
-const EMPTY: Values = { username: "", email: "", password: "", terms: false };
+const EMPTY: Values = { firstName: "", lastName: "", username: "", email: "", phone: "", operator: 0, password: "", terms: false };
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const RESEND_SECONDS = 30;
 
 const COPY: Record<AuthMode, { title: string; lede: string; submit: string }> = {
@@ -23,7 +26,12 @@ const COPY: Record<AuthMode, { title: string; lede: string; submit: string }> = 
 
 function validate(mode: AuthMode, v: Values): Errors {
   const errors: Errors = {};
-  if (mode === "signup" && !USERNAME_PATTERN.test(v.username)) errors.username = "3–20 letters, numbers or underscores.";
+  if (mode === "signup") {
+    if (!v.firstName.trim()) errors.firstName = "Enter your first name.";
+    if (!v.lastName.trim()) errors.lastName = "Enter your last name.";
+    if (!USERNAME_PATTERN.test(v.username)) errors.username = "3–20 letters, numbers or underscores.";
+    if (!localPhone(v.phone)) errors.phone = PHONE_HINT;
+  }
   if (!EMAIL_PATTERN.test(v.email.trim())) errors.email = "Enter a valid email address.";
   if (mode !== "forgot" && v.password.length < PASSWORD_MIN) {
     errors.password = mode === "signup" ? `Use at least ${PASSWORD_MIN} characters.` : "Enter your password.";
@@ -32,16 +40,30 @@ function validate(mode: AuthMode, v: Values): Errors {
   return errors;
 }
 
-// Sign in, join and password reset. Preview only: nothing is sent anywhere. Submitting flips the
-// mock session on (src/lib/mockSession.ts) and returns the reader to where they came from.
-export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next: string; referrer?: string | null }) {
+type AuthFormProps = {
+  mode: AuthMode;
+  next: string;
+  referrer?: string | null;
+  // Accounts are live: submit to the API. Otherwise it's the preview, which flips the mock session on
+  // (src/lib/mockSession.ts) and sends nothing anywhere.
+  live?: boolean;
+  // Join form's mobile network choice, MTN first.
+  operators?: MobileOperator[];
+};
+
+// Sign in, join and password reset. Either way the reader is returned to where they came from.
+export function AuthForm({ mode, next, referrer = null, live = false, operators = [] }: AuthFormProps) {
   const router = useRouter();
   const { user, signIn, signOut } = useMockSession();
-  const [values, setValues] = useState(EMPTY);
+  const [values, setValues] = useState({ ...EMPTY, operator: operators[0]?.id ?? 0 });
   const [submitted, setSubmitted] = useState(false);
   const [pending, setPending] = useState(false);
   const [resetSent, setResetSent] = useState(false);
   const [resendIn, setResendIn] = useState(0);
+  // The backend's answer when it turns a submit down (wrong password, username taken…).
+  const [formError, setFormError] = useState<string | null>(null);
+  // Joined, or tried to sign in before confirming: the verification email is the next step.
+  const [verifyEmail, setVerifyEmail] = useState(false);
 
   const errors = submitted ? validate(mode, values) : {};
   const copy = COPY[mode];
@@ -67,10 +89,62 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
     }, 600);
   };
 
+  const email = values.email.trim();
+
+  const submitLive = async () => {
+    setPending(true);
+    setFormError(null);
+    if (mode === "signin") {
+      const result = await signInAction(email, values.password);
+      if (result.ok) {
+        // A full load, so every server-rendered part (the reader decides access on the server) sees the
+        // new session at once; a client-side replace plus refresh could cancel each other out.
+        window.location.replace(next);
+        return;
+      }
+      if (!result.ok && result.unverified) setVerifyEmail(true);
+      else if (!result.ok) setFormError(result.message);
+    } else if (mode === "signup") {
+      const result = await signUpAction({
+        username: values.username,
+        firstName: values.firstName,
+        lastName: values.lastName,
+        email,
+        telephone: localPhone(values.phone) ?? values.phone,
+        mobileOperatorId: values.operator,
+        password: values.password,
+        referralCode: referrer ?? undefined,
+      });
+      if (result.ok) {
+        setVerifyEmail(true);
+        setResendIn(RESEND_SECONDS);
+        setTimeout(() => notifyWelcome(values.username || undefined), 900);
+      } else setFormError(result.message);
+    } else {
+      const result = await forgotPasswordAction(email);
+      if (result.ok) {
+        setResetSent(true);
+        setResendIn(RESEND_SECONDS);
+      } else setFormError(result.message);
+    }
+    setPending(false);
+  };
+
+  const resend = async () => {
+    setResendIn(RESEND_SECONDS);
+    if (!live) return;
+    const result = mode === "forgot" ? await forgotPasswordAction(email) : await resendVerificationAction(email);
+    if (!result.ok) setFormError(result.message);
+  };
+
   const onSubmit = (event: FormEvent) => {
     event.preventDefault();
     setSubmitted(true);
     if (Object.keys(validate(mode, values)).length) return;
+    if (live) {
+      submitLive();
+      return;
+    }
 
     if (mode === "forgot") {
       setPending(true);
@@ -98,6 +172,28 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
     );
   }
 
+  if (verifyEmail) {
+    return (
+      <Card title="Check your inbox">
+        <p className="flex gap-2 text-sm leading-6 text-slate-300">
+          <IoCheckmarkCircle className="mt-1 shrink-0 text-mint" />
+          <span>
+            {mode === "signup" ? "Your account is ready to confirm. " : "Confirm your email first. "}
+            We&apos;ve sent a link to <span className="font-semibold text-white">{email}</span>: open it, then sign in. It can take a
+            minute; check spam too.
+          </span>
+        </p>
+        <div className="mt-6 flex flex-wrap items-center gap-4">
+          <Link href={authHref("signin", next)} onClick={() => setVerifyEmail(false)} className="btn btn-primary px-6 py-3 text-base">
+            {mode === "signup" ? "Go to sign in" : "Back to sign in"}
+          </Link>
+          <ResendButton seconds={resendIn} onClick={resend} />
+        </div>
+        {formError && <FormError message={formError} />}
+      </Card>
+    );
+  }
+
   if (mode === "forgot" && resetSent) {
     return (
       <Card title="Check your inbox">
@@ -110,16 +206,10 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
         </p>
         <div className="mt-6 flex flex-wrap items-center gap-4">
           <Link href={authHref("signin", next)} className="btn btn-primary px-6 py-3 text-base">Back to sign in</Link>
-          <button
-            type="button"
-            disabled={resendIn > 0}
-            onClick={() => setResendIn(RESEND_SECONDS)}
-            className="text-sm font-semibold text-slate-300 underline-offset-4 hover:underline disabled:text-slate-600 disabled:no-underline"
-          >
-            {resendIn > 0 ? `Resend in ${resendIn}s` : "Resend link"}
-          </button>
+          <ResendButton seconds={resendIn} onClick={resend} />
         </div>
-        <PreviewNote />
+        {formError && <FormError message={formError} />}
+        {!live && <PreviewNote />}
       </Card>
     );
   }
@@ -128,10 +218,10 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
     <Card title={copy.title} lede={copy.lede}>
       {referrer && (
         <p className="-mt-3 mb-6 w-fit border-2 border-black bg-sun px-3 py-1.5 text-sm font-bold text-ink shadow-[3px_3px_0_#000]">
-          Invited by @{referrer}
+          {live ? "Invited by a friend" : `Invited by @${referrer}`}
         </p>
       )}
-      {mode !== "forgot" && (
+      {mode !== "forgot" && !live && (
         <>
           <button
             type="button"
@@ -149,6 +239,24 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
       )}
 
       <form onSubmit={onSubmit} noValidate className="grid gap-4">
+        {mode === "signup" && (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field
+              label="First name"
+              error={errors.firstName}
+              value={values.firstName}
+              onChange={(e) => set("firstName", e.target.value)}
+              autoComplete="given-name"
+            />
+            <Field
+              label="Last name"
+              error={errors.lastName}
+              value={values.lastName}
+              onChange={(e) => set("lastName", e.target.value)}
+              autoComplete="family-name"
+            />
+          </div>
+        )}
         {mode === "signup" && (
           <Field
             label="Username"
@@ -170,6 +278,21 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
           autoComplete="email"
           spellCheck={false}
         />
+        {mode === "signup" && (
+          <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_9rem]">
+            <Field
+              label="Phone number"
+              type="tel"
+              inputMode="tel"
+              placeholder="0803 123 4567"
+              error={errors.phone}
+              value={values.phone}
+              onChange={(e) => set("phone", e.target.value)}
+              autoComplete="tel-national"
+            />
+            <OperatorSelect operators={operators} value={values.operator} onChange={(id) => set("operator", id)} />
+          </div>
+        )}
         {mode !== "forgot" && (
           <PasswordField
             mode={mode}
@@ -197,6 +320,7 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
           </label>
         )}
 
+        {formError && <FormError message={formError} />}
         <button type="submit" disabled={pending} className="btn btn-primary mt-2 h-12 w-full text-base disabled:opacity-70">
           {pending ? "One moment…" : copy.submit}
         </button>
@@ -213,8 +337,43 @@ export function AuthForm({ mode, next, referrer = null }: { mode: AuthMode; next
           <>Remembered it? <Link href={authHref("signin", next)} className="font-semibold text-mint underline-offset-4 hover:underline">Back to sign in</Link></>
         )}
       </p>
-      <PreviewNote />
+      {!live && <PreviewNote />}
     </Card>
+  );
+}
+
+function ResendButton({ seconds, onClick }: { seconds: number; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      disabled={seconds > 0}
+      onClick={onClick}
+      className="text-sm font-semibold text-slate-300 underline-offset-4 hover:underline disabled:text-slate-600 disabled:no-underline"
+    >
+      {seconds > 0 ? `Resend in ${seconds}s` : "Resend link"}
+    </button>
+  );
+}
+
+function FormError({ message }: { message: string }) {
+  return (
+    <p role="alert" className="mt-4 border-2 border-sun bg-sun/10 px-4 py-3 text-sm font-semibold text-sun">
+      {message}
+    </p>
+  );
+}
+
+function OperatorSelect({ operators, value, onChange }: { operators: MobileOperator[]; value: number; onChange: (id: number) => void }) {
+  const id = useId();
+  return (
+    <div>
+      <label htmlFor={id} className="mb-1.5 block text-sm font-semibold text-slate-200">Network</label>
+      <select id={id} value={value} onChange={(e) => onChange(Number(e.target.value))} className={`${inputBase} border-line`}>
+        {operators.map((op) => (
+          <option key={op.id} value={op.id}>{op.name}</option>
+        ))}
+      </select>
+    </div>
   );
 }
 

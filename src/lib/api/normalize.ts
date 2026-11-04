@@ -22,7 +22,7 @@ const num = (v: unknown) => (typeof v === "number" ? v : Number(v) || 0);
 
 function toCreator(user: unknown): Creator {
   const u = (user ?? {}) as Raw;
-  return { username: str(u.username) || "Unknown creator", photo: str(u.photo) || null };
+  return { id: num(u.id) || undefined, username: str(u.username) || "Unknown creator", photo: str(u.photo) || null };
 }
 
 function toGenreNames(genres: unknown): string[] {

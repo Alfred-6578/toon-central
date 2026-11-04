@@ -44,17 +44,18 @@ export default async function ShortsPage({ searchParams }: Params) {
 
   return (
     <div className="h-dvh overflow-hidden bg-ink text-white">
-      <Navigation />
+      {/* Full screen on phones: no top header (the feed has its own back arrow), the tab bar stays. */}
+      <Navigation phoneHeader={false} />
       <h1 className="sr-only">Shorts</h1>
       {genre && (
         // A hashtag feed says what it's filtered to, with a way back to everything.
-        <div className="fixed left-1/2 top-[4.75rem] z-40 flex -translate-x-1/2 items-center gap-2 border-2 border-black bg-mint px-3 py-1.5 text-sm font-bold text-ink shadow-[3px_3px_0_#000]">
+        <div className="fixed left-1/2 top-[calc(env(safe-area-inset-top)+0.75rem)] z-40 md:top-[4.75rem] flex -translate-x-1/2 items-center gap-2 border-2 border-black bg-mint px-3 py-1.5 text-sm font-bold text-ink shadow-[3px_3px_0_#000]">
           #{(feed[0]?.genres.find((g) => genreSlug(g) === genre) ?? genre).replace(/[^A-Za-z0-9]+/g, "")}
           <Link href="/shorts" className="ml-1 underline-offset-2 hover:underline">All shorts ✕</Link>
         </div>
       )}
       <ShortsPageFeed shorts={feed} startIndex={startIndex} />
-      <DesignOptions selection={design} basePath="/shorts" only={["tieins"]} className="left-4 top-[8.5rem] lg:left-6" />
+      <DesignOptions selection={design} basePath="/shorts" only={["tieins"]} className="left-4 top-[calc(env(safe-area-inset-top)+4.5rem)] md:top-[8.5rem] lg:left-6" />
     </div>
   );
 }
