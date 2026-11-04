@@ -3,6 +3,7 @@ import Link from "next/link";
 import { FaAt, FaInstagram, FaTiktok, FaXTwitter } from "react-icons/fa6";
 import { CreatorAvatar } from "@/components/ui/CreatorAvatar";
 import { FollowButton } from "@/components/ui/FollowButton";
+import { CreatorBio } from "./CreatorBio";
 import { dateParts } from "@/components/home/latest/releaseLogData";
 import type { CreatorPageData } from "@/lib/api/types";
 import { cloudinary, formatCount, genreHref } from "@/lib/format";
@@ -22,7 +23,8 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 // Profile header: their most-read banner pushed back behind halftone (or a dot field in their main
 // genre colour when they only have shorts), a large avatar, credits-style stats and their socials.
-export function CreatorHeader({ data }: { data: CreatorPageData }) {
+// `live`: reading uses the API, so the bio is fetched from the creator's profile once the page opens.
+export function CreatorHeader({ data, live = false }: { data: CreatorPageData; live?: boolean }) {
   const { creator, isOfficial, comics, shorts, genres, socials, stats } = data;
   const banner = comics[0]?.backgroundImage;
   const mainGenre = genres[0];
@@ -67,6 +69,7 @@ export function CreatorHeader({ data }: { data: CreatorPageData }) {
             <h1 className="mt-3 break-words font-display text-5xl uppercase leading-[0.95] text-white sm:text-6xl xl:text-7xl">
               {creator.username}
             </h1>
+            <CreatorBio creatorId={creator.id} live={live} />
             {genres.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">
                 {genres.slice(0, 5).map((genre) => (

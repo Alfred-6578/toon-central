@@ -243,3 +243,17 @@ comment UI there yet).
     Browsers, crawlers and link previews can trigger them. They should be POST.
 21. Signed-out views count on every call, so one visitor refreshing can inflate a comic's or short's
     views. Counting once per visitor (by IP or a device id) per day would match how signed-in views work.
+22. **The "ranked" lists aren't ranked**: `trending/most-read-comics`, `home/top-recommendations` and
+    `home/trending` all return the same list, newest comic first (checked 4 Nov: first is AWESOME GIRL,
+    79 views, while Hunter has 10,267). The site sorts by real views instead; a working "most read" or
+    "recommended" would be worth a home row.
+23. `originals/pull/all` returns 1 comic; `home/toon-central-originals` returns all 14 Originals.
+24. **`profile/:id/view` exposes private data without sign-in**: any user's email, phone, date of
+    birth, wallet (coin balance, pending, available, withdrawn and lifetime earnings), subscription plan
+    and referral code. User ids are sequential, so every account can be collected. It should return
+    only public fields (username, photo, bio, comics, shorts). The site uses it for creator bios and
+    passes on only the bio.
+25. **`comics/subscribed` lists favourites, not subscriptions**: its rows are every reader's library
+    saves (a test save at 13:53:47 on 3 Nov appeared there; two subscribe calls added nothing), for all
+    users, with no sign-in. **`shorts/subscribed`** and **`shorts/viewed`** return every short, signed in
+    or not. None of the three is per-reader, so the site can't use them yet.
