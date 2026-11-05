@@ -47,6 +47,23 @@ async function fetchAllComics(path: string): Promise<Comic[] | null> {
   return (await fetchAllRaw(path, "comics"))?.map(toComic) ?? null;
 }
 
+// One creator's comics (comics/:creator_id/pull), so creator pages don't depend on the full
+// catalogue listing as it grows. null when it isn't available or has nothing.
+async function getCreatorComics(creatorId: number): Promise<Comic[] | null> {
+  const comics = await fetchAllComics(`/comics/${creatorId}/pull`);
+  return comics?.length ? comics : null;
+}
+
+// One genre's shorts (genres/short/:id/all; the backend lists them under "comics"). null when it
+// isn't available, so the caller filters the full list instead.
+export async function getShortsByGenre(slug: string): Promise<Short[] | null> {
+  if (!isLive("reading")) return null;
+  const genre = (await getGenres()).find((g) => genreSlug(g.name) === slug);
+  if (!genre) return null;
+  const raw = await fetchAllRaw(`/genres/short/${genre.id}/all`, "comics");
+  return raw?.length ? raw.map(toShort) : null;
+}
+
 // Episode counts only come with some lists; copy them onto the same comic wherever else it appears.
 export function shareEpisodeCounts(lists: Comic[][]): Comic[][] {
   const counts = new Map<string, number>();
@@ -200,6 +217,20 @@ async function getSuggestedComics(uuid: string): Promise<Comic[]> {
   return (data?.comics ?? []).map(toComic);
 }
 
+// A creator's public profile (profile/:id/view), when a reader opens their page. The backend counts a
+// profile view on every call and sends the whole account (email, phone, date of birth, wallet), so
+// only the public bio goes back to the browser.
+export async function openProfile(creatorId: number, token: string | null = null): Promise<{ bio: string | null } | null> {
+  if (!isLive("reading")) return null;
+  const result = await apiRequest<Raw>(`/profile/${creatorId}/view`, { revalidate: false, token });
+  if (!result.ok) {
+    console.error(`[api] GET profile/${creatorId}/view failed: ${result.status} ${result.message}`);
+    return null;
+  }
+  const bio = typeof result.data.welcomeNote === "string" ? result.data.welcomeNote.trim() : "";
+  return { bio: bio || null };
+}
+
 export async function getComicPageData(uuid: string): Promise<ComicPageData | null> {
   // The comic comes from the catalogue; see openComic for why the server never builds its episode list
   // from comics/:uuid/view. When reading is live the browser fetches the real list once the page opens,
@@ -329,10 +360,16 @@ function parseSocial(raw: string): SocialLink | null {
 
 export async function getCreatorPageData(slug: string): Promise<CreatorPageData | null> {
   const [catalogue, shorts] = await Promise.all([getCatalogue(), getAllShorts()]);
-  const comics = catalogue.filter((c) => creatorSlug(c.creator.username) === slug).sort((a, b) => b.views - a.views);
+  const listed = catalogue.filter((c) => creatorSlug(c.creator.username) === slug);
   const theirShorts = shorts.filter((s) => !s.isSponsored && creatorSlug(s.creator.username) === slug);
-  const creator = comics[0]?.creator ?? theirShorts[0]?.creator;
+  const creator = listed[0]?.creator ?? theirShorts[0]?.creator;
   if (!creator) return null;
+
+  // Their comics from the backend's per-creator list, using the catalogue's copy where it has one
+  // (it carries episode counts); the catalogue's own filter if that list isn't available.
+  const own = creator.id ? await getCreatorComics(creator.id) : null;
+  const byUuid = new Map(catalogue.map((c) => [c.uuid, c]));
+  const comics = (own ? own.map((c) => byUuid.get(c.uuid) ?? c) : listed).sort((a, b) => b.views - a.views);
 
   // Genres they work in, most used first.
   const genreCounts = new Map<string, number>();

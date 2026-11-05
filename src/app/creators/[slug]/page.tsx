@@ -11,6 +11,7 @@ import { ComicGrid } from "@/components/ui/ComicGrid";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { TabLinks } from "@/components/ui/TabLinks";
 import { getCreatorPageData, getSiteStats } from "@/lib/api/client";
+import { isLive } from "@/lib/api/config";
 import { cloudinary, comicCount, creatorHref, creatorSlug } from "@/lib/format";
 
 type Params = PageProps<"/creators/[slug]">;
@@ -49,7 +50,7 @@ export default async function CreatorPage({ params, searchParams }: Params) {
         <Navigation />
         <div className="h-[66px]" />
 
-        <CreatorHeader data={data} />
+        <CreatorHeader data={data} live={isLive("reading")} />
 
         <div className="mx-auto px-6 pb-16 md:px-8 lg:px-10">
           {(comics.length > 0 || shorts.length > 0) && (

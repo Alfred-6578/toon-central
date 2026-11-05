@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
 import { notFound } from "next/navigation";
+import { CommentSection } from "@/components/comments/CommentSection";
 import { EpisodeEnd } from "@/components/reader/EpisodeEnd";
 import { EpisodeLoader } from "@/components/reader/EpisodeLoader";
 import { ReaderDock } from "@/components/reader/ReaderDock";
@@ -147,6 +148,14 @@ export default async function ReaderPage({ params, searchParams }: Params) {
         ) : (
           <EpisodeEnd uuid={comic.uuid} episode={episode} total={total} />
         )}
+
+        <CommentSection
+          target="episode"
+          liveKey={hasId ? episodeId : null}
+          mockKey={`episode:${comic.uuid}:${episode}`}
+          title={`episode ${episode}`}
+          className="mx-4 mt-12 sm:mx-0"
+        />
       </main>
 
       <ReaderProgress

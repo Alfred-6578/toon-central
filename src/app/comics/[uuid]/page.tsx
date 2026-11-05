@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ComicHeader } from "@/components/comic/ComicHeader";
 import { ComicTabs } from "@/components/comic/ComicTabs";
+import { CommentSection } from "@/components/comments/CommentSection";
 import { LiveEpisodeList } from "@/components/comic/LiveEpisodeList";
 import { ShortsRail } from "@/components/home/shorts/ShortsRail";
 import { Footer } from "@/components/layout/Footer";
@@ -63,6 +64,8 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
               />
             )}
           </section>
+
+          <CommentSection target="comic" liveKey={comic.id || null} mockKey={`comic:${comic.uuid}`} title={comic.title} className="mt-14" />
 
           {moreFromCreator.length > 0 && (
             <section className="mt-14">

@@ -5,6 +5,7 @@ import { MdPlayArrow } from "react-icons/md";
 import { IoBookOutline } from "react-icons/io5";
 import { useHoverPreview } from "@/components/home/shorts/HoverPreview";
 import { ShortsFeed } from "@/components/home/shorts/ShortsFeed";
+import { FilmEdge } from "@/components/ui/FilmEdge";
 import type { Short } from "@/lib/api/types";
 import { cloudinary } from "@/lib/format";
 import { genreTag } from "@/lib/tagStyles";
@@ -27,8 +28,8 @@ function Poster({ short, onWatch }: { short: Short; onWatch: () => void }) {
       {/* Ticket stub, perforated from the poster */}
       <div className="relative border-2 border-t-0 border-black bg-paper px-3 pb-3 pt-3 text-ink">
         <span aria-hidden="true" className="absolute -top-px left-2 right-2 border-t-2 border-dashed border-ink/40" />
-        <span aria-hidden="true" className="absolute -left-[9px] -top-[9px] h-4 w-4 rounded-full bg-black" />
-        <span aria-hidden="true" className="absolute -right-[9px] -top-[9px] h-4 w-4 rounded-full bg-black" />
+        <span aria-hidden="true" className="absolute -left-[9px] -top-[9px] h-4 w-4 rounded-full bg-[#0a0a0a]" />
+        <span aria-hidden="true" className="absolute -right-[9px] -top-[9px] h-4 w-4 rounded-full bg-[#0a0a0a]" />
         <p className="line-clamp-1 text-sm font-bold">{short.title}</p>
         <p className="mt-0.5 truncate text-xs text-ink/60">{short.creator.username}</p>
         <div className="mt-2 flex items-center justify-between gap-2">
@@ -51,7 +52,8 @@ export function NowShowing({ shorts }: { shorts: Short[] }) {
   const close = useCallback(() => setPlaying(null), []);
 
   return (
-    <section aria-labelledby="now-showing" className="marquee -mx-6 mt-16 px-6 py-14 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
+    <section aria-labelledby="now-showing" className="filmstrip -mx-6 mt-16 px-6 py-16 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
+      <FilmEdge />
       <div className="mb-8 text-center">
         <h2 id="now-showing" className="marquee-title font-display text-5xl uppercase leading-none sm:text-6xl">Now Showing</h2>
         <p className="mt-3 text-sm text-slate-300">Animated stories, no reading required.</p>

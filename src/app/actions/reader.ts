@@ -27,10 +27,12 @@ export async function followStatusAction(creatorId: number) {
   return reader.getFollowStatus(Number(creatorId));
 }
 
-export async function shortCommentsAction(id: string, page: number) {
-  return reader.getShortComments(uuid(id), Number(page) || 1);
+const target = (value: unknown): reader.CommentTarget => (value === "comic" || value === "episode" ? value : "short");
+
+export async function commentsAction(kind: reader.CommentTarget, key: string, page: number) {
+  return reader.getComments(target(kind), String(key), Number(page) || 1);
 }
 
-export async function addShortCommentAction(id: string, text: string) {
-  return reader.addShortComment(uuid(id), typeof text === "string" ? text : "");
+export async function addCommentAction(kind: reader.CommentTarget, key: string, text: string) {
+  return reader.addComment(target(kind), String(key), typeof text === "string" ? text : "");
 }

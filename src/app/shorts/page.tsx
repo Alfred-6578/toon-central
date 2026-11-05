@@ -3,7 +3,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Navigation } from "@/components/layout/Navigation";
 import { ShortsPageFeed } from "@/components/shorts/ShortsPageFeed";
-import { getCatalogue, getShortsPageData } from "@/lib/api/client";
+import { getCatalogue, getShortsByGenre, getShortsPageData, linkShortsToComics } from "@/lib/api/client";
 import { DesignOptions } from "@/components/ui/DesignOptions";
 import { resolveDesign } from "@/lib/designOptions";
 import { applyDemoTieIns } from "@/lib/demoTieIns";
@@ -34,8 +34,14 @@ export default async function ShortsPage({ searchParams }: Params) {
   const shortId = one(query.short);
 
   const design = resolveDesign(query);
-  const [data, catalogue] = await Promise.all([getShortsPageData(null, "popular"), getCatalogue()]);
-  const shorts = design.tieins === "demo" ? applyDemoTieIns(data.shorts, catalogue) : data.shorts;
+  const [data, catalogue, genreShorts] = await Promise.all([
+    getShortsPageData(null, "popular"),
+    getCatalogue(),
+    // A hashtag feed asks for just that genre's shorts; the full list is filtered if that fails.
+    genre ? getShortsByGenre(genre) : null,
+  ]);
+  const source = genreShorts ? linkShortsToComics(genreShorts, catalogue) : data.shorts;
+  const shorts = design.tieins === "demo" ? applyDemoTieIns(source, catalogue) : source;
   const feed = buildShortsFeed(shorts, genre);
   // Unknown or empty genre: fall back to the full feed rather than a blank screen.
   if (genre && !feed.length) redirect("/shorts");
