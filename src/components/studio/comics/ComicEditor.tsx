@@ -313,7 +313,11 @@ function EpisodeList({ comic, mode, onMove, onAds, confirmDelete, onAskDelete, o
                 {state === "scheduled" && episode.publishAt && <span className="text-sun">Goes live {when(episode.publishAt)}</span>}
                 {state === "draft" && "Draft"}
                 {" · "}
-                {episode.pagesKnown ? `${episode.pages.length} ${episode.pages.length === 1 ? "page" : "pages"}` : "pages on the live site"}
+                {episode.pagesKnown
+                  ? `${episode.pages.length} ${episode.pages.length === 1 ? "page" : "pages"}`
+                  : mode === "live"
+                    ? "open to see its pages"
+                    : "pages on the live site"}
               </p>
             </div>
 

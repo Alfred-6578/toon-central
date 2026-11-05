@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Profile · Creator Studio | Toon Cen
 const KNOWN: SocialPlatform[] = ["instagram", "x", "tiktok", "youtube", "facebook"];
 
 export default async function StudioProfilePage({ searchParams }: PageProps<"/creator/profile">) {
-  const { design, mode, genres, demoData } = await getStudioContext(await searchParams);
+  const { design, mode, genres, demoData, seeds, shortSeeds, unreadable } = await getStudioContext(await searchParams);
 
   // The established demo starts from the creator's real public profile.
   const seed: CreatorProfile | null = demoData
@@ -34,7 +34,7 @@ export default async function StudioProfilePage({ searchParams }: PageProps<"/cr
   return (
     <>
       <StudioShell active="profile" query={studioHref("", mode)}>
-        <StudioGate mode={mode} next={studioHref("/creator/profile", mode)}>
+        <StudioGate mode={mode} next={studioHref("/creator/profile", mode)} hasItems={seeds.length + shortSeeds.length > 0} unreadable={unreadable}>
           <ProfileEditor mode={mode} seed={seed} genres={genres} />
         </StudioGate>
       </StudioShell>

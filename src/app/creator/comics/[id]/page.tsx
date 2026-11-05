@@ -9,10 +9,10 @@ export const metadata: Metadata = { title: "Edit Mafiki · Creator Studio | Toon
 
 export default async function EditComicPage({ params, searchParams }: PageProps<"/creator/comics/[id]">) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
-  const { mode, seeds, genres } = await getStudioContext(query);
+  const { mode, seeds, genres, shortSeeds, unreadable } = await getStudioContext(query);
   return (
     <StudioShell active="comics" query={studioHref("", mode)}>
-      <StudioGate mode={mode} next={studioHref(`/creator/comics/${id}`, mode)}>
+      <StudioGate mode={mode} next={studioHref(`/creator/comics/${id}`, mode)} hasItems={seeds.length + shortSeeds.length > 0} unreadable={unreadable}>
         <ComicEditor id={id} mode={mode} seeds={seeds} genres={genres} />
       </StudioGate>
     </StudioShell>

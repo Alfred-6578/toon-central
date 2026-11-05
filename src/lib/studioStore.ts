@@ -3,6 +3,7 @@
 import { deleteStoredImage } from "@/lib/imageStore";
 import { useLocalValue } from "@/lib/localValue";
 import type { StudioComic, StudioMode, StudioShort } from "@/lib/studioModel";
+import { studioNotice } from "@/components/studio/StudioNotice";
 
 type Item = { id: string; updatedAt: string };
 
@@ -40,12 +41,26 @@ function useStudioItems<T extends Item>(key: string, seeds: T[], files: (item: T
   };
 }
 
+// The creator's real items (mode "live") come from the server and aren't kept in this browser. Saving
+// them isn't connected yet, so changes are refused with a note instead of being kept only here.
+function useLiveItems<T extends Item>(seeds: T[]) {
+  const refuse: (item: T) => void = () => studioNotice("Saving to your account isn't connected yet. Nothing was changed.");
+  return {
+    items: [...seeds].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt)),
+    get: (id: string) => seeds.find((item) => item.id === id) ?? null,
+    save: refuse,
+    remove: refuse,
+  };
+}
+
 export function useStudioComics(mode: StudioMode, seeds: StudioComic[]) {
-  const store = useStudioItems(`tc-studio-comics-${mode}`, seeds, (c) => [c.cover, c.banner, c.trailer ?? null, ...c.episodes.flatMap((e) => [...e.pages, e.thumbnail ?? null])]);
-  return { ...store, comics: store.items };
+  const local = useStudioItems(`tc-studio-comics-${mode}`, seeds, (c) => [c.cover, c.banner, c.trailer ?? null, ...c.episodes.flatMap((e) => [...e.pages, e.thumbnail ?? null])]);
+  const store = useLiveItems(seeds);
+  return mode === "live" ? { ...store, comics: store.items } : { ...local, comics: local.items };
 }
 
 export function useStudioShorts(mode: StudioMode, seeds: StudioShort[]) {
-  const store = useStudioItems(`tc-studio-shorts-${mode}`, seeds, (s) => [s.video, s.cover]);
-  return { ...store, shorts: store.items };
+  const local = useStudioItems(`tc-studio-shorts-${mode}`, seeds, (s) => [s.video, s.cover]);
+  const store = useLiveItems(seeds);
+  return mode === "live" ? { ...store, shorts: store.items } : { ...local, shorts: local.items };
 }

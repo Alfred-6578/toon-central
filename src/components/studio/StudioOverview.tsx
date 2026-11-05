@@ -11,10 +11,14 @@ import { useHydrated, useMockSession } from "@/lib/mockSession";
 import { studioPage, type StudioDemo } from "@/lib/studio";
 import { useStudioComics, useStudioShorts } from "@/lib/studioStore";
 import { BecomeCreator } from "./BecomeCreator";
+import { StudioUnreadable } from "./StudioGate";
 
 // Who can see the Studio: signed out → sign in; signed in but not a creator → the one-step setup;
-// creators (or the "established" demo) → the Overview.
-export function StudioOverviewGate({ demo }: { demo: StudioDemo | null }) {
+// creators (or the "established" demo) → the Overview. `live`: the creator's real Mafiki and shorts
+// (studio area live), where anyone who already has some skips the setup.
+type GateProps = { demo: StudioDemo | null; live?: { comics: Comic[]; shorts: Short[] }; unreadable?: boolean };
+
+export function StudioOverviewGate({ demo, live, unreadable = false }: GateProps) {
   const hydrated = useHydrated();
   const { user } = useMockSession();
   const { profile } = useMockCreator();
@@ -30,6 +34,10 @@ export function StudioOverviewGate({ demo }: { demo: StudioDemo | null }) {
     );
   }
   if (demo) return <Overview name={demo.name} handle={demo.handle} comics={demo.comics} shorts={demo.shorts} sample={demo.sample} />;
+  if (unreadable) return <StudioUnreadable />;
+  if (live && (profile || live.comics.length > 0 || live.shorts.length > 0)) {
+    return <Overview name={profile?.name ?? user.name} handle={user.username} comics={live.comics} shorts={live.shorts} sample={null} live />;
+  }
   if (!profile) return <BecomeCreator />;
   return <Overview name={profile.name} handle={profile.handle} comics={[]} shorts={[]} sample={null} />;
 }
@@ -46,9 +54,11 @@ type OverviewProps = {
   comics: Comic[];
   shorts: Short[];
   sample: StudioDemo["sample"] | null;
+  // The creator's real items: the checklist reads these instead of the demo's.
+  live?: boolean;
 };
 
-function Overview({ name, handle, comics, shorts, sample }: OverviewProps) {
+function Overview({ name, handle, comics, shorts, sample, live = false }: OverviewProps) {
   const reads = comics.reduce((sum, c) => sum + c.views, 0);
   const likes = comics.reduce((sum, c) => sum + c.likes, 0) + shorts.reduce((sum, s) => sum + s.likes, 0);
   const isNew = comics.length === 0 && shorts.length === 0;
@@ -82,7 +92,7 @@ function Overview({ name, handle, comics, shorts, sample }: OverviewProps) {
         </p>
       </div>
 
-      {isNew && <Checklist />}
+      {isNew && <Checklist live={live} />}
 
       <Link
         href="/creator101"
@@ -146,9 +156,10 @@ function StudioAction({ pageId, label, ghost = false }: { pageId: Parameters<typ
   );
 }
 
-function Checklist() {
-  const { comics } = useStudioComics("new", []);
-  const { shorts } = useStudioShorts("new", []);
+// With `live` the creator has nothing yet (it only shows then), so there's no demo store to read.
+function Checklist({ live }: { live: boolean }) {
+  const demo = { comics: useStudioComics("new", []).comics, shorts: useStudioShorts("new", []).shorts };
+  const { comics, shorts } = live ? { comics: [], shorts: [] } : demo;
   const { profile } = useMockCreator();
   const steps = [
     { label: "Become a creator", body: "You're set up. Welcome aboard.", done: true },

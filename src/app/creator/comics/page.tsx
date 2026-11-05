@@ -9,11 +9,11 @@ import { getStudioContext } from "@/lib/studioServer";
 export const metadata: Metadata = { title: "Mafiki · Creator Studio | Toon Central", robots: { index: false } };
 
 export default async function StudioComicsPage({ searchParams }: PageProps<"/creator/comics">) {
-  const { design, mode, seeds } = await getStudioContext(await searchParams);
+  const { design, mode, seeds, shortSeeds, unreadable } = await getStudioContext(await searchParams);
   return (
     <>
       <StudioShell active="comics" query={studioHref("", mode)}>
-        <StudioGate mode={mode} next={studioHref("/creator/comics", mode)}>
+        <StudioGate mode={mode} next={studioHref("/creator/comics", mode)} hasItems={seeds.length + shortSeeds.length > 0} unreadable={unreadable}>
           <ComicsList mode={mode} seeds={seeds} />
         </StudioGate>
       </StudioShell>

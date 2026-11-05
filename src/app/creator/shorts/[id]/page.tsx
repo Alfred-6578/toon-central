@@ -10,10 +10,10 @@ export const metadata: Metadata = { title: "Short · Creator Studio | Toon Centr
 // /creator/shorts/new uploads one; any other id edits that short.
 export default async function StudioShortPage({ params, searchParams }: PageProps<"/creator/shorts/[id]">) {
   const [{ id }, query] = await Promise.all([params, searchParams]);
-  const { mode, seeds, shortSeeds, genres, demoData } = await getStudioContext(query);
+  const { mode, seeds, shortSeeds, genres, demoData, unreadable } = await getStudioContext(query);
   return (
     <StudioShell active="shorts" query={studioHref("", mode)}>
-      <StudioGate mode={mode} next={studioHref(`/creator/shorts/${id}`, mode)}>
+      <StudioGate mode={mode} next={studioHref(`/creator/shorts/${id}`, mode)} hasItems={seeds.length + shortSeeds.length > 0} unreadable={unreadable}>
         <ShortEditor
           shortId={id === "new" ? null : id}
           mode={mode}

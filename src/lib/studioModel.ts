@@ -86,7 +86,10 @@ export type StudioEpisode = {
 };
 
 export type StudioComic = {
+  // The public uuid (also the Studio's URL id).
   id: string;
+  // The backend's number for it, on the creator's real Mafiki (mode "live").
+  apiId?: number;
   title: string;
   synopsis: string;
   cover: string | null;
@@ -106,11 +109,13 @@ export type StudioComic = {
   reads: number;
   likes: number;
   updatedAt: string;
-  // Came from the live data (the "established" demo), so it has a public page.
+  // Has a public page: the "established" demo's real comics, or a published one in mode "live".
   live: boolean;
 };
 
-export type StudioMode = "new" | "established";
+// "new" and "established" are demos kept in this browser; "live" is the signed-in creator's real
+// Mafiki and shorts from the backend (when the studio area is live).
+export type StudioMode = "new" | "established" | "live";
 
 export const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 export const MAX_GENRES = 3;
@@ -154,6 +159,8 @@ export function fromLiveComic(comic: Comic): StudioComic {
 
 export type StudioShort = {
   id: string;
+  // The backend's number for it, on the creator's real shorts (mode "live").
+  apiId?: number;
   title: string;
   caption: string;
   // "idb:…" for uploads in this browser, a Cloudinary URL for the demo's real shorts.
