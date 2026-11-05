@@ -31,7 +31,7 @@ export function StudioShell({ active, query = "", children }: Props) {
     <div className="relative min-h-screen text-white">
       <main className="relative pb-24 lg:pb-12">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 pt-8 md:px-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-12 lg:px-10 lg:pt-10">
           <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">

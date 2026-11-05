@@ -73,7 +73,7 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
 
       {editing ? (
         <div className="mt-4">
-          <h1 className="mb-8 font-display text-5xl uppercase leading-[0.9] text-white">Edit details</h1>
+          <h1 className="mb-8 font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-5xl">Edit details</h1>
           <ComicForm
             initial={comic}
             genres={genres}

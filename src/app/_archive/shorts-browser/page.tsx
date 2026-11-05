@@ -107,7 +107,7 @@ export default async function ShortsPage({ searchParams }: PageProps<"/shorts">)
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         {/* Marquee header, continuing Discover's "Now Showing" */}
         <header className="marquee px-6 py-16 text-center md:px-8 lg:px-10">

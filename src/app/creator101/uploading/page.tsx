@@ -21,7 +21,7 @@ export default async function UploadingGuidePage() {
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-96" />
         <div className="relative mx-auto max-w-7xl px-6 py-14 md:px-8 lg:px-10 lg:py-20">
           <p className="text-sm font-bold uppercase tracking-[0.2em] text-mint">Toon Central presents</p>
-          <h1 className="mt-3 font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">{GUIDE_INTRO.title}</h1>
+          <h1 className="mt-3 font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">{GUIDE_INTRO.title}</h1>
           <div className="mt-5 grid max-w-2xl gap-2 text-lg leading-8 text-slate-300">
             {GUIDE_INTRO.intro.map((p) => <p key={p}>{p}</p>)}
           </div>
@@ -71,7 +71,7 @@ export default async function UploadingGuidePage() {
               <header className="flex items-end gap-4 border-b-[3px] border-mint pb-4">
                 <span className="font-display text-8xl leading-[0.75] text-mint">{section.n}</span>
                 <div>
-                  <h2 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">{section.title}</h2>
+                  <h2 className="font-display text-4xl uppercase leading-[0.9] text-white sm:text-6xl">{section.title}</h2>
                   <p className="mt-2 text-slate-300">{section.lead}</p>
                 </div>
               </header>

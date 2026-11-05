@@ -40,14 +40,14 @@ export default async function OriginalsPage({ searchParams }: PageProps<"/origin
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         {/* The whole page is a cream magazine insert, like the homepage's Originals band */}
         <div className="paper-band relative px-6 pb-16 pt-10 md:px-8 lg:px-10">
           <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-80" />
 
           <div className="relative">
-            <h1 className="font-display text-6xl uppercase leading-[0.9] text-ink sm:text-7xl lg:text-8xl">Toon Central Originals</h1>
+            <h1 className="font-display text-[2.75rem] uppercase leading-[0.9] text-ink sm:text-7xl lg:text-8xl">Toon Central Originals</h1>
             <p className="mt-4 text-sm text-ink/70">
               <span className="font-semibold text-ink">{data.comics.length} Mafiki</span> made with African creators ·{" "}
               {formatCount(data.reads)} reads
@@ -74,15 +74,15 @@ export default async function OriginalsPage({ searchParams }: PageProps<"/origin
 
             <div className="mb-6 mt-4 flex flex-wrap items-end justify-between gap-4 border-b-2 border-ink pb-3">
               <h2 className="font-display text-3xl uppercase leading-none text-ink sm:text-4xl">All originals</h2>
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm" role="group" aria-label="Sort by">
-                <span className="text-ink/50">Sort:</span>
+              <div className="flex flex-wrap items-center gap-x-3 text-sm" role="group" aria-label="Sort by">
+                <span className="pt-1.5 text-ink/50">Sort:</span>
                 {sorts.map(({ value, label }) => (
                   <Link
                     key={value}
                     href={value === "popular" ? "/originals" : `/originals?sort=${value}`}
                     scroll={false}
                     aria-current={sort === value ? "true" : undefined}
-                    className={`border-b-2 pb-0.5 font-semibold ${sort === value ? "border-ink text-ink" : "border-transparent text-ink/60 hover:text-ink"}`}
+                    className={`border-b-2 px-1 pb-1 pt-2.5 font-semibold ${sort === value ? "border-ink text-ink" : "border-transparent text-ink/60 hover:text-ink"}`}
                   >
                     {label}
                   </Link>

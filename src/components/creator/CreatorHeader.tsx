@@ -66,7 +66,7 @@ export function CreatorHeader({ data, live = false }: { data: CreatorPageData; l
             <span className={`tag text-sm ${isOfficial ? "bg-sun" : "bg-paper"}`}>
               {isOfficial ? "Official Toon Central studio" : comics.length ? "Independent creator" : "Animator"}
             </span>
-            <h1 className="mt-3 break-words font-display text-5xl uppercase leading-[0.95] text-white sm:text-6xl xl:text-7xl">
+            <h1 className="mt-3 break-words font-display text-[2.5rem] uppercase leading-[0.95] text-white sm:text-6xl xl:text-7xl">
               {creator.username}
             </h1>
             <CreatorBio creatorId={creator.id} live={live} />

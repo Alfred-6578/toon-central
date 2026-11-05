@@ -55,7 +55,7 @@ export function NowShowing({ shorts }: { shorts: Short[] }) {
     <section aria-labelledby="now-showing" className="filmstrip -mx-6 mt-16 px-6 py-16 md:-mx-8 md:px-8 lg:-mx-10 lg:px-10">
       <FilmEdge />
       <div className="mb-8 text-center">
-        <h2 id="now-showing" className="marquee-title font-display text-5xl uppercase leading-none sm:text-6xl">Now Showing</h2>
+        <h2 id="now-showing" className="marquee-title font-display text-[2.5rem] uppercase leading-none sm:text-6xl">Now Showing</h2>
         <p className="mt-3 text-sm text-slate-300">Animated stories, no reading required.</p>
       </div>
 

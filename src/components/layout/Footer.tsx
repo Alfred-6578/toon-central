@@ -54,31 +54,31 @@ export function Footer({ stats }: { stats: FooterStats }) {
   ];
 
   return (
-    <footer className="mt-10 border-t-2 border-line bg-panel px-6 py-10 md:px-8 lg:px-10">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
-        {/* Back-cover credits box, like the colophon on a comic's last page */}
-        <div className="border-2 border-line bg-ink p-6">
-          <Logo className="h-14 w-auto text-mint" />
-          <p className="mt-3 font-display text-2xl uppercase leading-none text-white">Giving Africa a voice</p>
-          <p className="mt-3 max-w-sm text-sm leading-6 text-slate-400">
+    <footer className="mt-10 border-t-2 border-line bg-panel px-4 py-8 sm:px-6 sm:py-10 md:px-8 lg:px-10">
+      <div className="grid gap-8 sm:gap-10 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,2fr)]">
+        {/* Back-cover credits box, like the colophon on a comic's last page (the blurb is left out on phones) */}
+        <div className="border-2 border-line bg-ink p-4 sm:p-6">
+          <Logo className="h-10 w-auto text-mint sm:h-14" />
+          <p className="mt-2 font-display text-xl uppercase sm:mt-3 sm:text-2xl leading-none text-white">Giving Africa a voice</p>
+          <p className="mt-3 hidden max-w-sm text-sm leading-6 text-slate-400 sm:block">
             Mafiki and animated shorts from African creators, from Toon Central originals to the indies.
           </p>
-          <dl className="mt-6 grid grid-cols-4 border-t-2 border-line pt-4">
+          <dl className="mt-4 grid grid-cols-4 gap-2 border-t-2 border-line pt-3 sm:mt-6 sm:pt-4">
             {credits.map((item) => (
               <div key={item.label}>
                 <dt className="sr-only">{item.label}</dt>
-                <dd className="font-display text-3xl leading-none text-mint">{item.value}</dd>
-                <dd className="mt-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">{item.label}</dd>
+                <dd className="font-display text-2xl leading-none text-mint sm:text-3xl">{item.value}</dd>
+                <dd className="mt-1 text-[10px] font-semibold uppercase leading-tight tracking-wide text-slate-400 sm:text-[11px]">{item.label}</dd>
               </div>
             ))}
           </dl>
         </div>
 
-        <div className="grid grid-cols-2 gap-8 lg:grid-cols-3">
+        <div className="grid grid-cols-2 gap-x-6 gap-y-6 sm:gap-8 lg:grid-cols-3">
           {columns.map((column) => (
             <div key={column.title} className={"desktopOnly" in column ? "hidden lg:block" : undefined}>
               <p className="font-display text-base uppercase tracking-wide text-white">{column.title}</p>
-              <ul className="mt-4 space-y-3 text-sm text-slate-300">
+              <ul className="mt-3 space-y-2.5 text-sm text-slate-300 sm:mt-4 sm:space-y-3">
                 {column.links.map((link) => (
                   <li key={link.label}><a href={link.href} className="hover:text-mint">{link.label}</a></li>
                 ))}
@@ -86,7 +86,7 @@ export function Footer({ stats }: { stats: FooterStats }) {
             </div>
           ))}
 
-          <div className="col-span-2 flex flex-wrap items-end justify-between gap-6 border-t-2 border-line pt-6 lg:col-span-3">
+          <div className="col-span-2 flex flex-wrap items-end justify-between gap-4 border-t-2 border-line pt-5 sm:gap-6 sm:pt-6 lg:col-span-3">
             <div>
               <p className="font-display text-base uppercase tracking-wide text-white">Follow</p>
               <div className="mt-3 flex gap-2">
@@ -97,7 +97,7 @@ export function Footer({ stats }: { stats: FooterStats }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={`Toon Central on ${label}`}
-                    className="flex h-10 w-10 items-center justify-center border-2 border-line text-lg text-slate-200 hover:border-mint hover:text-mint"
+                    className="flex h-9 w-9 items-center justify-center border-2 border-line text-base text-slate-200 hover:border-mint hover:text-mint sm:h-10 sm:w-10 sm:text-lg"
                   >
                     <Icon />
                   </a>
@@ -106,14 +106,14 @@ export function Footer({ stats }: { stats: FooterStats }) {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-xs font-semibold uppercase tracking-wide text-slate-400">In partnership with</span>
-              <img src="/brand/partners/itel.png" alt="itel" width={64} height={40} className="h-10 w-auto" />
+              <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 sm:text-xs">In partnership with</span>
+              <img src="/brand/partners/itel.png" alt="itel" width={64} height={40} className="h-8 w-auto sm:h-10" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="mt-10 flex flex-col gap-3 border-t-2 border-line pt-5 text-sm text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mt-8 flex items-center justify-between gap-3 border-t-2 border-line pt-5 text-xs text-slate-400 sm:mt-10 sm:text-sm">
         <p>© 2026 Toon Central. All rights reserved.</p>
         <a href="#" className="font-semibold text-slate-300 hover:text-mint">Back to top ↑</a>
       </div>

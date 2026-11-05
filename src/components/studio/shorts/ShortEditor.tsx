@@ -96,7 +96,7 @@ export function ShortEditor({ shortId, mode, seeds, comicSeeds, genres, demoHand
       <Link href={back} className="flex w-fit items-center gap-2 text-sm text-slate-400 hover:text-mint">
         <IoArrowBack /> Shorts
       </Link>
-      <h1 className="mt-3 font-display text-5xl uppercase leading-[0.9] text-white">{existing ? "Edit short" : "Upload short"}</h1>
+      <h1 className="mt-3 font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-5xl">{existing ? "Edit short" : "Upload short"}</h1>
       {existing && (
         <p className="mt-2 flex flex-wrap gap-x-4 text-sm text-slate-400">
           <span>{formatCount(existing.views)} views</span>

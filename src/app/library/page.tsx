@@ -34,7 +34,7 @@ export default async function LibraryPage({ searchParams }: PageProps<"/library"
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-80" />
 
         <div className="relative mx-auto px-6 pb-16 pt-10 md:px-8 lg:px-10">

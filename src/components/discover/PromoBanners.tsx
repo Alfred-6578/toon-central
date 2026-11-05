@@ -276,7 +276,8 @@ export function PromoBanners({ featured }: { featured: Comic[] }) {
         </ul>
       </div>
 
-      <div className="mt-3 flex justify-center gap-2" role="group" aria-label="Choose highlight">
+      {/* Small dots, but each one's button has room around it for a thumb */}
+      <div className="mt-1 flex justify-center" role="group" aria-label="Choose highlight">
         {banners.map((banner, i) => (
           <button
             key={banner.id}
@@ -284,8 +285,10 @@ export function PromoBanners({ featured }: { featured: Comic[] }) {
             onClick={() => glideTo(i + offset)}
             aria-label={`Show ${banner.title}`}
             aria-current={i === index ? "true" : undefined}
-            className={`h-2 border border-black transition-all ${i === index ? "w-8 bg-mint" : "w-2 bg-line hover:bg-slate-400"}`}
-          />
+            className="group px-1 py-3"
+          >
+            <span className={`block h-2 border border-black transition-all ${i === index ? "w-8 bg-mint" : "w-2 bg-line group-hover:bg-slate-400"}`} />
+          </button>
         ))}
       </div>
 

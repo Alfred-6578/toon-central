@@ -60,7 +60,7 @@ export function EpisodeEditor({ comicId, episodeId, mode, seeds }: Props) {
       <Link href={back} className="flex w-fit items-center gap-2 text-sm text-slate-400 hover:text-mint">
         <IoArrowBack /> {comic.title}
       </Link>
-      <h1 className="mt-3 font-display text-5xl uppercase leading-[0.9] text-white">{existing ? `Edit episode ${number}` : `Episode ${number}`}</h1>
+      <h1 className="mt-3 font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-5xl">{existing ? `Edit episode ${number}` : `Episode ${number}`}</h1>
 
       <div className="mt-8">
         <DesktopOnly what="upload episodes">

@@ -41,7 +41,7 @@ type HeaderProps = {
 };
 
 const iconButton =
-  "relative flex h-10 w-10 items-center justify-center border-2 border-line text-xl text-slate-200 hover:border-mint hover:text-white";
+  "relative flex h-9 w-9 items-center justify-center border-2 border-line text-lg text-slate-200 hover:border-mint hover:text-white sm:h-10 sm:w-10 sm:text-xl";
 
 export function Header({
   user,
@@ -70,9 +70,10 @@ export function Header({
         hidden ? "-translate-y-full" : "translate-y-0"
       } ${hideOnPhone ? "max-md:hidden" : ""}`}
     >
-      <div className="flex items-center justify-between gap-4 px-6 py-3 md:px-8 lg:px-10">
+      {/* Its height is --header-h (globals.css): 54px on phones, 66px from `sm` up. */}
+      <div className="flex items-center justify-between gap-4 px-4 py-2 sm:px-6 sm:py-3 md:px-8 lg:px-10">
         <Link href="/" aria-label="Toon Central home" className="shrink-0">
-          <Logo className="h-10 w-auto text-mint" />
+          <Logo className="h-9 w-auto text-mint sm:h-10" />
         </Link>
 
         <nav className="hidden items-center gap-6 text-sm font-medium text-slate-300 lg:flex">
@@ -169,13 +170,13 @@ export function Header({
               </div>
             </>
           ) : pending ? (
-            <span aria-hidden="true" className="h-10 w-10 animate-pulse border-2 border-line bg-panel" />
+            <span aria-hidden="true" className="h-9 w-9 animate-pulse border-2 border-line bg-panel sm:h-10 sm:w-10" />
           ) : (
             <>
               <Link href={signInHref} className="signed-out-only btn btn-ghost hidden h-10 whitespace-nowrap lg:inline-flex">
                 Sign in
               </Link>
-              <Link href={joinHref} className="signed-out-only btn btn-primary h-10 whitespace-nowrap">
+              <Link href={joinHref} className="signed-out-only btn btn-primary h-9 whitespace-nowrap sm:h-10">
                 Join now
               </Link>
             </>

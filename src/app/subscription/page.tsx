@@ -17,11 +17,11 @@ export default async function SubscriptionPage() {
       <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-96" />
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <div className="relative mx-auto max-w-7xl px-6 pb-16 pt-10 md:px-8 lg:px-10 lg:pt-14">
           <span className="tag -rotate-2 bg-sun text-sm">Subscription</span>
-          <h1 className="mt-4 max-w-3xl font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">
+          <h1 className="mt-4 max-w-3xl font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">
             Unlock the full library
           </h1>
           <p className="mt-4 max-w-xl text-slate-300">

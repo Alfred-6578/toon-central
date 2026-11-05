@@ -35,7 +35,7 @@ export default async function VibePage({ params, searchParams }: Params) {
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <section style={{ "--dot-color": toneColor[vibe.tone] } as CSSProperties} className="relative overflow-hidden border-b-2 border-line">
           <div className="dot-field absolute inset-0 opacity-50" aria-hidden="true" />
@@ -45,7 +45,7 @@ export default async function VibePage({ params, searchParams }: Params) {
               <span className="mx-2 text-slate-600">/</span>
               <span className="text-slate-200">{vibe.title}</span>
             </nav>
-            <h1 className="mt-8 font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">{vibe.title}</h1>
+            <h1 className="mt-8 font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">{vibe.title}</h1>
             <p className="mt-4 max-w-xl text-slate-300">{vibe.blurb}</p>
             <div className="mt-5 flex flex-wrap items-center gap-2 text-xs text-slate-400">
               <span className="mr-1">{comicCount(comics.length)} tagged</span>

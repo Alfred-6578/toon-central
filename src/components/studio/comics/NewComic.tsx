@@ -20,7 +20,7 @@ export function NewComic({ mode, seeds, genres }: { mode: StudioMode; seeds: Stu
       <Link href={studioHref("/creator/comics", mode)} className="flex w-fit items-center gap-2 text-sm text-slate-400 hover:text-mint">
         <IoArrowBack /> Mafiki
       </Link>
-      <h1 className="mt-3 font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">New Mafiki</h1>
+      <h1 className="mt-3 font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">New Mafiki</h1>
       <p className="mt-2 text-sm text-slate-400">It starts as a draft. Nobody sees it until you publish.</p>
 
       <div className="mt-8">

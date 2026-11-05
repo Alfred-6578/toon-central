@@ -60,7 +60,7 @@ export function LibraryView({ tab, sort, page, comics, shorts, creators }: Libra
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl">Your library</h1>
+          <h1 className="font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl">Your library</h1>
           <p className="mt-3 text-sm text-slate-300">
             {comicCount(counts.saved)} · {counts.shorts} {counts.shorts === 1 ? "short" : "shorts"} · following {counts.following}
           </p>
@@ -148,15 +148,15 @@ function SavedComics({ comics, sort, page, progress }: { comics: Comic[]; sort: 
 
   return (
     <>
-      <div className="mb-6 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm" role="group" aria-label="Sort by">
-        <span className="text-slate-500">Sort:</span>
+      <div className="mb-6 flex flex-wrap items-center gap-x-3 text-sm" role="group" aria-label="Sort by">
+        <span className="pt-1.5 text-slate-500">Sort:</span>
         {SAVED_SORTS.map(({ value, label }) => (
           <Link
             key={value}
             href={tabHref("saved", value)}
             scroll={false}
             aria-current={sort === value ? "true" : undefined}
-            className={`border-b-2 pb-0.5 font-semibold ${sort === value ? "border-mint text-white" : "border-transparent text-slate-400 hover:text-white"}`}
+            className={`border-b-2 px-1 pb-1 pt-2.5 font-semibold ${sort === value ? "border-mint text-white" : "border-transparent text-slate-400 hover:text-white"}`}
           >
             {label}
           </Link>

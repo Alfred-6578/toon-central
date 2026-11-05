@@ -56,7 +56,7 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <GenreWall genres={genres} comics={catalogue} counts={counts} current={genre.id} />
 
@@ -86,15 +86,15 @@ export async function GenreBrowser({ slug, query }: { slug: string; query: Query
                   })}
                 </div>
 
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm" role="group" aria-label="Sort by">
-                  <span className="text-slate-500">Sort:</span>
+                <div className="flex flex-wrap items-center gap-x-3 text-sm" role="group" aria-label="Sort by">
+                  <span className="pt-1.5 text-slate-500">Sort:</span>
                   {sorts.map(({ value, label }) => (
                     <Link
                       key={value}
                       href={href(genre.name, value, kind)}
                       scroll={false}
                       aria-current={sort === value ? "true" : undefined}
-                      className={`border-b-2 pb-0.5 font-semibold ${sort === value ? "border-mint text-white" : "border-transparent text-slate-400 hover:text-white"}`}
+                      className={`border-b-2 px-1 pb-1 pt-2.5 font-semibold ${sort === value ? "border-mint text-white" : "border-transparent text-slate-400 hover:text-white"}`}
                     >
                       {label}
                     </Link>

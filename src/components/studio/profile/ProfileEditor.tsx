@@ -106,7 +106,7 @@ function ProfileForm({ profile, genres, onSave }: { profile: CreatorProfile; gen
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Profile</h1>
+          <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">Profile</h1>
           <p className="mt-2 text-sm text-slate-400">How readers see you on your creator page.</p>
         </div>
         <Link href={creatorHref(profile.handle)} className="text-sm font-semibold text-mint hover:underline">View public page →</Link>

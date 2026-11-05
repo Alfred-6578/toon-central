@@ -50,7 +50,7 @@ export default async function Creator101IntroPage() {
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-96" />
         <div className="relative mx-auto max-w-7xl px-6 pt-12 text-center md:px-8 lg:px-10 lg:pt-16">
           <span className="tag -rotate-2 bg-sun text-sm">Share without limits</span>
-          <h1 className="mx-auto mt-4 max-w-4xl font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">
+          <h1 className="mx-auto mt-4 max-w-4xl font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">
             Endless Mafiki, endless stories
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-slate-300">Read anywhere. Create anytime. Start here to bring your Mafiki to readers everywhere.</p>
