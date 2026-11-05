@@ -33,11 +33,11 @@ export function CreatorBio({ creatorId, live }: { creatorId: number | undefined;
     };
   }, [live, creatorId]);
 
-  if (bio === undefined) return <span aria-hidden="true" className="mt-3 block h-4 w-56 max-w-full animate-pulse bg-white/10" />;
+  if (bio === undefined) return <span aria-hidden="true" className="block h-4 w-56 max-w-full animate-pulse bg-white/10 sm:mt-3" />;
   if (!bio) return null;
   // Three lines, with More / Less for longer bios.
   return (
-    <div className="mt-3 max-w-2xl">
+    <div className="max-w-2xl sm:mt-3">
       <ExpandableText
         text={bio}
         clamp="line-clamp-3"
