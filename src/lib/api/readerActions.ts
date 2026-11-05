@@ -2,7 +2,7 @@ import { isLive } from "./config";
 import { apiRequest, isEmpty } from "./http";
 import { apiAsUser } from "./token";
 
-// Phase 3: what a signed-in reader does (likes, library, follows, short comments). Server-only; the
+// Phase 3: what a signed-in reader does (likes, library, follows, comments). Server-only; the
 // browser reaches these through src/app/actions/reader.ts. Behaviour checked on staging (3 Nov 2026):
 // - comics/:uuid/like and shorts/:uuid/like toggle, and say which way in the message ("liked" /
 //   "unliked"), so asking for a state can take a second call when the page's idea of it was stale.
@@ -83,28 +83,44 @@ function toPublicComment(raw: Raw): PublicComment {
   };
 }
 
-// Comments on a short, newest first. Public: anyone can read them.
-export async function getShortComments(uuid: string, page = 1): Promise<CommentPage | null> {
-  if (!live() || !UUID.test(uuid)) return null;
-  const result = await apiRequest<{ shortComments?: Raw[]; pagination?: { total?: number; totalPages?: number } } | null>(
-    `/short-comments/${uuid}?page=${Math.max(1, Math.floor(page))}&limit=20`,
+// Shorts are commented on by uuid, comics by their number id (the uuid gives a 500) and episodes by
+// the episode id. All three answer in the same shape, newest first, and anyone can read them.
+export type CommentTarget = "short" | "comic" | "episode";
+
+const COMMENT_ROUTES: Record<CommentTarget, { list: string; add: string; key: string }> = {
+  short: { list: "short-comments", add: "add-comment", key: "shortComments" },
+  comic: { list: "comments", add: "add-comment", key: "comicComments" },
+  episode: { list: "episode-comments", add: "add-episode-comment", key: "comicCatalogComments" },
+};
+
+const validCommentKey = (target: CommentTarget, key: string) =>
+  target === "short" ? UUID.test(key) : /^[1-9]\d{0,9}$/.test(key);
+
+export async function getComments(target: CommentTarget, key: string, page = 1): Promise<CommentPage | null> {
+  const route = COMMENT_ROUTES[target];
+  if (!live() || !route || !validCommentKey(target, key)) return null;
+  const result = await apiRequest<Record<string, unknown> | null>(
+    `/${route.list}/${key}?page=${Math.max(1, Math.floor(page))}&limit=20`,
     { revalidate: false }
   );
   if (isEmpty(result)) return { comments: [], total: 0, totalPages: 0 };
   if (!result.ok) return null;
+  const rows = result.data?.[route.key];
+  const pagination = (result.data?.pagination ?? {}) as { total?: number; totalPages?: number };
   return {
-    comments: (result.data?.shortComments ?? []).map(toPublicComment),
-    total: result.data?.pagination?.total ?? 0,
-    totalPages: result.data?.pagination?.totalPages ?? 1,
+    comments: (Array.isArray(rows) ? (rows as Raw[]) : []).map(toPublicComment),
+    total: pagination.total ?? 0,
+    totalPages: pagination.totalPages ?? 1,
   };
 }
 
 export const COMMENT_MAX = 300;
 
-export async function addShortComment(uuid: string, text: string): Promise<ActionResult> {
+export async function addComment(target: CommentTarget, key: string, text: string): Promise<ActionResult> {
+  const route = COMMENT_ROUTES[target];
   const comment = text.trim().slice(0, COMMENT_MAX);
-  if (!live() || !UUID.test(uuid) || !comment) return failed();
-  const result = await apiAsUser(`/short-comments/${uuid}/add-comment`, { method: "POST", body: { comment } });
+  if (!live() || !route || !validCommentKey(target, key) || !comment) return failed();
+  const result = await apiAsUser(`/${route.list}/${key}/${route.add}`, { method: "POST", body: { comment } });
   if (result.ok) return { ok: true, value: true };
   return result.status === 401 ? failed("Sign in to comment.") : failed("Your comment didn't post. Please try again.");
 }

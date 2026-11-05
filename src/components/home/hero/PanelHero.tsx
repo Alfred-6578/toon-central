@@ -2,8 +2,8 @@
 
 import type { Comic } from "@/lib/api/types";
 import { cloudinary, comicHref } from "@/lib/format";
-import { CoverStrip } from "./CoverStrip";
-import { SlideDetails } from "./SlideDetails";
+import { HeroControls } from "./HeroControls";
+import { SlideBody, SlideHead } from "./SlideDetails";
 import { useHeroCarousel } from "./useHeroCarousel";
 
 // Option A: boxed hero. The cover is the hero image, framed as a tilted comic panel over a halftoned banner.
@@ -41,18 +41,24 @@ export function PanelHero({ slides }: { slides: Comic[] }) {
         <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/75 to-ink/30 lg:bg-gradient-to-r lg:from-ink lg:via-ink/75 lg:to-ink/10" />
       </div>
 
+      {/* Phones: a small cover beside the label, title and genres, then the blurb and actions across the
+          full width, so the slide stays about a screen tall. Desktop: text on the left, the big cover on
+          the right. One set of elements, placed by grid areas. */}
       <div
         {...swipeHandlers}
-        className="relative grid flex-1 touch-pan-y items-center gap-7 p-5 pt-7 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-12 lg:p-12"
+        className="relative grid flex-1 touch-pan-y grid-cols-[minmax(0,6.5rem)_minmax(0,1fr)] content-center items-center gap-x-4 gap-y-5 p-4 pt-6 [grid-template-areas:'cover_head'_'body_body'] sm:grid-cols-[minmax(0,10rem)_minmax(0,1fr)] sm:gap-x-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:gap-x-12 lg:gap-y-6 lg:p-12 lg:[grid-template-areas:'head_cover'_'body_cover']"
       >
-        <div key={slide.uuid} className="order-2 max-w-2xl lg:order-1" aria-live={running ? "off" : "polite"}>
-          <SlideDetails slide={slide} />
+        <div key={`${slide.uuid}-head`} className="max-w-2xl self-center [grid-area:head] lg:self-end" aria-live={running ? "off" : "polite"}>
+          <SlideHead slide={slide} />
+        </div>
+        <div key={`${slide.uuid}-body`} className="max-w-2xl self-start [grid-area:body]">
+          <SlideBody slide={slide} />
         </div>
 
         <a
           href={comicHref(slide.uuid)}
           aria-label={`Read ${slide.title}`}
-          className="relative order-1 block w-[44vw] max-w-[190px] -rotate-2 border-[3px] border-black shadow-[8px_8px_0_var(--color-mint-deep)] transition-transform duration-300 hover:rotate-0 sm:max-w-[230px] lg:order-2 lg:w-[280px] lg:max-w-none xl:w-[320px]"
+          className="relative block w-full -rotate-2 self-center border-[3px] border-black shadow-[5px_5px_0_var(--color-mint-deep)] transition-transform duration-300 [grid-area:cover] hover:rotate-0 sm:shadow-[8px_8px_0_var(--color-mint-deep)] lg:w-[280px] xl:w-[320px]"
         >
           <div className="relative aspect-[3/4] overflow-hidden bg-ink">
             {slides.map(
@@ -74,7 +80,7 @@ export function PanelHero({ slides }: { slides: Comic[] }) {
         </a>
       </div>
 
-      <CoverStrip slides={slides} hero={hero} className="bg-ink/85 px-5 sm:px-8 lg:px-12" />
+      <HeroControls slides={slides} hero={hero} className="bg-ink/85 px-4 sm:px-8 lg:px-12" />
     </section>
   );
 }

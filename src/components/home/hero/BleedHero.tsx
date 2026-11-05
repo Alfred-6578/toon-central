@@ -2,7 +2,7 @@
 
 import type { Comic } from "@/lib/api/types";
 import { cloudinary } from "@/lib/format";
-import { CoverStrip } from "./CoverStrip";
+import { HeroControls } from "./HeroControls";
 import { SlideDetails } from "./SlideDetails";
 import { useHeroCarousel } from "./useHeroCarousel";
 
@@ -53,7 +53,7 @@ export function BleedHero({ slides }: { slides: Comic[] }) {
         </div>
       </div>
 
-      <CoverStrip slides={slides} hero={hero} className="border-line/70 bg-ink/80 px-6 md:px-8 lg:px-10" />
+      <HeroControls slides={slides} hero={hero} className="border-line/70 bg-ink/80 px-6 md:px-8 lg:px-10" />
     </section>
   );
 }

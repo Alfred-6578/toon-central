@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { ExpandableText } from "@/components/ui/ExpandableText";
 
 // Once per creator per visit (React's dev double effect and tab switches reuse it): each call counts
 // a profile view on the backend.
@@ -34,5 +35,15 @@ export function CreatorBio({ creatorId, live }: { creatorId: number | undefined;
 
   if (bio === undefined) return <span aria-hidden="true" className="mt-3 block h-4 w-56 max-w-full animate-pulse bg-white/10" />;
   if (!bio) return null;
-  return <p className="mt-3 max-w-2xl whitespace-pre-line text-base leading-7 text-slate-300">{bio}</p>;
+  // Three lines, with More / Less for longer bios.
+  return (
+    <div className="mt-3 max-w-2xl">
+      <ExpandableText
+        text={bio}
+        clamp="line-clamp-3"
+        className="whitespace-pre-line text-base leading-7 text-slate-300"
+        buttonClassName="mt-1 text-sm font-bold text-mint hover:underline"
+      />
+    </div>
+  );
 }

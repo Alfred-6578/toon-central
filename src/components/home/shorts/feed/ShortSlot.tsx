@@ -6,7 +6,7 @@ import { IoClose, IoPlay, IoRefresh } from "react-icons/io5";
 import type { Short } from "@/lib/api/types";
 import { cloudinary, cloudinaryVideo, comicHref, creatorHref, formatCount, genreSlug, readerHref } from "@/lib/format";
 import { useFollowCheck, useMockComments, useMockFollows, useMockLikes, useMockSavedShorts, useMockSession, useReaderActionsLive } from "@/lib/mockSession";
-import { useShortComments } from "@/lib/shortComments";
+import { useComments } from "@/lib/comments";
 import { countShortView, viewAfter } from "@/lib/shortViews";
 import { useHeartBursts } from "@/components/ui/HeartBurst";
 import { BubbleDots } from "@/components/ui/Loaders";
@@ -139,7 +139,7 @@ export function ShortSlot({ short, index, near, isActive, isNext, registerVideo,
   const { comments } = useMockComments(short.uuid);
   // Live, the real comment count and follow state are asked for once the short is on screen.
   const live = useReaderActionsLive();
-  const liveComments = useShortComments(short.uuid, live && isActive && !short.isSponsored);
+  const liveComments = useComments("short", short.uuid, live && isActive && !short.isSponsored);
   useFollowCheck(short.creator.username, short.creator.id, isActive && !short.isSponsored);
   const liked = likes.has(short.uuid);
   const comic = short.linkedComic;

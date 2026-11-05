@@ -224,8 +224,14 @@ so new views take a while to appear there.
 **Still in the browser only**: subscribing (finding 15), saved shorts and comment likes (no endpoints).
 Taking a comic out of the library only hides it in that browser (finding 16).
 
-**Not built yet**: comment sections for comics and episodes (the endpoints work; the site has no
-comment UI there yet).
+**Comments on comics and episodes (5 Nov)**: the comic page has a comment section under the episode
+list, and each episode has one after its last page (only when it was opened with its backend id, i.e.
+from the live episode list). They load when the reader scrolls near them, show name and photo only,
+and post as the signed-in reader; signed out, posting goes to sign-in. The page shows the newest 3;
+"View all" opens the whole thread in the comments panel (the one shorts use), and comments longer than
+four lines get "Read more". Tested on staging: the counts
+matched the backend (comic 6, episode 1 of BLACK STAR 12), and a comment posted on each showed as
+"You · just now" with the backend's count going up by one.
 
 **For the backend team (Phase 3 findings)**
 

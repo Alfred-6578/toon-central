@@ -165,7 +165,7 @@ img {
   background-size: 5px 5px;
 }
 
-/* Autoplay timer for the hero cover strip; pausing pauses the animation itself */
+/* Autoplay timer for the hero slide bars; pausing pauses the animation itself */
 @keyframes heroProgress {
   from {
     transform: scaleX(0);
@@ -207,10 +207,12 @@ img {
   text-shadow: 6px 6px 0 #000;
 }
 
-/* Shorts "film strip": black band with a row of sprocket holes along the top and bottom edges */
+/* Shorts "film strip": a band of film stock. Edge rails top and bottom carry the perforations (rounded
+   rectangles, close together like 35mm) and, nearer the edge, the stock's printed frame numbers
+   (FilmEdge); thin lines mark where the picture area starts. */
 .filmstrip {
   position: relative;
-  background-color: #000;
+  background-color: #0a0a0a;
 }
 
 .filmstrip::before,
@@ -218,18 +220,35 @@ img {
   content: "";
   position: absolute;
   inset-inline: 0;
-  height: 18px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='18'%3E%3Crect x='6' y='4' width='12' height='10' rx='2' fill='%23f4efe2' fill-opacity='0.85'/%3E%3C/svg%3E");
+  height: 36px;
+  background-color: #121212;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='14'%3E%3Crect x='5' y='2' width='12' height='10' rx='2.5' fill='%23ece6d6'/%3E%3C/svg%3E");
+  background-size: 22px 14px;
   background-repeat: repeat-x;
   pointer-events: none;
 }
 
 .filmstrip::before {
-  top: 8px;
+  top: 0;
+  background-position: 0 18px;
+  border-bottom: 1px solid #2a2a2a;
 }
 
 .filmstrip::after {
-  bottom: 8px;
+  bottom: 0;
+  background-position: 0 4px;
+  border-top: 1px solid #2a2a2a;
+}
+
+.film-edge {
+  z-index: 1;
+  overflow: hidden;
+  white-space: pre;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 9px;
+  line-height: 12px;
+  letter-spacing: 0.2em;
+  color: rgba(242, 187, 48, 0.55);
 }
 
 /* Halftone dot field in a chosen colour (set --dot-color), fading out toward the top */
@@ -239,49 +258,10 @@ img {
   mask-image: linear-gradient(to top, #000 0%, rgba(0, 0, 0, 0.55) 55%, transparent 100%);
 }
 
-/* "Now Showing" cinema marquee: a row of lit bulbs top and bottom, glowing poster type */
-.marquee {
-  position: relative;
-  background-color: #000;
-}
-
-.marquee::before,
-.marquee::after {
-  content: "";
-  position: absolute;
-  inset-inline: 0;
-  height: 14px;
-  background-image: radial-gradient(circle, #fff6d6 0 2.5px, rgba(242, 187, 48, 0.55) 3.5px, transparent 6px);
-  background-size: 22px 14px;
-  background-repeat: repeat-x;
-  pointer-events: none;
-}
-
-.marquee::before {
-  top: 8px;
-}
-
-.marquee::after {
-  bottom: 8px;
-}
-
+/* "Now Showing": glowing poster type over the film strip */
 .marquee-title {
   color: #fff6d6;
   text-shadow: 0 0 6px rgba(242, 187, 48, 0.9), 0 0 22px rgba(242, 187, 48, 0.45);
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .marquee::before,
-  .marquee::after {
-    animation: marqueeChase 1.6s steps(2) infinite;
-  }
-}
-
-/* Bulbs "chase" by shifting half a bulb back and forth */
-@keyframes marqueeChase {
-  to {
-    background-position-x: 11px;
-  }
 }
 
 /* Shorts player: spinning disc, tie-in card */

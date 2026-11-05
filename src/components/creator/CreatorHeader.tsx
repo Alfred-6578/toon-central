@@ -56,7 +56,7 @@ export function CreatorHeader({ data, live = false }: { data: CreatorPageData; l
           <span className="text-slate-200">{creator.username}</span>
         </nav>
 
-        <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-end">
+        <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
           <CreatorAvatar
             creator={creator}
             genre={mainGenre}
