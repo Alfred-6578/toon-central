@@ -64,6 +64,9 @@ function Overview({ name, handle, comics, shorts, sample, live = false }: Overvi
   const isNew = comics.length === 0 && shorts.length === 0;
   const topComic = [...comics].sort((a, b) => b.views - a.views)[0];
   const topShort = [...shorts].sort((a, b) => b.views - a.views)[0];
+  // The creator's real items can be drafts with no public page yet, so they open in the Studio.
+  const mafikiHref = (uuid: string) => (live ? `/creator/comics/${uuid}` : comicHref(uuid));
+  const shortHref = (uuid: string) => (live ? `/creator/shorts/${uuid}` : `/shorts?short=${uuid}`);
 
   return (
     <>
@@ -125,19 +128,19 @@ function Overview({ name, handle, comics, shorts, sample, live = false }: Overvi
       {!isNew && (
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           {topComic && (
-            <Highlight title="Top Mafiki" href={comicHref(topComic.uuid)} image={topComic.coverImage} name={topComic.title}>
+            <Highlight title="Top Mafiki" href={mafikiHref(topComic.uuid)} image={topComic.coverImage} name={topComic.title}>
               {formatCount(topComic.views)} reads · {formatCount(topComic.likes)} likes
             </Highlight>
           )}
           {topShort && (
-            <Highlight title="Top short" href={`/shorts?short=${topShort.uuid}`} image={topShort.coverImage} name={topShort.title}>
+            <Highlight title="Top short" href={shortHref(topShort.uuid)} image={topShort.coverImage} name={topShort.title}>
               {formatCount(topShort.views)} views · {formatCount(topShort.likes)} likes
             </Highlight>
           )}
         </div>
       )}
 
-      {comics.length > 0 && <ComicsTable comics={comics} />}
+      {comics.length > 0 && <ComicsTable comics={comics} href={mafikiHref} />}
       {sample && <Activity comics={comics} />}
     </>
   );
@@ -291,7 +294,7 @@ function Highlight({ title, href, image, name, children }: { title: string; href
   );
 }
 
-function ComicsTable({ comics }: { comics: Comic[] }) {
+function ComicsTable({ comics, href }: { comics: Comic[]; href: (uuid: string) => string }) {
   return (
     <section aria-labelledby="your-comics" className="mt-10">
       <div className="mb-4 flex items-end justify-between gap-4 border-b-2 border-line pb-3">
@@ -314,7 +317,7 @@ function ComicsTable({ comics }: { comics: Comic[] }) {
             {comics.map((c) => (
               <tr key={c.uuid} className="border-t-2 border-line">
                 <td className="py-2.5 pr-4">
-                  <Link href={comicHref(c.uuid)} className="flex items-center gap-3 font-semibold text-white hover:text-mint">
+                  <Link href={href(c.uuid)} className="flex items-center gap-3 font-semibold text-white hover:text-mint">
                     <img src={cloudinary(c.coverImage, 120)} alt="" className="aspect-[3/4] w-8 border-2 border-line object-cover" />
                     {c.title}
                   </Link>
