@@ -3,10 +3,12 @@ import type { ReactNode } from "react";
 import { IoAnalyticsOutline, IoBookOutline, IoFilmOutline, IoPersonCircleOutline, IoSchoolOutline, IoWalletOutline } from "react-icons/io5";
 import type { IconType } from "react-icons";
 import { Navigation } from "@/components/layout/Navigation";
+import { studioLive } from "@/lib/api/studio";
 import { STUDIO_PAGES, type StudioPageId } from "@/lib/studio";
 import type { StudioMode } from "@/lib/studioModel";
 import { CreatorCoach } from "./CreatorCoach";
 import { ScrollIntoStrip } from "./ScrollIntoStrip";
+import { StudioNotice } from "./StudioNotice";
 import { TutorialButton } from "./TutorialButton";
 
 const ICONS: Record<StudioPageId, IconType> = {
@@ -26,12 +28,12 @@ type Props = {
 
 // Creator Studio frame: site nav on top, Studio sections on the left (a sideways strip on phones).
 export function StudioShell({ active, query = "", children }: Props) {
-  const mode: StudioMode = query.includes("studio=established") ? "established" : "new";
+  const mode: StudioMode = studioLive() ? "live" : query.includes("studio=established") ? "established" : "new";
   return (
     <div className="relative min-h-screen text-white">
       <main className="relative pb-24 lg:pb-12">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 pt-8 md:px-8 lg:grid-cols-[13rem_minmax(0,1fr)] lg:gap-12 lg:px-10 lg:pt-10">
           <aside className="min-w-0 lg:sticky lg:top-24 lg:self-start">
@@ -84,6 +86,7 @@ export function StudioShell({ active, query = "", children }: Props) {
           <div className="min-w-0">{children}</div>
         </div>
         <CreatorCoach mode={mode} />
+        <StudioNotice />
       </main>
     </div>
   );

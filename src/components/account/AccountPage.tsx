@@ -9,10 +9,10 @@ export function AccountPage({ title, width = "max-w-6xl", children }: { title?: 
     <div className="relative min-h-screen overflow-x-clip text-white">
       <main className="relative pb-24 lg:pb-16">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-80" />
         <div className={`relative mx-auto px-6 pt-10 md:px-8 lg:px-10 lg:pt-12 ${width}`}>
-          {title && <h1 className="mb-8 font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl">{title}</h1>}
+          {title && <h1 className="mb-8 font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl">{title}</h1>}
           {children}
         </div>
       </main>

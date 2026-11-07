@@ -73,7 +73,7 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
 
       {editing ? (
         <div className="mt-4">
-          <h1 className="mb-8 font-display text-5xl uppercase leading-[0.9] text-white">Edit details</h1>
+          <h1 className="mb-8 font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-5xl">Edit details</h1>
           <ComicForm
             initial={comic}
             genres={genres}
@@ -125,6 +125,9 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                   <button type="button" onClick={() => update({ status: "completed" })} className="btn btn-ghost px-4 py-2 text-sm">Mark completed</button>
                 ) : (
                   <button type="button" onClick={() => update({ status: "published" })} className="btn btn-ghost px-4 py-2 text-sm">Reopen as ongoing</button>
+                )}
+                {comic.status !== "draft" && (
+                  <button type="button" onClick={() => update({ status: "draft" })} className="btn btn-ghost px-4 py-2 text-sm">Unpublish</button>
                 )}
                 {comic.live && (
                   <Link href={comicHref(comic.id)} className="btn btn-ghost px-4 py-2 text-sm">View public page</Link>
@@ -188,9 +191,9 @@ export function ComicEditor({ id, mode, seeds, genres }: Props) {
                   <span className="text-slate-300">Delete &quot;{comic.title}&quot; and all {comic.episodes.length} episodes?</span>
                   <button
                     type="button"
-                    onClick={() => {
-                      remove(comic);
-                      router.push(studioHref("/creator/comics", mode));
+                    onClick={async () => {
+                      // Real Mafiki: wait for the backend, and stay here if it refused.
+                      if ((await remove(comic)) !== false) router.push(studioHref("/creator/comics", mode));
                     }}
                     className="border-2 border-black bg-sun px-3 py-1.5 font-bold text-ink shadow-[2px_2px_0_#000]"
                   >
@@ -313,7 +316,11 @@ function EpisodeList({ comic, mode, onMove, onAds, confirmDelete, onAskDelete, o
                 {state === "scheduled" && episode.publishAt && <span className="text-sun">Goes live {when(episode.publishAt)}</span>}
                 {state === "draft" && "Draft"}
                 {" · "}
-                {episode.pagesKnown ? `${episode.pages.length} ${episode.pages.length === 1 ? "page" : "pages"}` : "pages on the live site"}
+                {episode.pagesKnown
+                  ? `${episode.pages.length} ${episode.pages.length === 1 ? "page" : "pages"}`
+                  : mode === "live"
+                    ? "open to see its pages"
+                    : "pages on the live site"}
               </p>
             </div>
 

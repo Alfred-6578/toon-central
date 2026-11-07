@@ -3,11 +3,11 @@
 import { useState } from "react";
 import { FaFacebookF, FaXTwitter } from "react-icons/fa6";
 import { IoBookmark, IoBookmarkOutline, IoCopyOutline, IoShareSocialOutline } from "react-icons/io5";
+import { readerButton, readerButtonIdle, readerButtonOn } from "@/components/reader/buttons";
 import { LikeButton } from "@/components/ui/LikeButton";
 import { useMockLibrary, useMockSession } from "@/lib/mockSession";
 
-const iconButton =
-  "flex h-9 w-9 items-center justify-center border-2 border-line text-base text-slate-200 transition-colors hover:border-mint hover:text-white";
+const iconButton = `${readerButton} ${readerButtonIdle}`;
 
 const popup = (url: string) => window.open(url, "_blank", "noopener,noreferrer,width=620,height=560");
 
@@ -46,7 +46,7 @@ export function ReaderActions({ uuid, title, episode }: { uuid: string; title: s
   };
 
   return (
-    <div className="relative flex shrink-0 items-center gap-1.5">
+    <div className="relative flex shrink-0 items-center gap-0.5 sm:gap-1.5">
       <LikeButton uuid={uuid} title={title} variant="icon" />
       <button
         type="button"
@@ -59,14 +59,12 @@ export function ReaderActions({ uuid, title, episode }: { uuid: string; title: s
         aria-pressed={saved}
         aria-label={saved ? `Remove ${title} from library` : `Add ${title} to library`}
         title={saved ? "In your library" : "Add to library"}
-        className={`flex h-9 w-9 items-center justify-center border-2 text-lg transition-colors ${
-          saved ? "border-black bg-mint text-ink shadow-[2px_2px_0_var(--color-mint-deep)]" : "border-line text-slate-200 hover:border-mint hover:text-white"
-        }`}
+        className={`${readerButton} ${saved ? readerButtonOn : readerButtonIdle}`}
       >
         {saved ? <IoBookmark /> : <IoBookmarkOutline />}
       </button>
 
-      <div data-tour="share" className="flex items-center gap-1.5">
+      <div data-tour="share" className="flex items-center gap-0.5 sm:gap-1.5">
         <button type="button" onClick={nativeShare} aria-label="Share this episode" className={`${iconButton} sm:hidden`}>
           <IoShareSocialOutline />
         </button>

@@ -47,8 +47,8 @@ export function CreatorHeader({ data, live = false }: { data: CreatorPageData; l
         )}
       </div>
 
-      <div className="relative px-6 pb-10 pt-6 md:px-8 lg:px-10 lg:pb-12">
-        <nav aria-label="Breadcrumb" className="text-sm text-slate-400">
+      <div className="relative px-4 pb-8 pt-5 sm:px-6 sm:pb-10 sm:pt-6 md:px-8 lg:px-10 lg:pb-12">
+        <nav aria-label="Breadcrumb" className="truncate text-sm text-slate-400">
           <Link href="/" className="hover:text-mint">Home</Link>
           <span className="mx-2 text-slate-600">/</span>
           <Link href="/creators" className="hover:text-mint">Creators</Link>
@@ -56,19 +56,23 @@ export function CreatorHeader({ data, live = false }: { data: CreatorPageData; l
           <span className="text-slate-200">{creator.username}</span>
         </nav>
 
-        <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
+        {/* Like the comic page: on phones the avatar sits beside the label and name with the rest full
+            width under them; from `sm` up it stays to the left of everything. */}
+        <div className="mt-5 grid grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4 gap-y-4 [grid-template-areas:'avatar_head'_'body_body'] sm:mt-8 sm:gap-x-6 sm:gap-y-0 sm:[grid-template-areas:'avatar_head'_'avatar_body']">
           <CreatorAvatar
             creator={creator}
             genre={mainGenre}
-            className="h-28 w-28 -rotate-2 text-4xl shadow-[6px_6px_0_var(--color-mint-deep)] sm:h-36 sm:w-36 sm:text-5xl"
+            className="h-20 w-20 -rotate-2 text-3xl shadow-[4px_4px_0_var(--color-mint-deep)] [grid-area:avatar] sm:h-36 sm:w-36 sm:text-5xl sm:shadow-[6px_6px_0_var(--color-mint-deep)]"
           />
-          <div className="min-w-0">
-            <span className={`tag text-sm ${isOfficial ? "bg-sun" : "bg-paper"}`}>
+          <div className="min-w-0 self-center [grid-area:head] sm:self-start">
+            <span className={`tag text-xs sm:text-sm ${isOfficial ? "bg-sun" : "bg-paper"}`}>
               {isOfficial ? "Official Toon Central studio" : comics.length ? "Independent creator" : "Animator"}
             </span>
-            <h1 className="mt-3 break-words font-display text-5xl uppercase leading-[0.95] text-white sm:text-6xl xl:text-7xl">
+            <h1 className="mt-2 break-words font-display text-[2rem] uppercase leading-[0.95] text-white sm:mt-3 sm:text-6xl xl:text-7xl">
               {creator.username}
             </h1>
+          </div>
+          <div className="min-w-0 [grid-area:body]">
             <CreatorBio creatorId={creator.id} live={live} />
             {genres.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-1.5">
@@ -83,7 +87,7 @@ export function CreatorHeader({ data, live = false }: { data: CreatorPageData; l
           </div>
         </div>
 
-        <dl className="mt-8 flex flex-wrap gap-x-10 gap-y-5 border-t-2 border-line pt-6">
+        <dl className="mt-6 flex flex-wrap gap-x-8 gap-y-5 border-t-2 border-line pt-5 sm:mt-8 sm:gap-x-10 sm:pt-6">
           {stats.comics > 0 && <Stat value={String(stats.comics)} label="Mafiki" />}
           {stats.comics > 0 && <Stat value={formatCount(stats.reads)} label="Reads" />}
           {stats.chapters != null && <Stat value={String(stats.chapters)} label={stats.chapters === 1 ? "Chapter" : "Chapters"} />}

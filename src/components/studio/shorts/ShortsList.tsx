@@ -31,7 +31,7 @@ export function ShortsList({ mode, seeds, comicSeeds }: { mode: StudioMode; seed
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Shorts</h1>
+          <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">Shorts</h1>
           <p className="mt-2 text-sm text-slate-400">
             {shorts.length ? `${shorts.length} ${shorts.length === 1 ? "short" : "shorts"}` : "Animated videos for the shorts feed."}
           </p>

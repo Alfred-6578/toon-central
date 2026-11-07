@@ -119,7 +119,7 @@ function SectionNav() {
     <nav
       ref={strip}
       aria-label="Settings sections"
-      className="under-header hide-scrollbar sticky z-30 -mx-6 overflow-x-auto border-b-2 border-line bg-ink px-6 py-3 lg:mx-0 lg:self-start lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:pt-6"
+      className="under-header hide-scrollbar sticky z-30 -mx-6 overflow-x-auto border-b-2 border-line bg-ink px-6 py-3 [mask-image:linear-gradient(to_right,#000_calc(100%-2.5rem),transparent)] lg:mx-0 lg:[mask-image:none] lg:self-start lg:border-0 lg:bg-transparent lg:px-0 lg:py-0 lg:pt-6"
     >
       <ul className="flex gap-2 lg:flex-col lg:gap-1">
         {SECTIONS.map((s) => {

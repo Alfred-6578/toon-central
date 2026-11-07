@@ -47,18 +47,21 @@ function RailButton({
   return (
     <button type="button" onClick={onClick} aria-label={label} aria-pressed={active} className="group flex w-11 flex-col items-center gap-0.5">
       <span
-        className={`flex h-11 w-11 items-center justify-center border-2 text-[22px] transition-transform group-active:scale-90 ${
-          active ? "border-black bg-mint text-ink shadow-[3px_3px_0_var(--color-mint-deep)]" : "border-white/25 bg-ink/60 text-white group-hover:border-mint"
+        className={`flex h-10 w-10 items-center justify-center text-[26px] drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)] transition-transform group-active:scale-90 md:h-11 md:w-11 md:border-2 md:text-[22px] md:drop-shadow-none ${
+          active
+            ? "text-mint md:border-black md:bg-mint md:text-ink md:shadow-[3px_3px_0_var(--color-mint-deep)]"
+            : "text-white md:border-white/25 md:bg-ink/60 md:group-hover:border-mint"
         }`}
       >
         {children}
       </span>
-      {count && <span className="max-w-12 truncate text-[11px] font-bold leading-tight text-white drop-shadow">{count}</span>}
+      {count && <span className="max-w-12 truncate text-xs font-bold leading-tight text-white [text-shadow:0_1px_3px_rgba(0,0,0,0.9)]">{count}</span>}
     </button>
   );
 }
 
-// TikTok-style column: creator + follow, like, comments, save, share, and the spinning disc. On a short
+// TikTok-style column: creator + follow, like, comments, save, share, and the spinning disc. Over the
+// video on phones the buttons are bare icons; beside it from `md` up they're boxed. On a short
 // made from a comic, the disc is the comic's cover and opens the comic ("what's this story?"). Only
 // numbers sit under the buttons (words overflowed on phones); sound lives in the feed's top bar.
 export function ActionRail({ short, liked, saved, following, comments, playing, onLike, onSave, onFollow, onComments, onShare, className = "" }: ActionRailProps) {
@@ -77,7 +80,7 @@ export function ActionRail({ short, liked, saved, following, comments, playing, 
             onClick={onFollow}
             aria-label={following ? `Unfollow ${short.creator.username}` : `Follow ${short.creator.username}`}
             aria-pressed={following}
-            className={`absolute -bottom-2 left-1/2 flex h-5 w-5 -translate-x-1/2 items-center justify-center border-2 border-black text-sm ${
+            className={`absolute -bottom-2 left-1/2 flex h-5 w-5 -translate-x-1/2 items-center justify-center border-2 border-black text-sm before:absolute before:-inset-2.5 before:content-[''] ${
               following ? "bg-paper text-ink" : "bg-mint text-ink"
             }`}
           >

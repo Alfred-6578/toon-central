@@ -34,7 +34,7 @@ export function ComicsList({ mode, seeds }: { mode: StudioMode; seeds: StudioCom
     <>
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Mafiki</h1>
+          <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">Mafiki</h1>
           <p className="mt-2 text-sm text-slate-400">{comics.length ? comicCount(comics.length) : "Your Mafiki, episode by episode."}</p>
         </div>
         <Link href={studioHref("/creator/comics/new", mode)} data-tour="new-mafiki" className="btn btn-primary hidden gap-2 px-5 py-2.5 text-sm lg:inline-flex">

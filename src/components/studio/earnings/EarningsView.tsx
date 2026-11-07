@@ -74,7 +74,7 @@ export function EarningsView({ mode, comics }: { mode: StudioMode; comics: Studi
   return (
     <>
       <div>
-        <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Earnings</h1>
+        <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">Earnings</h1>
         <p className="mt-2 text-sm text-slate-400">What your monetized episodes have earned, and getting paid.</p>
       </div>
 

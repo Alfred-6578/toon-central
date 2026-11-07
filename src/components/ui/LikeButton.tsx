@@ -2,13 +2,14 @@
 
 import { useEffect, useState, type MouseEvent } from "react";
 import { IoHeart, IoHeartOutline } from "react-icons/io5";
+import { readerButton, readerButtonIdle, readerButtonOn } from "@/components/reader/buttons";
 import { formatCount } from "@/lib/format";
 import { useMockComicLikes, useMockSession } from "@/lib/mockSession";
 import { useHeartBursts } from "./HeartBurst";
 
 // Like a comic. Liking (not unliking) sets off the heart burst. Signed out, it flips the mock sign-in
 // first, like the library button. `cell` is the count in the comic page's stat bar; `icon` is the
-// square reader top-bar button. `likedInCount`: whether `likes` already includes this reader's like,
+// reader top-bar button. `likedInCount`: whether `likes` already includes this reader's like,
 // when the backend said so with the count. `countPending`: a fresh count is on its way, so none is shown.
 type LikeButtonProps = {
   uuid: string;
@@ -74,9 +75,7 @@ export function LikeButton({ uuid, title, likes, likedInCount, countPending = fa
           aria-pressed={isLiked}
           aria-label={isLiked ? `Unlike ${title}` : `Like ${title}`}
           title={isLiked ? "You like this" : "Like"}
-          className={`flex h-9 w-9 items-center justify-center border-2 text-lg transition-colors ${
-            isLiked ? "border-black bg-mint text-ink shadow-[2px_2px_0_var(--color-mint-deep)]" : "border-line text-slate-200 hover:border-mint hover:text-white"
-          }`}
+          className={`${readerButton} ${isLiked ? readerButtonOn : readerButtonIdle}`}
         >
           <Icon key={popKey} className={isLiked ? "like-pop" : ""} />
         </button>

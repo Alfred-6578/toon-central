@@ -30,9 +30,9 @@ export function Creator101Shell({ tab, stats, signOff = true, children }: ShellP
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
-        <nav aria-label="Creator 101" className="hide-scrollbar sticky top-[66px] z-30 overflow-x-auto border-b-2 border-line bg-ink/95 backdrop-blur">
+        <nav aria-label="Creator 101" className="hide-scrollbar sticky top-[var(--header-h)] z-30 overflow-x-auto border-b-2 border-line bg-ink/95 backdrop-blur">
           <div className="mx-auto flex max-w-7xl justify-between px-4 sm:justify-start sm:gap-1 sm:px-6 md:px-8 lg:px-10">
             {CREATOR101_TABS.map(({ href, label, id }) => {
               const active = id === tab;

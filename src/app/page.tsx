@@ -82,7 +82,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
         <Navigation />
 
         {/* Clears the fixed header */}
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         {design.hero === "bleed" && <HeroCarousel variant="bleed" slides={heroSlides} />}
 

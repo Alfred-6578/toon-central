@@ -9,11 +9,11 @@ import { getStudioContext } from "@/lib/studioServer";
 export const metadata: Metadata = { title: "Earnings · Creator Studio | Toon Central", robots: { index: false } };
 
 export default async function StudioEarningsPage({ searchParams }: PageProps<"/creator/earnings">) {
-  const { design, mode, seeds } = await getStudioContext(await searchParams);
+  const { design, mode, seeds, shortSeeds, unreadable } = await getStudioContext(await searchParams);
   return (
     <>
       <StudioShell active="earnings" query={studioHref("", mode)}>
-        <StudioGate mode={mode} next={studioHref("/creator/earnings", mode)}>
+        <StudioGate mode={mode} next={studioHref("/creator/earnings", mode)} hasItems={seeds.length + shortSeeds.length > 0} unreadable={unreadable}>
           <EarningsView mode={mode} comics={seeds} />
         </StudioGate>
       </StudioShell>

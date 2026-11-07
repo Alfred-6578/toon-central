@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { IoDesktopOutline } from "react-icons/io5";
+import { IoCloudOfflineOutline, IoDesktopOutline } from "react-icons/io5";
 import { SignInPrompt } from "@/components/auth/SignInPrompt";
 import { useMockCreator } from "@/lib/mockCreator";
 import { useHydrated, useMockSession } from "@/lib/mockSession";
@@ -9,8 +9,12 @@ import type { StudioMode } from "@/lib/studioModel";
 import { BecomeCreator } from "./BecomeCreator";
 
 // Who gets into a Studio page: signed out → sign in (and back here); signed in but not a creator →
-// the one-step setup; creators, or the "established" demo → the page.
-export function StudioGate({ mode, next, children }: { mode: StudioMode; next: string; children: ReactNode }) {
+// the one-step setup; creators, or the "established" demo → the page. In mode "live" anyone whose
+// account already has Mafiki or shorts (`hasItems`) skips the setup; `unreadable`: the backend didn't
+// answer, so there's nothing to show.
+type GateProps = { mode: StudioMode; next: string; hasItems?: boolean; unreadable?: boolean; children: ReactNode };
+
+export function StudioGate({ mode, next, hasItems = false, unreadable = false, children }: GateProps) {
   const hydrated = useHydrated();
   const { user } = useMockSession();
   const { profile } = useMockCreator();
@@ -19,8 +23,19 @@ export function StudioGate({ mode, next, children }: { mode: StudioMode; next: s
   if (!user) {
     return <SignInPrompt title="Creator Studio" body="Sign in to publish your Mafiki and shorts and see how readers respond." next={next} />;
   }
-  if (mode === "new" && !profile) return <BecomeCreator />;
+  if (unreadable) return <StudioUnreadable />;
+  if (mode !== "established" && !profile && !(mode === "live" && hasItems)) return <BecomeCreator />;
   return <>{children}</>;
+}
+
+export function StudioUnreadable() {
+  return (
+    <div className="flex flex-col items-center gap-3 border-2 border-dashed border-line px-6 py-12 text-center">
+      <IoCloudOfflineOutline className="text-4xl text-slate-400" />
+      <p className="font-display text-3xl uppercase text-white">Couldn&apos;t load your Studio</p>
+      <p className="max-w-md text-sm text-slate-400">Your Mafiki and shorts didn&apos;t come through. Refresh the page to try again.</p>
+    </div>
+  );
 }
 
 // Editing and uploading are desktop-only; phones get a note instead of the form.

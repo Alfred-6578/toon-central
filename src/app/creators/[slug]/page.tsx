@@ -48,7 +48,7 @@ export default async function CreatorPage({ params, searchParams }: Params) {
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <CreatorHeader data={data} live={isLive("reading")} />
 

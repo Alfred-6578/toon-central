@@ -61,7 +61,7 @@ export function GenreWall({ genres, comics, counts, current }: GenreWallProps) {
   return (
     <section aria-labelledby="genre-wall-title" className="px-6 pt-10 md:px-8 lg:px-10 lg:pt-12">
       <div className="mb-6 flex flex-wrap items-end justify-between gap-x-6 gap-y-2 border-b-2 border-line pb-3">
-        <h2 id="genre-wall-title" className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">
+        <h2 id="genre-wall-title" className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">
           Genres
         </h2>
         <p className="pb-1 text-sm text-slate-400">

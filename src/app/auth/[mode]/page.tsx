@@ -40,7 +40,7 @@ export default async function AuthPage({ params, searchParams }: PageProps<"/aut
     <div className="relative min-h-screen overflow-hidden text-white">
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
         <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-80" />
         <div className="relative">
           <AuthShell covers={covers} bubble={PAGES[mode].bubble}>

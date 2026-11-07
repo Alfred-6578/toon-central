@@ -32,10 +32,10 @@ export default async function DiscoverPage() {
       <div className="halftone-fade pointer-events-none absolute inset-x-0 top-0 h-[700px]" />
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <div className="px-6 pt-8 md:px-8 lg:px-10 lg:pt-10">
-          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">Discover</h1>
+          <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">Discover</h1>
         </div>
 
         {/* The live site's main-menu strip, right under the title. */}

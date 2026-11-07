@@ -13,7 +13,7 @@ const SPEEDS = [
 ];
 
 const dockButton =
-  "flex h-11 items-center justify-center border-2 border-black bg-ink text-white shadow-[3px_3px_0_#000] transition-colors hover:bg-panel";
+  "flex h-10 items-center justify-center border-2 border-black bg-ink text-white shadow-[3px_3px_0_#000] transition-colors hover:bg-panel sm:h-11";
 
 // Floating controls in the reader's corner: auto-scroll (off until the reader starts it), its speed,
 // the first-visit guide again, and back to the top.
@@ -79,7 +79,7 @@ export function ReaderDock() {
   }, [on, speed.pxPerSecond]);
 
   return (
-    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 flex flex-col items-end gap-2.5 sm:right-6">
+    <div className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-3 z-40 flex flex-col items-end gap-2 sm:right-6 sm:gap-2.5">
       {showTop && (
         <button
           type="button"
@@ -88,7 +88,7 @@ export function ReaderDock() {
             window.scrollTo({ top: 0 });
           }}
           aria-label="Back to top"
-          className={`${dockButton} w-11 text-lg`}
+          className={`${dockButton} w-10 text-lg sm:w-11`}
         >
           <IoArrowUp />
         </button>
@@ -99,7 +99,7 @@ export function ReaderDock() {
         onClick={() => window.dispatchEvent(new Event(REPLAY_READER_TOUR))}
         aria-label="How the reader works"
         title="How the reader works"
-        className={`${dockButton} w-11 text-lg`}
+        className={`${dockButton} w-10 text-lg sm:w-11`}
       >
         <IoHelp />
       </button>
@@ -110,7 +110,7 @@ export function ReaderDock() {
             type="button"
             onClick={() => setSpeedIndex(String((Number(speedIndex) + 1) % SPEEDS.length))}
             aria-label={`Scroll speed ${speed.label}, change speed`}
-            className="flex h-11 w-12 items-center justify-center border-2 border-r-0 border-black bg-paper font-display text-lg text-ink"
+            className="flex h-10 w-11 items-center justify-center border-2 border-r-0 border-black bg-paper font-display text-base sm:h-11 sm:w-12 sm:text-lg text-ink"
           >
             {speed.label}
           </button>
@@ -119,7 +119,7 @@ export function ReaderDock() {
           type="button"
           onClick={() => setOn((v) => !v)}
           aria-pressed={on}
-          className={`flex h-11 items-center gap-2 border-2 border-black px-4 font-display text-base uppercase tracking-wide transition-colors ${
+          className={`flex h-10 items-center gap-1.5 border-2 border-black px-3 font-display text-sm uppercase sm:h-11 sm:gap-2 sm:px-4 sm:text-base tracking-wide transition-colors ${
             on ? "bg-sun text-ink" : "bg-mint text-ink hover:bg-white"
           }`}
         >

@@ -41,7 +41,7 @@ export default async function ComicPage({ params, searchParams }: PageProps<"/co
       <main className="relative pb-24 lg:pb-0">
         <Navigation />
         {/* Clears the fixed header */}
-        <div className="h-[66px]" />
+        <div className="h-[var(--header-h)]" />
 
         <ComicHeader comic={comic} live={isLive("reading")} />
 

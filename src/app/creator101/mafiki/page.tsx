@@ -124,7 +124,7 @@ export default async function MafikiPage() {
         <div className={`relative grid items-center gap-10 py-14 lg:grid-cols-[minmax(0,1fr)_320px] lg:py-20 ${wrap}`}>
           <div>
             <span className="tag -rotate-2 bg-sun text-sm">A new identity for African comics</span>
-            <h1 className="mt-4 font-display text-6xl uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">This is Mafiki.</h1>
+            <h1 className="mt-4 font-display text-[2.75rem] uppercase leading-[0.9] text-white sm:text-7xl lg:text-8xl">This is Mafiki.</h1>
             <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-300">
               Mafiki is our comic style: a visual language drawn from the way Africa has always carved, stitched and shaped the human form.
               Here is what it is, where it comes from and who makes it.

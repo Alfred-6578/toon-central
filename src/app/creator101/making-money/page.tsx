@@ -65,7 +65,7 @@ export default async function MakingMoneyPage() {
         <div className={`${coinArt} -left-4`}><img src="/creator-guide/coins-left.webp" alt="" /></div>
         <div className={`${coinArt} -right-4`}><img src="/creator-guide/coins-right.webp" alt="" /></div>
         <div className="relative mx-auto max-w-3xl px-6 py-14 text-center sm:py-16 lg:py-20">
-          <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl lg:text-7xl">
+          <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl lg:text-7xl">
             Make money with <span className="text-sun">Toon Central</span>
           </h1>
           <p className="mx-auto mt-5 max-w-xl leading-7 text-white/85">

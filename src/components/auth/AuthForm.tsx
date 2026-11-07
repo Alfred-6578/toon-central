@@ -380,7 +380,7 @@ function OperatorSelect({ operators, value, onChange }: { operators: MobileOpera
 function Card({ title, lede, children }: { title: string; lede?: string; children: React.ReactNode }) {
   return (
     <div>
-      <h1 className="font-display text-5xl uppercase leading-[0.9] text-white sm:text-6xl">{title}</h1>
+      <h1 className="font-display text-[2.5rem] uppercase leading-[0.9] text-white sm:text-6xl">{title}</h1>
       {lede && <p className="mt-3 max-w-md text-sm leading-6 text-slate-300">{lede}</p>}
       <div className="mt-8">{children}</div>
     </div>

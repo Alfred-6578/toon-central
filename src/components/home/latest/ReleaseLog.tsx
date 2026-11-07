@@ -70,7 +70,7 @@ export function ReleaseLog({ entries }: { entries: LogEntry[] }) {
     <>
       <ol>
         {groupByMonth(entries).map((group, i, all) => (
-          <li key={group.key} className="grid gap-x-8 md:grid-cols-[9rem_minmax(0,1fr)]">
+          <li key={group.key} className="grid grid-cols-[minmax(0,1fr)] gap-x-8 md:grid-cols-[9rem_minmax(0,1fr)]">
             {/* Month stamp on the timeline rail */}
             <div className="relative pb-2 md:pb-8">
               <div className="flex items-baseline gap-2 md:block md:text-right">
@@ -80,7 +80,7 @@ export function ReleaseLog({ entries }: { entries: LogEntry[] }) {
               <span className="absolute -right-10 top-2 hidden h-3.5 w-3.5 border-2 border-black bg-mint md:block" />
             </div>
 
-            <div className={`grid gap-1 pb-8 md:grid-cols-2 md:border-l-2 md:pl-6 ${i === all.length - 1 ? "md:border-transparent" : "md:border-line"}`}>
+            <div className={`grid grid-cols-[minmax(0,1fr)] gap-1 pb-8 md:grid-cols-2 md:border-l-2 md:pl-6 ${i === all.length - 1 ? "md:border-transparent" : "md:border-line"}`}>
               {group.entries.map((entry) => (
                 <EntryRow
                   key={`${entry.kind}-${entry.kind === "short" ? entry.short.uuid : entry.comic.uuid}`}
