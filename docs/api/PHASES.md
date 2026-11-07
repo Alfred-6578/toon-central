@@ -278,6 +278,10 @@ production with an existing creator)**
 | My shorts | `GET my-libraries/shorts` | Paged |
 | Create a Mafiki | `POST my-libraries/comics/create` | Form; cover and banner are **links**, not files; starts unpublished (`statusId` 0) |
 | Add an episode | `POST my-libraries/chapters/comic/:comicId/create` | Form; pages are links (`comicImage[i][image]`, `[is_lock]`), the thumbnail is a **file** |
+| Update a Mafiki | `POST my-libraries/comics/:id/update?_method=PATCH` | Form, same fields as create; replaces the genres; **ignores `status`** |
+| Publish / unpublish | `PUT my-libraries/comics/:id/toggle` | Flips `statusId` (1 / 0); the message says which way |
+| Delete a Mafiki | `DELETE my-libraries/comics/:id/delete` | With its episodes |
+| Delete an episode | `DELETE my-libraries/chapters/:episodeId/comic/:comicId/delete` | |
 
 None of these reads count views. The live site uploads covers, banners, pages and short videos to
 Cloudinary from its own server (with the client's Cloudinary keys) and sends the backend the links, so
@@ -286,8 +290,15 @@ real uploads from our Studio need those keys.
 **What was built (5 Nov): step 1, reading.** With `studio` live, the Studio shows the signed-in
 creator's own Mafiki, episodes (pages when one is opened) and shorts, in mode "live"
 (`src/lib/api/studio.ts`, `getStudioContext`). Saving isn't connected yet: it's refused with a note and
-nothing changes. Earnings and followers stay sample data (no endpoints). Next: step 2, saving details,
-publishing and deleting; then episodes and shorts once uploads are possible.
+nothing changes. Earnings and followers stay sample data (no endpoints). 
+
+**Step 2 (7 Nov): saving.** Editing a Mafiki's title, synopsis, genres and schedule, publishing,
+unpublishing, deleting an episode and deleting a Mafiki now go to the backend (`src/app/actions/studio.ts`).
+After each change the site's cached public data is expired (`PUBLIC_API_TAG`), so the public pages
+show it straight away instead of up to 5 minutes later. Checked on staging and on production (7 Nov, a temporary
+"TEST" Mafiki on a creator account, deleted afterwards): an edit and publishing showed on
+tooncentralhub.com and on our pages; unpublishing and deleting worked, apart from finding 30. Still refused with a note: new images, episode
+order, ads, ad spaces, "Mark completed" (see 28), creating a Mafiki, and everything on shorts.
 
 **For the backend team (Phase 5 findings)**
 
@@ -296,3 +307,10 @@ publishing and deleting; then episodes and shorts once uploads are possible.
     creator's email address. A user id would do.
 27. On staging, one creator account signs in but every request with its token is refused
     ("Unauthenticated"); the same account works on production.
+28. **Updating a Mafiki ignores `status`**: sending `COMPLETED` (the live site's own value) answers
+    "comic was updated successfully" but it stays `ONGOING`, so no one can mark a Mafiki completed.
+29. Episode titles must be unique: a second episode called the same as an earlier one is refused
+    ("The title has already been taken").
+30. **Production's `home` keeps a Mafiki after it's unpublished or deleted** (checked 7 Nov with a
+    temporary test Mafiki): `trending/new-and-trending` and `search` dropped it straight away, `home` still
+    listed it, so our public page (built partly from `home`) and any home row can show a Mafiki that's gone.

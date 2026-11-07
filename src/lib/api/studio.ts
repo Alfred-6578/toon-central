@@ -124,3 +124,65 @@ export async function getMyStudio(withPages?: string | null): Promise<{ comics: 
   const comicUuidById = new Map(rawComics.map((raw) => [num(raw.id), str(raw.uuid)]));
   return { comics, shorts: rawShorts.map((raw) => toStudioShort(raw, comicUuidById)) };
 }
+
+// Step 2: saving a Mafiki's details, publishing and deleting. Behaviour checked on staging (5 Nov):
+// - Update is a form POST with ?_method=PATCH; it replaces the genres with the ones sent.
+// - Publish and unpublish are one toggle that flips statusId (1 published, 0 not) and says which way
+//   in its message, so we read the current state first and only toggle when it differs.
+// - "Completed" is the comic's status field (COMPLETED / ONGOING), set through the update.
+
+export type StudioWriteResult = { ok: true } | { ok: false; message: string };
+
+const failed = (message = "That didn't save. Please try again.") => ({ ok: false as const, message });
+const isLink = (value: string | null) => !!value && /^https:\/\//.test(value);
+
+export type ComicDetailsInput = {
+  title: string;
+  synopsis: string;
+  genres: string[];
+  schedule: string | null;
+  cover: string | null;
+  banner: string | null;
+  completed: boolean;
+};
+
+export async function updateMyComic(apiId: number, details: ComicDetailsInput, genreIds: Map<string, number>): Promise<StudioWriteResult> {
+  if (!studioLive()) return failed("The Studio isn't connected yet.");
+  // New images would need uploading first (see the notes at the top).
+  if (!isLink(details.cover) || (details.banner && !isLink(details.banner))) return failed("Changing the cover or banner isn't connected yet.");
+  const ids = details.genres.map((name) => genreIds.get(name)).filter((id): id is number => id != null);
+  if (!details.title.trim() || ids.length === 0) return failed("A title and at least one genre are needed.");
+
+  const form = new FormData();
+  form.append("title", details.title.trim());
+  form.append("description", details.synopsis.trim());
+  form.append("coverImage", details.cover!);
+  form.append("backgroundImage", details.banner || details.cover!);
+  form.append("status", details.completed ? "COMPLETED" : "ONGOING");
+  form.append("updateDays", details.schedule ?? "");
+  form.append("socialMediaHandle", "");
+  ids.forEach((id, i) => form.append(`genreId[${i}]`, String(id)));
+  const result = await apiAsUser(`/my-libraries/comics/${apiId}/update?_method=PATCH`, { method: "POST", body: form, revalidate: false });
+  return result.ok ? { ok: true } : failed(result.message);
+}
+
+export async function setMyComicPublished(apiId: number, publish: boolean): Promise<StudioWriteResult> {
+  if (!studioLive()) return failed("The Studio isn't connected yet.");
+  const current = await apiAsUser<Raw>(`/my-libraries/comics/${apiId}/get`, { revalidate: false });
+  if (!current.ok) return failed(current.message);
+  if ((num(current.data.statusId) !== 0) === publish) return { ok: true };
+  const result = await apiAsUser(`/my-libraries/comics/${apiId}/toggle`, { method: "PUT", revalidate: false });
+  return result.ok ? { ok: true } : failed(result.message);
+}
+
+export async function deleteMyComic(apiId: number): Promise<StudioWriteResult> {
+  if (!studioLive()) return failed("The Studio isn't connected yet.");
+  const result = await apiAsUser(`/my-libraries/comics/${apiId}/delete`, { method: "DELETE", revalidate: false });
+  return result.ok ? { ok: true } : failed(result.message);
+}
+
+export async function deleteMyEpisode(comicApiId: number, episodeId: number): Promise<StudioWriteResult> {
+  if (!studioLive()) return failed("The Studio isn't connected yet.");
+  const result = await apiAsUser(`/my-libraries/chapters/${episodeId}/comic/${comicApiId}/delete`, { method: "DELETE", revalidate: false });
+  return result.ok ? { ok: true } : failed(result.message);
+}

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { IoArrowBack } from "react-icons/io5";
+import { IoArrowBack, IoCloudUploadOutline } from "react-icons/io5";
 import { useCreatorTutorial, useMilestoneWatch } from "@/lib/creatorTutorial";
 import { newId, studioHref, type StudioComic, type StudioMode } from "@/lib/studioModel";
 import { useStudioComics } from "@/lib/studioStore";
@@ -24,28 +24,36 @@ export function NewComic({ mode, seeds, genres }: { mode: StudioMode; seeds: Stu
       <p className="mt-2 text-sm text-slate-400">It starts as a draft. Nobody sees it until you publish.</p>
 
       <div className="mt-8">
-        <DesktopOnly what="create a Mafiki">
-          <ComicForm
-            initial={{ title: "", synopsis: "", cover: null, banner: null, genres: [], schedule: null, trailer: null }}
-            genres={genres}
-            submitLabel="Create draft"
-            onSubmit={(details) => {
-              const comic: StudioComic = {
-                ...details,
-                id: newId(),
-                status: "draft",
-                episodes: [],
-                reads: 0,
-                likes: 0,
-                updatedAt: new Date().toISOString(),
-                live: false,
-              };
-              save(comic);
-              if (comics.length === 0) tutorial.mafikiCreated(comic.id);
-              router.push(studioHref(`/creator/comics/${comic.id}`, mode));
-            }}
-          />
-        </DesktopOnly>
+        {mode === "live" ? (
+          // A real Mafiki needs its cover uploaded, and uploads aren't connected yet.
+          <div className="flex items-start gap-3 border-2 border-dashed border-line px-5 py-6 text-sm leading-6 text-slate-300">
+            <IoCloudUploadOutline className="mt-0.5 shrink-0 text-xl text-mint" />
+            <p>Creating a Mafiki here needs image uploads, which aren&apos;t connected yet. You can edit, publish and delete the Mafiki you already have.</p>
+          </div>
+        ) : (
+          <DesktopOnly what="create a Mafiki">
+            <ComicForm
+              initial={{ title: "", synopsis: "", cover: null, banner: null, genres: [], schedule: null, trailer: null }}
+              genres={genres}
+              submitLabel="Create draft"
+              onSubmit={(details) => {
+                const comic: StudioComic = {
+                  ...details,
+                  id: newId(),
+                  status: "draft",
+                  episodes: [],
+                  reads: 0,
+                  likes: 0,
+                  updatedAt: new Date().toISOString(),
+                  live: false,
+                };
+                save(comic);
+                if (comics.length === 0) tutorial.mafikiCreated(comic.id);
+                router.push(studioHref(`/creator/comics/${comic.id}`, mode));
+              }}
+            />
+          </DesktopOnly>
+        )}
       </div>
     </>
   );

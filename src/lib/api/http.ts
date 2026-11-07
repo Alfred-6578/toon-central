@@ -30,6 +30,8 @@ export type RequestOptions = {
 export const isEmpty = (result: ApiResult<unknown>) => !result.ok && result.status === 200 && /no record/i.test(result.message);
 
 const DEFAULT_REVALIDATE = 300;
+// Every cached public read carries this tag, so a creator's change (Studio) can expire them at once.
+export const PUBLIC_API_TAG = "public-api";
 const DEFAULT_TIMEOUT_MS = 15_000;
 
 export async function apiRequest<T>(path: string, options: RequestOptions = {}): Promise<ApiResult<T>> {
@@ -54,7 +56,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
       headers,
       body: payload,
       signal: AbortSignal.timeout(timeoutMs),
-      ...(cacheable ? { next: { revalidate } } : { cache: "no-store" as const }),
+      ...(cacheable ? { next: { revalidate, tags: [PUBLIC_API_TAG] } } : { cache: "no-store" as const }),
     });
     const json = (await res.json().catch(() => null)) as Envelope | null;
     if (!json) return { ok: false, status: res.status, message: `The server didn't send JSON (${res.status} ${res.statusText}).` };
